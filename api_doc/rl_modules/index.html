@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>grl.rl_modules &mdash; GenerativeRL v0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=2fea6348"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="grl.utils" href="../utils/index.html" />
+    <link rel="prev" title="grl.numerical_methods" href="../numerical_methods/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            GenerativeRL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/quick_start/index.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../agents/index.html">grl.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">grl.algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/index.html">grl.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/index.html">grl.generative_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_network/index.html">grl.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../numerical_methods/index.html">grl.numerical_methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">grl.rl_modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#gymenvsimulator">GymEnvSimulator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.rl_modules.GymEnvSimulator"><code class="docutils literal notranslate"><span class="pre">GymEnvSimulator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.GymEnvSimulator.__init__"><code class="docutils literal notranslate"><span class="pre">GymEnvSimulator.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.GymEnvSimulator.collect_episodes"><code class="docutils literal notranslate"><span class="pre">GymEnvSimulator.collect_episodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.GymEnvSimulator.collect_steps"><code class="docutils literal notranslate"><span class="pre">GymEnvSimulator.collect_steps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.GymEnvSimulator.evaluate"><code class="docutils literal notranslate"><span class="pre">GymEnvSimulator.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#oneshotvaluefunction">OneShotValueFunction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.rl_modules.OneShotValueFunction"><code class="docutils literal notranslate"><span class="pre">OneShotValueFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.OneShotValueFunction.__init__"><code class="docutils literal notranslate"><span class="pre">OneShotValueFunction.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.OneShotValueFunction.compute_double_v"><code class="docutils literal notranslate"><span class="pre">OneShotValueFunction.compute_double_v()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.OneShotValueFunction.forward"><code class="docutils literal notranslate"><span class="pre">OneShotValueFunction.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.OneShotValueFunction.v_loss"><code class="docutils literal notranslate"><span class="pre">OneShotValueFunction.v_loss()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#vnetwork">VNetwork</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.rl_modules.VNetwork"><code class="docutils literal notranslate"><span class="pre">VNetwork</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.VNetwork.__init__"><code class="docutils literal notranslate"><span class="pre">VNetwork.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.VNetwork.forward"><code class="docutils literal notranslate"><span class="pre">VNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#doublevnetwork">DoubleVNetwork</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.rl_modules.DoubleVNetwork"><code class="docutils literal notranslate"><span class="pre">DoubleVNetwork</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleVNetwork.__init__"><code class="docutils literal notranslate"><span class="pre">DoubleVNetwork.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleVNetwork.compute_double_v"><code class="docutils literal notranslate"><span class="pre">DoubleVNetwork.compute_double_v()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleVNetwork.compute_mininum_v"><code class="docutils literal notranslate"><span class="pre">DoubleVNetwork.compute_mininum_v()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleVNetwork.forward"><code class="docutils literal notranslate"><span class="pre">DoubleVNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#qnetwork">QNetwork</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.rl_modules.QNetwork"><code class="docutils literal notranslate"><span class="pre">QNetwork</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.QNetwork.__init__"><code class="docutils literal notranslate"><span class="pre">QNetwork.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.QNetwork.forward"><code class="docutils literal notranslate"><span class="pre">QNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#doubleqnetwork">DoubleQNetwork</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.rl_modules.DoubleQNetwork"><code class="docutils literal notranslate"><span class="pre">DoubleQNetwork</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleQNetwork.__init__"><code class="docutils literal notranslate"><span class="pre">DoubleQNetwork.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleQNetwork.compute_double_q"><code class="docutils literal notranslate"><span class="pre">DoubleQNetwork.compute_double_q()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleQNetwork.compute_mininum_q"><code class="docutils literal notranslate"><span class="pre">DoubleQNetwork.compute_mininum_q()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.rl_modules.DoubleQNetwork.forward"><code class="docutils literal notranslate"><span class="pre">DoubleQNetwork.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/index.html">grl.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GenerativeRL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">grl.rl_modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api_doc/rl_modules/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-grl.rl_modules">
+<span id="grl-rl-modules"></span><h1>grl.rl_modules<a class="headerlink" href="#module-grl.rl_modules" title="Link to this heading"></a></h1>
+<section id="gymenvsimulator">
+<h2>GymEnvSimulator<a class="headerlink" href="#gymenvsimulator" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.rl_modules.GymEnvSimulator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">GymEnvSimulator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/simulators/gym_env_simulator.html#GymEnvSimulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.GymEnvSimulator" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>A simple gym environment simulator in GenerativeRL.
+This simulator is used to collect episodes and steps using a given policy in a gym environment.
+It runs in single process and is suitable for small-scale experiments.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">collect_episodes</span></code>, <code class="docutils literal notranslate"><span class="pre">collect_steps</span></code>, <code class="docutils literal notranslate"><span class="pre">evaluate</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.GymEnvSimulator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/simulators/gym_env_simulator.html#GymEnvSimulator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.GymEnvSimulator.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the GymEnvSimulator according to the given configuration.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env_id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The id of the gym environment to simulate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.GymEnvSimulator.collect_episodes">
+<span class="sig-name descname"><span class="pre">collect_episodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_episodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/simulators/gym_env_simulator.html#GymEnvSimulator.collect_episodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.GymEnvSimulator.collect_episodes" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Collect several episodes using the given policy. The environment will be reset at the beginning of each episode.
+No history will be stored in this method. The collected information of steps will be returned as a list of dictionaries.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>policy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[Callable,</span> <span class="pre">torch.nn.Module]</span></code>) – The policy to collect episodes.</p></li>
+<li><p><strong>num_episodes</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The number of episodes to collect.</p></li>
+<li><p><strong>num_steps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The number of steps to collect.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.GymEnvSimulator.collect_steps">
+<span class="sig-name descname"><span class="pre">collect_steps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_episodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/simulators/gym_env_simulator.html#GymEnvSimulator.collect_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.GymEnvSimulator.collect_steps" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Collect several steps using the given policy. The environment will not be reset until the end of the episode.
+Last observation will be stored in this method. The collected information of steps will be returned as a list of dictionaries.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>policy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[Callable,</span> <span class="pre">torch.nn.Module]</span></code>) – The policy to collect steps.</p></li>
+<li><p><strong>num_episodes</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The number of episodes to collect.</p></li>
+<li><p><strong>num_steps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The number of steps to collect.</p></li>
+<li><p><strong>random_policy</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to use a random policy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.GymEnvSimulator.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_episodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/simulators/gym_env_simulator.html#GymEnvSimulator.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.GymEnvSimulator.evaluate" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Overview:</dt><dd><p>Evaluate the given policy using the environment. The environment will be reset at the beginning of each episode.
+No history will be stored in this method. The evaluation resultswill be returned as a list of dictionaries.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="oneshotvaluefunction">
+<h2>OneShotValueFunction<a class="headerlink" href="#oneshotvaluefunction" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.rl_modules.OneShotValueFunction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">OneShotValueFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/one_shot_value_function.html#OneShotValueFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.OneShotValueFunction" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Value network for one-shot cases.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.OneShotValueFunction.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/one_shot_value_function.html#OneShotValueFunction.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.OneShotValueFunction.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialization of one-shot value network.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The configuration dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.OneShotValueFunction.compute_double_v">
+<span class="sig-name descname"><span class="pre">compute_double_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/one_shot_value_function.html#OneShotValueFunction.compute_double_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.OneShotValueFunction.compute_double_v" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the output of two value networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output of the first value network.
+v2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>): The output of the second value network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>v1 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.OneShotValueFunction.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/one_shot_value_function.html#OneShotValueFunction.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.OneShotValueFunction.forward" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the output of one-shot value network.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.OneShotValueFunction.v_loss">
+<span class="sig-name descname"><span class="pre">v_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/one_shot_value_function.html#OneShotValueFunction.v_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.OneShotValueFunction.v_loss" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Calculate the v loss.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input value.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The v loss.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>v_loss (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="vnetwork">
+<h2>VNetwork<a class="headerlink" href="#vnetwork" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.rl_modules.VNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">VNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#VNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.VNetwork" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.VNetwork.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#VNetwork.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.VNetwork.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.VNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#VNetwork.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.VNetwork.forward" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return output of value networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output of value network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>value (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="doublevnetwork">
+<h2>DoubleVNetwork<a class="headerlink" href="#doublevnetwork" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleVNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">DoubleVNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#DoubleVNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleVNetwork" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Double value network, which has two value networks.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code>, <code class="docutils literal notranslate"><span class="pre">compute_double_v</span></code>, <code class="docutils literal notranslate"><span class="pre">compute_mininum_v</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleVNetwork.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#DoubleVNetwork.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleVNetwork.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleVNetwork.compute_double_v">
+<span class="sig-name descname"><span class="pre">compute_double_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#DoubleVNetwork.compute_double_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleVNetwork.compute_double_v" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the output of two value networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output of the first value network.
+v2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>): The output of the second value network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>v1 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleVNetwork.compute_mininum_v">
+<span class="sig-name descname"><span class="pre">compute_mininum_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#DoubleVNetwork.compute_mininum_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleVNetwork.compute_mininum_v" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the minimum output of two value networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The minimum output of value network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>minimum_v (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleVNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#DoubleVNetwork.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleVNetwork.forward" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the minimum output of two value networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input condition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The minimum output of value network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>minimum_v (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="qnetwork">
+<h2>QNetwork<a class="headerlink" href="#qnetwork" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.rl_modules.QNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">QNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#QNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.QNetwork" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.QNetwork.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#QNetwork.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.QNetwork.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.QNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#QNetwork.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.QNetwork.forward" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return output of Q networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input action.</p></li>
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output of Q network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>q (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="doubleqnetwork">
+<h2>DoubleQNetwork<a class="headerlink" href="#doubleqnetwork" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleQNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">DoubleQNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#DoubleQNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleQNetwork" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Double Q network, which has two Q networks.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code>, <code class="docutils literal notranslate"><span class="pre">compute_double_q</span></code>, <code class="docutils literal notranslate"><span class="pre">compute_mininum_q</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleQNetwork.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#DoubleQNetwork.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleQNetwork.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleQNetwork.compute_double_q">
+<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#DoubleQNetwork.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleQNetwork.compute_double_q" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the output of two Q networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input action.</p></li>
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output of the first Q network.
+q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>): The output of the second Q network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>q1 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleQNetwork.compute_mininum_q">
+<span class="sig-name descname"><span class="pre">compute_mininum_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#DoubleQNetwork.compute_mininum_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleQNetwork.compute_mininum_q" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the minimum output of two Q networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input action.</p></li>
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The minimum output of Q network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>minimum_q (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.rl_modules.DoubleQNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#DoubleQNetwork.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.DoubleQNetwork.forward" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Return the minimum output of two Q networks.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input action.</p></li>
+<li><p><strong>state</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The minimum output of Q network.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>minimum_q (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../numerical_methods/index.html" class="btn btn-neutral float-left" title="grl.numerical_methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../utils/index.html" class="btn btn-neutral float-right" title="grl.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

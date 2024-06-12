@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>grl.numerical_methods &mdash; GenerativeRL v0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=2fea6348"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="grl.rl_modules" href="../rl_modules/index.html" />
+    <link rel="prev" title="grl.neural_network" href="../neural_network/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            GenerativeRL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/quick_start/index.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../agents/index.html">grl.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">grl.algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets/index.html">grl.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../generative_models/index.html">grl.generative_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_network/index.html">grl.neural_network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">grl.numerical_methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ode">ODE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.numerical_methods.ODE"><code class="docutils literal notranslate"><span class="pre">ODE</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.ODE.__init__"><code class="docutils literal notranslate"><span class="pre">ODE.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sde">SDE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.numerical_methods.SDE"><code class="docutils literal notranslate"><span class="pre">SDE</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.SDE.__init__"><code class="docutils literal notranslate"><span class="pre">SDE.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dpmsolver">DPMSolver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.numerical_methods.DPMSolver"><code class="docutils literal notranslate"><span class="pre">DPMSolver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.DPMSolver.__init__"><code class="docutils literal notranslate"><span class="pre">DPMSolver.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.DPMSolver.integrate"><code class="docutils literal notranslate"><span class="pre">DPMSolver.integrate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#odesolver">ODESolver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.numerical_methods.ODESolver"><code class="docutils literal notranslate"><span class="pre">ODESolver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.ODESolver.__init__"><code class="docutils literal notranslate"><span class="pre">ODESolver.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.ODESolver.integrate"><code class="docutils literal notranslate"><span class="pre">ODESolver.integrate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sdesolver">SDESolver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.numerical_methods.SDESolver"><code class="docutils literal notranslate"><span class="pre">SDESolver</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.SDESolver.__init__"><code class="docutils literal notranslate"><span class="pre">SDESolver.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.SDESolver.integrate"><code class="docutils literal notranslate"><span class="pre">SDESolver.integrate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gaussianconditionalprobabilitypath">GaussianConditionalProbabilityPath</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.HalfLogSNR"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.HalfLogSNR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.InverseHalfLogSNR"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.InverseHalfLogSNR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.__init__"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.covariance"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.covariance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_covariance_dt"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.d_covariance_dt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_log_scale_dt"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.d_log_scale_dt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_scale_dt"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.d_scale_dt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_std_dt"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.d_std_dt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.diffusion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion_squared"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.diffusion_squared()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.drift"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.drift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.drift_coefficient"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.drift_coefficient()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.log_scale"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.log_scale()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.scale"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.scale()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.std"><code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath.std()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../rl_modules/index.html">grl.rl_modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/index.html">grl.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GenerativeRL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">grl.numerical_methods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api_doc/numerical_methods/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-grl.numerical_methods">
+<span id="grl-numerical-methods"></span><h1>grl.numerical_methods<a class="headerlink" href="#module-grl.numerical_methods" title="Link to this heading"></a></h1>
+<section id="ode">
+<h2>ODE<a class="headerlink" href="#ode" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.numerical_methods.ODE">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.numerical_methods.</span></span><span class="sig-name descname"><span class="pre">ODE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/ode.html#ODE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.ODE" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Base class for ordinary differential equations.
+The ODE is defined as:</p>
+<div class="math notranslate nohighlight">
+\[dx = f(x, t)dt\]</div>
+<p>where f(x, t) is the drift term.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.ODE.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/ode.html#ODE.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.ODE.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="sde">
+<h2>SDE<a class="headerlink" href="#sde" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.numerical_methods.SDE">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.numerical_methods.</span></span><span class="sig-name descname"><span class="pre">SDE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/sde.html#SDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.SDE" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Base class for stochastic differential equations.
+The SDE is defined as:</p>
+<div class="math notranslate nohighlight">
+\[dx = f(x, t)dt + g(x, t)dW\]</div>
+<p>where f(x, t) is the drift term, g(x, t) is the diffusion term, and dW is the Wiener process.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.SDE.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/sde.html#SDE.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.SDE.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="dpmsolver">
+<h2>DPMSolver<a class="headerlink" href="#dpmsolver" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.numerical_methods.DPMSolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.numerical_methods.</span></span><span class="sig-name descname"><span class="pre">DPMSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dpm_solver'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'singlestep'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dpm_solver'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time_uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denoise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/dpm_solver.html#DPMSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.DPMSolver" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>The DPM-Solver for sampling from the diffusion process.</p>
+</dd>
+<dt>Interface:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">integrate</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.DPMSolver.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dpm_solver'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'singlestep'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dpm_solver'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'time_uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denoise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/dpm_solver.html#DPMSolver.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.DPMSolver.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the DPM-Solver.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The order of the DPM-Solver, which should be 1, 2, or 3.</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The device for the computation.</p></li>
+<li><p><strong>denoise</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to denoise at the final step.</p></li>
+<li><p><strong>atol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The absolute tolerance for the adaptive solver.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The relative tolerance for the adaptive solver.</p></li>
+<li><p><strong>steps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The total number of function evaluations (NFE).</p></li>
+<li><p><strong>type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The type for the DPM-Solver, which should be ‘dpm_solver’ or ‘dpm_solver++’.</p></li>
+<li><p><strong>method</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The method for the DPM-Solver, which should be ‘singlestep’, ‘multistep’, ‘singlestep_fixed’, or ‘adaptive’.</p></li>
+<li><p><strong>solver_type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The type for the high-order solvers, which should be ‘dpm_solver’ or ‘taylor’.
+The type slightly impacts the performance. We recommend to use ‘dpm_solver’ type.</p></li>
+<li><p><strong>skip_type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The type for the spacing of the time steps, which should be ‘logSNR’, ‘time_uniform’, or ‘time_quadratic’.</p></li>
+<li><p><strong>denoise</strong> – Whether to denoise at the final step.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.DPMSolver.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffusion_process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_prediction_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_intermediate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/dpm_solver.html#DPMSolver.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.DPMSolver.integrate" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Integrate the diffusion process by the DPM-Solver.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diffusion_process</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffusionProcess</span></code>) – The diffusion process.</p></li>
+<li><p><strong>noise_function</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Callable</span></code>) – The noise prediction model.</p></li>
+<li><p><strong>data_prediction_function</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Callable</span></code>) – The data prediction model.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The initial value at time <cite>t_start</cite>.</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The condition for the data prediction model.</p></li>
+<li><p><strong>steps</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The total number of function evaluations (NFE).</p></li>
+<li><p><strong>save_intermediate</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – If true, also return the intermediate model values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The approximated solution at time <cite>t_end</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>x_end (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="odesolver">
+<h2>ODESolver<a class="headerlink" href="#odesolver" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.numerical_methods.ODESolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.numerical_methods.</span></span><span class="sig-name descname"><span class="pre">ODESolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euler'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'torchdyn'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/ode_solver.html#ODESolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.ODESolver" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>The ODE solver class.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">integrate</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.ODESolver.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euler'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'torchdyn'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/ode_solver.html#ODESolver.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.ODESolver.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the ODE solver using torchode or torchdyn library.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ode_solver</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The ODE solver to use.</p></li>
+<li><p><strong>dt</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The time step.</p></li>
+<li><p><strong>atol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The absolute tolerance.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The relative tolerance.</p></li>
+<li><p><strong>library</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The library to use for the ODE solver. Currently, it supports ‘torchdiffeq’, ‘torchdyn’ and ‘torchode’.</p></li>
+<li><p><strong>**kwargs</strong> – Additional arguments for the ODE solver.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.ODESolver.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/ode_solver.html#ODESolver.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.ODESolver.integrate" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Integrate the ODE.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drift</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[nn.Module,</span> <span class="pre">Callable]</span></code>) – The drift term of the ODE.</p></li>
+<li><p><strong>x0</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input initial state.</p></li>
+<li><p><strong>t_span</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The time at which to evaluate the ODE. The first element is the initial time, and the last element is the final time. For example, t = torch.tensor([0.0, 1.0]).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output trajectory of the ODE, which has the same data type as x0 and the shape of (len(t_span), <a href="#id1"><span class="problematic" id="id2">*</span></a>x0.shape).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>trajectory (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="sdesolver">
+<h2>SDESolver<a class="headerlink" href="#sdesolver" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.numerical_methods.SDESolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.numerical_methods.</span></span><span class="sig-name descname"><span class="pre">SDESolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sde_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euler'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sde_noise_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diagonal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sde_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ito'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'torchsde'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/sde_solver.html#SDESolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.SDESolver" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.SDESolver.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sde_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euler'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sde_noise_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diagonal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sde_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ito'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'torchsde'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/sde_solver.html#SDESolver.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.SDESolver.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the SDE solver using torchsde library.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sde_solver</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The SDE solver to use.</p></li>
+<li><p><strong>sde_noise_type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The type of noise of the SDE. It can be ‘diagonal’, ‘general’, ‘scalar’ or ‘additive’.</p></li>
+<li><p><strong>sde_type</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The type of the SDE. It can be ‘ito’ or ‘stratonovich’.</p></li>
+<li><p><strong>dt</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The time step.</p></li>
+<li><p><strong>atol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The absolute tolerance.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The relative tolerance.</p></li>
+<li><p><strong>library</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The library to use for the ODE solver. Currently, it supports ‘torchsde’.</p></li>
+<li><p><strong>**kwargs</strong> – Additional arguments for the ODE solver.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.SDESolver.integrate">
+<span class="sig-name descname"><span class="pre">integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logqp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adaptive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/sde_solver.html#SDESolver.integrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.SDESolver.integrate" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Integrate the SDE.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drift</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">nn.Module</span></code>) – The function that defines the ODE.</p></li>
+<li><p><strong>diffusion</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">nn.Module</span></code>) – The function that defines the ODE.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="gaussianconditionalprobabilitypath">
+<h2>GaussianConditionalProbabilityPath<a class="headerlink" href="#gaussianconditionalprobabilitypath" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.numerical_methods.</span></span><span class="sig-name descname"><span class="pre">GaussianConditionalProbabilityPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Gaussian conditional probability path.</p>
+<p>General case:</p>
+<div class="math notranslate nohighlight">
+\[p(x(t)|x(0))=\mathcal{N}(x(t);\mu(t,x(0)),\sigma^2(t,x(0))I)\]</div>
+<p>If written in the form of SDE:</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{d}x=f(x,t)\mathrm{d}t+g(t)w_{t}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(x,t)\)</span> is the drift term, <span class="math notranslate nohighlight">\(g(t)\)</span> is the diffusion term, and <span class="math notranslate nohighlight">\(w_{t}\)</span> is the Wiener process.</p>
+<p>For diffusion model:</p>
+<div class="math notranslate nohighlight">
+\[p(x(t)|x(0))=\mathcal{N}(x(t);s(t)x(0),\sigma^2(t)I)\]</div>
+<p>or,</p>
+<div class="math notranslate nohighlight">
+\[p(x(t)|x(0))=\mathcal{N}(x(t);s(t)x(0),s^2(t)e^{-2\lambda(t)}I)\]</div>
+<p>If written in the form of SDE:</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{d}x=\frac{s'(t)}{s(t)}x(t)\mathrm{d}t+s^2(t)\sqrt{2(\frac{s'(t)}{s(t)}-\lambda'(t))}e^{-\lambda(t)}\mathrm{d}w_{t}\]</div>
+<p>or,</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{d}x=f(t)x(t)\mathrm{d}t+g(t)w_{t}\]</div>
+<dl class="simple">
+<dt>where <span class="math notranslate nohighlight">\(s(t)\)</span> is the scale factor, <span class="math notranslate nohighlight">\(\sigma^2(t)I\)</span> is the covariance matrix, </dt><dd><p><span class="math notranslate nohighlight">\(\sigma(t)\)</span> is the standard deviation with the scale factor, <span class="math notranslate nohighlight">\(e^{-2\lambda(t)}I\)</span> is the covariance matrix without the scale factor, <span class="math notranslate nohighlight">\(\lambda(t)\)</span> is the half-logSNR, which is the difference between the log scale factor and the log standard deviation, <span class="math notranslate nohighlight">\(\lambda(t)=\log(s(t))-\log(\sigma(t))\)</span>.</p>
+</dd>
+</dl>
+<p>For VP SDE:</p>
+<div class="math notranslate nohighlight">
+\[p(x(t)|x(0))=\mathcal{N}(x(t);x(0)e^{-\frac{1}{2}\int_{0}^{t}{\beta(s)\mathrm{d}s}},(1-e^{-\int_{0}^{t}{\beta(s)\mathrm{d}s}})I)\]</div>
+<p>For Linear VP SDE:</p>
+<div class="math notranslate nohighlight">
+\[p(x(t)|x(0))=\mathcal{N}(x(t);x(0)e^{-\frac{\beta(1)-\beta(0)}{4}t^2-\frac{\beta(0)}{2}t},(1-e^{-\frac{\beta(1)-\beta(0)}{2}t^2-\beta(0)t})I)\]</div>
+<p>#TODO: add more details for
+Cosine VP SDE;
+General VE SDE;
+OPT-Flow;</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.HalfLogSNR">
+<span class="sig-name descname"><span class="pre">HalfLogSNR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.HalfLogSNR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.HalfLogSNR" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the half-logSNR of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\log(s(t))-\log(\sigma(t))\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The half-logSNR.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HalfLogSNR (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.InverseHalfLogSNR">
+<span class="sig-name descname"><span class="pre">InverseHalfLogSNR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">HalfLogSNR</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.InverseHalfLogSNR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.InverseHalfLogSNR" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the inverse function of the half-logSNR of the Gaussian conditional probability path.
+Since the half-logSNR is an invertible function, we can compute the time t from the half-logSNR.
+For linear VP SDE, the inverse function is</p>
+<div class="math notranslate nohighlight">
+\[t(\lambda)=\frac{1}{\beta_1-\beta_0}(\sqrt{\beta_0^2+2(\beta_1-\beta_0)\log{(e^{-2\lambda}+1)}}-\beta_0)\]</div>
+<p>or,</p>
+<div class="math notranslate nohighlight">
+\[t(\lambda)=\frac{2(\beta_1-\beta_0)\log{(e^{-2\lambda}+1)}}{\sqrt{\beta_0^2+2(\beta_1-\beta_0)\log{(e^{-2\lambda}+1)}}+\beta_0}\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>HalfLogSNR</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input half-logSNR.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The time.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>t (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the Gaussian conditional probability path.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The configuration of the Gaussian conditional probability path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.covariance">
+<span class="sig-name descname"><span class="pre">covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.covariance" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the covariance matrix of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\Sigma(t)\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[\sigma^2(t)I\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[s^2(t)e^{-2\lambda(t)}I\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The covariance matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>covariance (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.d_covariance_dt">
+<span class="sig-name descname"><span class="pre">d_covariance_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.d_covariance_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_covariance_dt" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the time derivative of the covariance matrix of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\frac{\mathrm{d}\Sigma(t)}{\mathrm{d}t}\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The time derivative of the covariance matrix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>d_covariance_dt (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.d_log_scale_dt">
+<span class="sig-name descname"><span class="pre">d_log_scale_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.d_log_scale_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_log_scale_dt" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the time derivative of the log scale factor of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\log(s'(t))\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The time derivative of the log scale factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>d_log_scale_dt (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.d_scale_dt">
+<span class="sig-name descname"><span class="pre">d_scale_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.d_scale_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_scale_dt" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the time derivative of the scale factor of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[s'(t)\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The time derivative of the scale factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>d_scale_dt (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.d_std_dt">
+<span class="sig-name descname"><span class="pre">d_std_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.d_std_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.d_std_dt" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the time derivative of the standard deviation of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\frac{\mathrm{d}\sigma(t)}{\mathrm{d}t}\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion">
+<span class="sig-name descname"><span class="pre">diffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.diffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Return the diffusion term of the Gaussian conditional probability path.
+The diffusion term is given by the following:</p>
+<div class="math notranslate nohighlight">
+\[g(x,t)\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output diffusion term.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>diffusion (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion_squared">
+<span class="sig-name descname"><span class="pre">diffusion_squared</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.diffusion_squared"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion_squared" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Return the diffusion term of the Gaussian conditional probability path.
+The diffusion term is given by the following:</p>
+<div class="math notranslate nohighlight">
+\[g^2(x,t)\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output diffusion term.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>diffusion (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.drift">
+<span class="sig-name descname"><span class="pre">drift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.drift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.drift" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Return the drift term of the Gaussian conditional probability path.
+The drift term is given by the following:</p>
+<div class="math notranslate nohighlight">
+\[f(x,t)\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>) – The input state.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output drift term.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>drift (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.drift_coefficient">
+<span class="sig-name descname"><span class="pre">drift_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.drift_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.drift_coefficient" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Return the drift coefficient term of the Gaussian conditional probability path.
+The drift term is given by the following:</p>
+<div class="math notranslate nohighlight">
+\[f(t)\]</div>
+<p>which satisfies the following SDE:</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{d}x=f(t)x(t)\mathrm{d}t+g(t)w_{t}\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The output drift term.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>drift (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.log_scale">
+<span class="sig-name descname"><span class="pre">log_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.log_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.log_scale" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the log scale factor of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\log(s(t))\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The log scale factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>log_scale (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.scale" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the scale factor of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[s(t)\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The scale factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>scale (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.numerical_methods.GaussianConditionalProbabilityPath.std">
+<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/probability_path.html#GaussianConditionalProbabilityPath.std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.GaussianConditionalProbabilityPath.std" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>Overview:</dt><dd><p>Compute the standard deviation of the Gaussian conditional probability path, which is</p>
+<div class="math notranslate nohighlight">
+\[\sqrt{\Sigma(t)}\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[\sigma(t)\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[s(t)e^{-\lambda(t)}\]</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – The input time.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The standard deviation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>std (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../neural_network/index.html" class="btn btn-neutral float-left" title="grl.neural_network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../rl_modules/index.html" class="btn btn-neutral float-right" title="grl.rl_modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

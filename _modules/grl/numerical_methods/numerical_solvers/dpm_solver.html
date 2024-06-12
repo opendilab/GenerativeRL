@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>grl.numerical_methods.numerical_solvers.dpm_solver &mdash; GenerativeRL v0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2fea6348"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GenerativeRL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/quick_start/index.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/agents/index.html">grl.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/algorithms/index.html">grl.algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/datasets/index.html">grl.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/generative_models/index.html">grl.generative_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/neural_network/index.html">grl.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/numerical_methods/index.html">grl.numerical_methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/rl_modules/index.html">grl.rl_modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/utils/index.html">grl.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GenerativeRL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">grl.numerical_methods.numerical_solvers.dpm_solver</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for grl.numerical_methods.numerical_solvers.dpm_solver</h1><div class="highlight"><pre>
+<span></span><span class="c1">#############################################################</span>
+<span class="c1"># This DPM-Solver snippet is from https://github.com/ChenDRAG/CEP-energy-guided-diffusion</span>
+<span class="c1"># wich is based on https://github.com/LuChengTHU/dpm-solver</span>
+<span class="c1">#############################################################</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+
+<div class="viewcode-block" id="DPMSolver">
+<a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.DPMSolver">[docs]</a>
+<span class="k">class</span> <span class="nc">DPMSolver</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overview:</span>
+<span class="sd">        The DPM-Solver for sampling from the diffusion process.</span>
+<span class="sd">    Interface:</span>
+<span class="sd">        ``__init__``, ``integrate``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DPMSolver.__init__">
+<a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.DPMSolver.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+        <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+        <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dpm_solver&quot;</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;singlestep&quot;</span><span class="p">,</span>
+        <span class="n">solver_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dpm_solver&quot;</span><span class="p">,</span>
+        <span class="n">skip_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;time_uniform&quot;</span><span class="p">,</span>
+        <span class="n">denoise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Initialize the DPM-Solver.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            order (:obj:`int`): The order of the DPM-Solver, which should be 1, 2, or 3.</span>
+<span class="sd">            device (:obj:`str`): The device for the computation.</span>
+<span class="sd">            denoise (:obj:`bool`): Whether to denoise at the final step.</span>
+<span class="sd">            atol (:obj:`float`): The absolute tolerance for the adaptive solver.</span>
+<span class="sd">            rtol (:obj:`float`): The relative tolerance for the adaptive solver.</span>
+<span class="sd">            steps (:obj:`int`): The total number of function evaluations (NFE).</span>
+<span class="sd">            type (:obj:`str`): The type for the DPM-Solver, which should be &#39;dpm_solver&#39; or &#39;dpm_solver++&#39;.</span>
+<span class="sd">            method (:obj:`str`): The method for the DPM-Solver, which should be &#39;singlestep&#39;, &#39;multistep&#39;, &#39;singlestep_fixed&#39;, or &#39;adaptive&#39;.</span>
+<span class="sd">            solver_type (:obj:`str`): The type for the high-order solvers, which should be &#39;dpm_solver&#39; or &#39;taylor&#39;.</span>
+<span class="sd">                The type slightly impacts the performance. We recommend to use &#39;dpm_solver&#39; type.</span>
+<span class="sd">            skip_type (:obj:`str`): The type for the spacing of the time steps, which should be &#39;logSNR&#39;, &#39;time_uniform&#39;, or &#39;time_quadratic&#39;.</span>
+<span class="sd">            denoise (:obj:`bool`): Whether to denoise at the final step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dpm_solver&quot;</span><span class="p">,</span> <span class="s2">&quot;dpm_solver++&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;dpm_solver++&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">atol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">=</span> <span class="n">rtol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="n">steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;singlestep&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multistep&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;singlestep_fixed&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;adaptive&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">=</span> <span class="n">solver_type</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dpm_solver&quot;</span><span class="p">,</span> <span class="s2">&quot;taylor&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s2">&quot;dpm_solver&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_high_order_solvers</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_high_order_solvers</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_type</span> <span class="o">=</span> <span class="n">skip_type</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;logSNR&quot;</span><span class="p">,</span> <span class="s2">&quot;time_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;time_quadratic&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">denoise</span> <span class="o">=</span> <span class="n">denoise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nfe</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+        <span class="c1"># TODO: support dynamic thresholding for dpm_solver++</span>
+
+<div class="viewcode-block" id="DPMSolver.integrate">
+<a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.DPMSolver.integrate">[docs]</a>
+    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">diffusion_process</span><span class="p">,</span>
+        <span class="n">noise_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">data_prediction_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">save_intermediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Integrate the diffusion process by the DPM-Solver.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            diffusion_process (:obj:`DiffusionProcess`): The diffusion process.</span>
+<span class="sd">            noise_function (:obj:`Callable`): The noise prediction model.</span>
+<span class="sd">            data_prediction_function (:obj:`Callable`): The data prediction model.</span>
+<span class="sd">            x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `t_start`.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict]`): The condition for the data prediction model.</span>
+<span class="sd">            steps (:obj:`int`): The total number of function evaluations (NFE).</span>
+<span class="sd">            save_intermediate (:obj:`bool`): If true, also return the intermediate model values.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            x_end (:obj:`torch.Tensor`): The approximated solution at time `t_end`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">steps</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">steps</span> <span class="k">if</span> <span class="n">steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">20</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">model_fn</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Convert the model to the noise prediction model or the data prediction model.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The input tensor.</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The time tensor.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">data_prediction_function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">noise_function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_time_steps</span><span class="p">(</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Compute the intermediate time steps for sampling.</span>
+
+<span class="sd">            Arguments:</span>
+<span class="sd">                t_T (:obj:`float`): The starting time of the sampling (default is T).</span>
+<span class="sd">                t_0 (:obj:`float`): The ending time of the sampling (default is epsilon).</span>
+<span class="sd">                N (:obj:`int`): The total number of the spacing of the time steps.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                t (:obj:`torch.Tensor`): A pytorch tensor of the time steps, with the shape (N + 1,).</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_type</span> <span class="o">==</span> <span class="s2">&quot;logSNR&quot;</span><span class="p">:</span>
+                <span class="n">lambda_T</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t_T</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">lambda_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t_0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">logSNR_steps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lambda_T</span><span class="p">,</span> <span class="n">lambda_0</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">InverseHalfLogSNR</span><span class="p">(</span><span class="n">logSNR_steps</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_type</span> <span class="o">==</span> <span class="s2">&quot;time_uniform&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_type</span> <span class="o">==</span> <span class="s2">&quot;time_quadratic&quot;</span><span class="p">:</span>
+                <span class="n">t_order</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                        <span class="n">t_T</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">t_order</span><span class="p">),</span> <span class="n">t_0</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">t_order</span><span class="p">),</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="p">)</span>
+                    <span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">t_order</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unsupported skip_type </span><span class="si">{}</span><span class="s2">, need to be &#39;logSNR&#39; or &#39;time_uniform&#39; or &#39;time_quadratic&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">skip_type</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_orders_for_singlestep_solver</span><span class="p">(</span><span class="n">steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Get the order of each step for sampling by the singlestep DPM-Solver.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                steps (:obj:`int`): The total number of function evaluations (NFE).</span>
+<span class="sd">                order (:obj:`int`): The max order for the solver (2 or 3).</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                orders (:obj:`List[int]`): A list of the solver order of each step.</span>
+<span class="sd">                </span>
+<span class="sd">            .. note::</span>
+<span class="sd">                We combine both DPM-Solver-1,2,3 to use all the function evaluations, which is named as &quot;DPM-Solver-fast&quot;.</span>
+<span class="sd">                Given a fixed number of function evaluations by `steps`, the sampling procedure by DPM-Solver-fast is:</span>
+<span class="sd">                    If order == 1:</span>
+<span class="sd">                        We take `steps` of DPM-Solver-1 (i.e. DDIM).</span>
+<span class="sd">                    If order == 2:</span>
+<span class="sd">                        Denote K = (steps // 2). We take K or (K + 1) intermediate time steps for sampling.</span>
+<span class="sd">                        If steps % 2 == 0, we use K steps of DPM-Solver-2.</span>
+<span class="sd">                        If steps % 2 == 1, we use K steps of DPM-Solver-2 and 1 step of DPM-Solver-1.</span>
+<span class="sd">                    If order == 3:</span>
+<span class="sd">                        Denote K = (steps // 3 + 1). We take K intermediate time steps for sampling.</span>
+<span class="sd">                        If steps % 3 == 0, we use (K - 2) steps of DPM-Solver-3, \</span>
+<span class="sd">                            and 1 step of DPM-Solver-2 and 1 step of DPM-Solver-1.</span>
+<span class="sd">                        If steps % 3 == 1, we use (K - 1) steps of DPM-Solver-3 and 1 step of DPM-Solver-1.</span>
+<span class="sd">                        If steps % 3 == 2, we use (K - 1) steps of DPM-Solver-3 and 1 step of DPM-Solver-2</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">K</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">//</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">steps</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="mi">3</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">K</span> <span class="o">-</span> <span class="mi">2</span>
+                    <span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">steps</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="mi">3</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">K</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="mi">3</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">K</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">orders</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">K</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="k">if</span> <span class="n">steps</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># orders = [2,] * K</span>
+                    <span class="n">K</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="mi">2</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span>
+                        <span class="mi">1</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="mi">2</span><span class="p">,</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="n">K</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">orders</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span>
+                    <span class="mi">1</span><span class="p">,</span>
+                <span class="p">]</span> <span class="o">*</span> <span class="n">steps</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;order&#39; must be &#39;1&#39; or &#39;2&#39; or &#39;3&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">denoise_fn</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">s</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Denoise at the final step, which is equivalent to solve the ODE \</span>
+<span class="sd">                from lambda_s to infty by first-order discretization.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The input tensor.</span>
+<span class="sd">                s (:obj:`torch.Tensor`): The time tensor.</span>
+<span class="sd">                condition (:obj:`Union[torch.Tensor, TensorDict]`): The condition for the data prediction model.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The denoised output.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">data_prediction_function</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">dpm_solver_first_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">s</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">model_s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">return_intermediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                DPM-Solver-1 (equivalent to DDIM) from time `s` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                s (:obj:`torch.Tensor`): The starting time, with the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">                model_s (:obj:`Union[torch.Tensor, TensorDict]`): The model function evaluated at time `s`.</span>
+<span class="sd">                    If `model_s` is None, we evaluate the model by `x` and `s`; otherwise we directly use it.</span>
+<span class="sd">                return_intermediate (:obj:`bool`): If true, also return the model value at time `s`.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">lambda_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">lambda_t</span> <span class="o">-</span> <span class="n">lambda_s</span>
+            <span class="n">log_alpha_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span><span class="p">:</span>
+                <span class="n">phi_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model_s</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="n">x_t</span> <span class="o">=</span> <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                <span class="k">if</span> <span class="n">return_intermediate</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x_t</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;model_s&quot;</span><span class="p">:</span> <span class="n">model_s</span><span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x_t</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">phi_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model_s</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">return_intermediate</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x_t</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;model_s&quot;</span><span class="p">:</span> <span class="n">model_s</span><span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">x_t</span>
+
+        <span class="k">def</span> <span class="nf">singlestep_dpm_solver_second_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">s</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">r1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">model_s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">return_intermediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Singlestep solver DPM-Solver-2 from time `s` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                s (:obj:`torch.Tensor`): The starting time, with the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">                r1 (:obj:`float`): The hyperparameter of the second-order solver.</span>
+<span class="sd">                model_s (:obj:`Union[torch.Tensor, TensorDict]`): The model function evaluated at time `s`.</span>
+<span class="sd">                    If `model_s` is None, we evaluate the model by `x` and `s`; otherwise we directly use it.</span>
+<span class="sd">                return_intermediate (:obj:`bool`): If true, also return the model value at time `s` and `s1` (the intermediate time).</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">r1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">r1</span> <span class="o">=</span> <span class="mf">0.5</span>
+            <span class="n">lambda_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">lambda_t</span> <span class="o">-</span> <span class="n">lambda_s</span>
+            <span class="n">lambda_s1</span> <span class="o">=</span> <span class="n">lambda_s</span> <span class="o">+</span> <span class="n">r1</span> <span class="o">*</span> <span class="n">h</span>
+            <span class="n">s1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">InverseHalfLogSNR</span><span class="p">(</span><span class="n">lambda_s1</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">log_alpha_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_s1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_s1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">alpha_s1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_s1</span><span class="p">)</span>
+            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span><span class="p">:</span>
+                <span class="n">phi_11</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">r1</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model_s</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="n">x_s1</span> <span class="o">=</span> <span class="n">sigma_s1</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">alpha_s1</span> <span class="o">*</span> <span class="n">phi_11</span> <span class="o">*</span> <span class="n">model_s</span>
+                <span class="n">model_s1</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x_s1</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_high_order_solvers</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">-</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">/</span> <span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r1</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">alpha_t</span>
+                        <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">phi_11</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">r1</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">model_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model_s</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="n">x_s1</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_s1</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                    <span class="o">-</span> <span class="n">sigma_s1</span> <span class="o">*</span> <span class="n">phi_11</span> <span class="o">*</span> <span class="n">model_s</span>
+                <span class="p">)</span>
+                <span class="n">model_s1</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x_s1</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_high_order_solvers</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">-</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">/</span> <span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r1</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">sigma_t</span>
+                        <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">if</span> <span class="n">return_intermediate</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x_t</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;model_s&quot;</span><span class="p">:</span> <span class="n">model_s</span><span class="p">,</span> <span class="s2">&quot;model_s1&quot;</span><span class="p">:</span> <span class="n">model_s1</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x_t</span>
+
+        <span class="k">def</span> <span class="nf">singlestep_dpm_solver_third_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">s</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">r1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span>
+            <span class="n">r2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span>
+            <span class="n">model_s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">model_s1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">return_intermediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Singlestep solver DPM-Solver-3 from time `s` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                s (:obj:`torch.Tensor`): The starting time, with the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">                r1 (:obj:`float`): The hyperparameter of the third-order solver.</span>
+<span class="sd">                r2 (:obj:`float`): The hyperparameter of the third-order solver.</span>
+<span class="sd">                model_s (:obj:`Union[torch.Tensor, TensorDict]`): The model function evaluated at time `s`.</span>
+<span class="sd">                    If `model_s` is None, we evaluate the model by `x` and `s`; otherwise we directly use it.</span>
+<span class="sd">                model_s1 (:obj:`Union[torch.Tensor, TensorDict]`): The model function evaluated at time `s1` (the intermediate time given by `r1`).</span>
+<span class="sd">                    If `model_s1` is None, we evaluate the model at `s1`; otherwise we directly use it.</span>
+<span class="sd">                return_intermediate (:obj:`bool`): If true, also return the model value at time `s`, `s1` and `s2` (the intermediate times).</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">r1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">r1</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span>
+            <span class="k">if</span> <span class="n">r2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">r2</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">3.0</span>
+            <span class="n">lambda_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">lambda_t</span> <span class="o">-</span> <span class="n">lambda_s</span>
+            <span class="n">lambda_s1</span> <span class="o">=</span> <span class="n">lambda_s</span> <span class="o">+</span> <span class="n">r1</span> <span class="o">*</span> <span class="n">h</span>
+            <span class="n">lambda_s2</span> <span class="o">=</span> <span class="n">lambda_s</span> <span class="o">+</span> <span class="n">r2</span> <span class="o">*</span> <span class="n">h</span>
+            <span class="n">s1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">InverseHalfLogSNR</span><span class="p">(</span><span class="n">lambda_s1</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">s2</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">InverseHalfLogSNR</span><span class="p">(</span><span class="n">lambda_s2</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">log_alpha_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_s1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_s2</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">s2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_s1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_s2</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">alpha_s1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_s1</span><span class="p">)</span>
+            <span class="n">alpha_s2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_s2</span><span class="p">)</span>
+            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span><span class="p">:</span>
+                <span class="n">phi_11</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">r1</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_12</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">r2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_22</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="o">-</span><span class="n">r2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span>
+                <span class="n">phi_2</span> <span class="o">=</span> <span class="n">phi_1</span> <span class="o">/</span> <span class="n">h</span> <span class="o">+</span> <span class="mf">1.0</span>
+                <span class="n">phi_3</span> <span class="o">=</span> <span class="n">phi_2</span> <span class="o">/</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">0.5</span>
+                <span class="k">if</span> <span class="n">model_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model_s</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model_s1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">x_s1</span> <span class="o">=</span> <span class="n">sigma_s1</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">alpha_s1</span> <span class="o">*</span> <span class="n">phi_11</span> <span class="o">*</span> <span class="n">model_s</span>
+                    <span class="n">model_s1</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x_s1</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
+                <span class="n">x_s2</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">sigma_s2</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span>
+                    <span class="o">-</span> <span class="n">alpha_s2</span> <span class="o">*</span> <span class="n">phi_12</span> <span class="o">*</span> <span class="n">model_s</span>
+                    <span class="o">+</span> <span class="n">r2</span> <span class="o">/</span> <span class="n">r1</span> <span class="o">*</span> <span class="n">alpha_s2</span> <span class="o">*</span> <span class="n">phi_22</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">model_s2</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x_s2</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_high_order_solvers</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_2</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s2</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">D1_0</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="n">D1_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s2</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">r2</span> <span class="o">*</span> <span class="n">D1_0</span> <span class="o">-</span> <span class="n">r1</span> <span class="o">*</span> <span class="n">D1_1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">-</span> <span class="n">r1</span><span class="p">)</span>
+                    <span class="n">D2</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">D1_1</span> <span class="o">-</span> <span class="n">D1_0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">-</span> <span class="n">r1</span><span class="p">)</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_s</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">+</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_2</span> <span class="o">*</span> <span class="n">D1</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">phi_3</span> <span class="o">*</span> <span class="n">D2</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">phi_11</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">r1</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_12</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">r2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+                <span class="n">phi_22</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">r2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">*</span> <span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span>
+                <span class="n">phi_2</span> <span class="o">=</span> <span class="n">phi_1</span> <span class="o">/</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">1.0</span>
+                <span class="n">phi_3</span> <span class="o">=</span> <span class="n">phi_2</span> <span class="o">/</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">0.5</span>
+                <span class="k">if</span> <span class="n">model_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model_s</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model_s1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">x_s1</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_s1</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_s1</span> <span class="o">*</span> <span class="n">phi_11</span> <span class="o">*</span> <span class="n">model_s</span>
+                    <span class="p">)</span>
+                    <span class="n">model_s1</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x_s1</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
+                <span class="n">x_s2</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_s2</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                    <span class="o">-</span> <span class="n">sigma_s2</span> <span class="o">*</span> <span class="n">phi_12</span> <span class="o">*</span> <span class="n">model_s</span>
+                    <span class="o">-</span> <span class="n">r2</span> <span class="o">/</span> <span class="n">r1</span> <span class="o">*</span> <span class="n">sigma_s2</span> <span class="o">*</span> <span class="n">phi_22</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">model_s2</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x_s2</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_high_order_solvers</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">-</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_2</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s2</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">D1_0</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s1</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="n">D1_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_s2</span> <span class="o">-</span> <span class="n">model_s</span><span class="p">)</span>
+                    <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">r2</span> <span class="o">*</span> <span class="n">D1_0</span> <span class="o">-</span> <span class="n">r1</span> <span class="o">*</span> <span class="n">D1_1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">-</span> <span class="n">r1</span><span class="p">)</span>
+                    <span class="n">D2</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">D1_1</span> <span class="o">-</span> <span class="n">D1_0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">-</span> <span class="n">r1</span><span class="p">)</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_s</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_1</span> <span class="o">*</span> <span class="n">model_s</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_2</span> <span class="o">*</span> <span class="n">D1</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="n">phi_3</span> <span class="o">*</span> <span class="n">D2</span>
+                    <span class="p">)</span>
+            <span class="k">if</span> <span class="n">return_intermediate</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x_t</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s2">&quot;model_s&quot;</span><span class="p">:</span> <span class="n">model_s</span><span class="p">,</span>
+                    <span class="s2">&quot;model_s1&quot;</span><span class="p">:</span> <span class="n">model_s1</span><span class="p">,</span>
+                    <span class="s2">&quot;model_s2&quot;</span><span class="p">:</span> <span class="n">model_s2</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x_t</span>
+
+        <span class="k">def</span> <span class="nf">multistep_dpm_solver_second_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">model_prev_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]],</span>
+            <span class="n">t_prev_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Multistep solver DPM-Solver-2 from time `t_prev_list[-1]` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                model_prev_list (:obj:`List[Union[torch.Tensor, TensorDict]]`): The previous computed model values.</span>
+<span class="sd">                t_prev_list (:obj:`List[torch.Tensor]`): The previous times, each time has the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">model_prev_1</span><span class="p">,</span> <span class="n">model_prev_0</span> <span class="o">=</span> <span class="n">model_prev_list</span>
+            <span class="n">t_prev_1</span><span class="p">,</span> <span class="n">t_prev_0</span> <span class="o">=</span> <span class="n">t_prev_list</span>
+            <span class="n">lambda_prev_1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_prev_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_prev_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_prev_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span><span class="p">)</span>
+
+            <span class="n">h_0</span> <span class="o">=</span> <span class="n">lambda_prev_0</span> <span class="o">-</span> <span class="n">lambda_prev_1</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">lambda_t</span> <span class="o">-</span> <span class="n">lambda_prev_0</span>
+            <span class="n">r0</span> <span class="o">=</span> <span class="n">h_0</span> <span class="o">/</span> <span class="n">h</span>
+            <span class="n">D1_0</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">r0</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_prev_0</span> <span class="o">-</span> <span class="n">model_prev_1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s2">&quot;dpm_solver&quot;</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_prev_0</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">model_prev_0</span>
+                        <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D1_0</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s2">&quot;taylor&quot;</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_prev_0</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">model_prev_0</span>
+                        <span class="o">+</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D1_0</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s2">&quot;dpm_solver&quot;</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_prev_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">model_prev_0</span>
+                        <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D1_0</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver_type</span> <span class="o">==</span> <span class="s2">&quot;taylor&quot;</span><span class="p">:</span>
+                    <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_prev_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">model_prev_0</span>
+                        <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D1_0</span>
+                    <span class="p">)</span>
+            <span class="k">return</span> <span class="n">x_t</span>
+
+        <span class="k">def</span> <span class="nf">multistep_dpm_solver_third_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">model_prev_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]],</span>
+            <span class="n">t_prev_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Multistep solver DPM-Solver-3 from time `t_prev_list[-1]` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                model_prev_list (:obj:`List[Union[torch.Tensor, TensorDict]]`): The previous computed model values.</span>
+<span class="sd">                t_prev_list (:obj:`List[torch.Tensor]`): The previous times, each time has the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">model_prev_2</span><span class="p">,</span> <span class="n">model_prev_1</span><span class="p">,</span> <span class="n">model_prev_0</span> <span class="o">=</span> <span class="n">model_prev_list</span>
+            <span class="n">t_prev_2</span><span class="p">,</span> <span class="n">t_prev_1</span><span class="p">,</span> <span class="n">t_prev_0</span> <span class="o">=</span> <span class="n">t_prev_list</span>
+            <span class="n">lambda_prev_2</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_2</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_prev_1</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_prev_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_prev_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">log_alpha_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">log_scale</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_prev_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_prev_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">sigma_t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">alpha_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span><span class="p">)</span>
+
+            <span class="n">h_1</span> <span class="o">=</span> <span class="n">lambda_prev_1</span> <span class="o">-</span> <span class="n">lambda_prev_2</span>
+            <span class="n">h_0</span> <span class="o">=</span> <span class="n">lambda_prev_0</span> <span class="o">-</span> <span class="n">lambda_prev_1</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">lambda_t</span> <span class="o">-</span> <span class="n">lambda_prev_0</span>
+            <span class="n">r0</span><span class="p">,</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">h_0</span> <span class="o">/</span> <span class="n">h</span><span class="p">,</span> <span class="n">h_1</span> <span class="o">/</span> <span class="n">h</span>
+            <span class="n">D1_0</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">r0</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_prev_0</span> <span class="o">-</span> <span class="n">model_prev_1</span><span class="p">)</span>
+            <span class="n">D1_1</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">r1</span> <span class="o">*</span> <span class="p">(</span><span class="n">model_prev_1</span> <span class="o">-</span> <span class="n">model_prev_2</span><span class="p">)</span>
+            <span class="n">D1</span> <span class="o">=</span> <span class="n">D1_0</span> <span class="o">+</span> <span class="n">r0</span> <span class="o">/</span> <span class="p">(</span><span class="n">r0</span> <span class="o">+</span> <span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">D1_0</span> <span class="o">-</span> <span class="n">D1_1</span><span class="p">)</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">r0</span> <span class="o">+</span> <span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">D1_0</span> <span class="o">-</span> <span class="n">D1_1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dpm_solver_plus_plus</span><span class="p">:</span>
+                <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">sigma_t</span> <span class="o">/</span> <span class="n">sigma_prev_0</span> <span class="o">*</span> <span class="n">x</span>
+                    <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">model_prev_0</span>
+                    <span class="o">+</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D1</span>
+                    <span class="o">-</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">D2</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_t</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_alpha_t</span> <span class="o">-</span> <span class="n">log_alpha_prev_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span>
+                    <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">model_prev_0</span>
+                    <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">D1</span>
+                    <span class="o">-</span> <span class="n">sigma_t</span> <span class="o">*</span> <span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">D2</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">x_t</span>
+
+        <span class="k">def</span> <span class="nf">singlestep_dpm_solver_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">s</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">order</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="n">return_intermediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">r1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">r2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Singlestep DPM-Solver with the order `order` from time `s` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                s (:obj:`torch.Tensor`): The starting time, with the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">                order (:obj:`int`): The order of DPM-Solver. We only support order == 1 or 2 or 3.</span>
+<span class="sd">                return_intermediate (:obj:`bool`): If true, also return the model value at time `s`, `s1` and `s2` (the intermediate times).</span>
+<span class="sd">                r1 (:obj:`float`): The hyperparameter of the second-order or third-order solver.</span>
+<span class="sd">                r2 (:obj:`float`): The hyperparameter of the third-order solver.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dpm_solver_first_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">return_intermediate</span><span class="o">=</span><span class="n">return_intermediate</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">singlestep_dpm_solver_second_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">return_intermediate</span><span class="o">=</span><span class="n">return_intermediate</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">singlestep_dpm_solver_third_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">return_intermediate</span><span class="o">=</span><span class="n">return_intermediate</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="o">=</span><span class="n">r2</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Solver order must be 1 or 2 or 3, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">multistep_dpm_solver_update</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">model_prev_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]],</span>
+            <span class="n">t_prev_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+            <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                Multistep DPM-Solver with the order `order` from time `t_prev_list[-1]` to time `t`.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `s`.</span>
+<span class="sd">                model_prev_list (:obj:`List[Union[torch.Tensor, TensorDict]]`): The previous computed model values.</span>
+<span class="sd">                t_prev_list (:obj:`List[torch.Tensor]`): The previous times, each time has the shape (x.shape[0],).</span>
+<span class="sd">                t (:obj:`torch.Tensor`): The ending time, with the shape (x.shape[0],).</span>
+<span class="sd">                order (:obj:`int`): The order of DPM-Solver. We only support order == 1 or 2 or 3.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_t (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t`.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dpm_solver_first_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">t_prev_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="p">,</span> <span class="n">model_s</span><span class="o">=</span><span class="n">model_prev_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">multistep_dpm_solver_second_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">model_prev_list</span><span class="p">,</span> <span class="n">t_prev_list</span><span class="p">,</span> <span class="n">t</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">multistep_dpm_solver_third_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">model_prev_list</span><span class="p">,</span> <span class="n">t_prev_list</span><span class="p">,</span> <span class="n">t</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Solver order must be 1 or 2 or 3, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">dpm_solver_adaptive</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
+            <span class="n">t_T</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="n">t_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="n">h_init</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+            <span class="n">theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">t_err</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+            <span class="n">save_intermediate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Overview:</span>
+<span class="sd">                The adaptive step size solver based on singlestep DPM-Solver.</span>
+<span class="sd">            Arguments:</span>
+<span class="sd">                x (:obj:`Union[torch.Tensor, TensorDict]`): The initial value at time `t_T`.</span>
+<span class="sd">                t_T (:obj:`float`): The starting time of the sampling (default is T).</span>
+<span class="sd">                t_0 (:obj:`float`): The ending time of the sampling (default is epsilon).</span>
+<span class="sd">                h_init (:obj:`float`): The initial step size (for logSNR).</span>
+<span class="sd">                theta (:obj:`float`): The safety hyperparameter for adapting the step size.</span>
+<span class="sd">                t_err (:obj:`float`): The tolerance for the time.</span>
+<span class="sd">                save_intermediate (:obj:`bool`): If true, also return the intermediate values.</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                x_0 (:obj:`Union[torch.Tensor, TensorDict]`): The approximated solution at time `t_0`.</span>
+<span class="sd">            References:</span>
+<span class="sd">                [1] A. Jolicoeur-Martineau, K. Li, R. Piché-Taillefer, T. Kachman, and I. Mitliagkas, \</span>
+<span class="sd">                    &quot;Gotta go fast when generating data with score-based models,&quot; \</span>
+<span class="sd">                    arXiv preprint arXiv:2105.14080, 2021.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">t_T</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_T</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">lambda_0</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t_0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">h_init</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">x_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">r1</span> <span class="o">=</span> <span class="mf">0.5</span>
+                <span class="n">lower_update</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">dpm_solver_first_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">return_intermediate</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">higher_update</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">singlestep_dpm_solver_second_update</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mf">3.0</span>
+                <span class="n">lower_update</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">singlestep_dpm_solver_second_update</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="n">return_intermediate</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">higher_update</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">singlestep_dpm_solver_third_update</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="o">=</span><span class="n">r2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;For adaptive step size solver, order must be 2 or 3, got </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">while</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">s</span> <span class="o">-</span> <span class="n">t_0</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">t_err</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">InverseHalfLogSNR</span><span class="p">(</span><span class="n">HalfLogSNR</span><span class="o">=</span><span class="n">lambda_s</span> <span class="o">+</span> <span class="n">h</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">x_lower</span><span class="p">,</span> <span class="n">lower_noise_kwargs</span> <span class="o">=</span> <span class="n">lower_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="n">x_higher</span> <span class="o">=</span> <span class="n">higher_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="o">**</span><span class="n">lower_noise_kwargs</span><span class="p">)</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">atol</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x_lower</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x_prev</span><span class="p">)),</span>
+                <span class="p">)</span>
+                <span class="n">norm_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">E</span> <span class="o">=</span> <span class="n">norm_fn</span><span class="p">((</span><span class="n">x_higher</span> <span class="o">-</span> <span class="n">x_lower</span><span class="p">)</span> <span class="o">/</span> <span class="n">delta</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                    <span class="n">x_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_higher</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">E</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">):</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">x_higher</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">t</span>
+                    <span class="n">x_prev</span> <span class="o">=</span> <span class="n">x_lower</span>
+                    <span class="n">lambda_s</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span>
+                    <span class="n">theta</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">float_power</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span>
+                    <span class="n">lambda_0</span> <span class="o">-</span> <span class="n">lambda_s</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nfe</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+            <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_list</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x</span>
+
+        <span class="n">t_0</span> <span class="o">=</span> <span class="mf">0.00001</span>
+        <span class="n">t_T</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">t_max</span>
+        <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+            <span class="n">x_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">()]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;adaptive&quot;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">x_list_</span> <span class="o">=</span> <span class="n">dpm_solver_adaptive</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">t_T</span><span class="o">=</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="o">=</span><span class="n">t_0</span><span class="p">,</span> <span class="n">save_intermediate</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                    <span class="n">x_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x_list_</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">dpm_solver_adaptive</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">t_T</span><span class="o">=</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="o">=</span><span class="n">t_0</span><span class="p">,</span> <span class="n">save_intermediate</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;multistep&quot;</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">steps</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+            <span class="n">timesteps</span> <span class="o">=</span> <span class="n">get_time_steps</span><span class="p">(</span><span class="n">t_T</span><span class="o">=</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="o">=</span><span class="n">t_0</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">timesteps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">steps</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="n">vec_t</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">model_prev_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">vec_t</span><span class="p">)]</span>
+                <span class="n">t_prev_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">vec_t</span><span class="p">]</span>
+                <span class="c1"># Init the first `order` values by lower order multistep DPM-Solver.</span>
+                <span class="k">for</span> <span class="n">init_order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">):</span>
+                    <span class="n">vec_t</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[</span><span class="n">init_order</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">multistep_dpm_solver_update</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">model_prev_list</span><span class="p">,</span> <span class="n">t_prev_list</span><span class="p">,</span> <span class="n">vec_t</span><span class="p">,</span> <span class="n">init_order</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                        <span class="n">x_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+                    <span class="n">model_prev_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">vec_t</span><span class="p">))</span>
+                    <span class="n">t_prev_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vec_t</span><span class="p">)</span>
+                <span class="c1"># Compute the remaining values by `order`-th order multistep DPM-Solver.</span>
+                <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">vec_t</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[</span><span class="n">step</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">multistep_dpm_solver_update</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">model_prev_list</span><span class="p">,</span> <span class="n">t_prev_list</span><span class="p">,</span> <span class="n">vec_t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                        <span class="n">x_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">t_prev_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_prev_list</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">model_prev_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_prev_list</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="n">t_prev_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">vec_t</span>
+                    <span class="c1"># We do not need to evaluate the final model value.</span>
+                    <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="n">steps</span><span class="p">:</span>
+                        <span class="n">model_prev_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">vec_t</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;singlestep&quot;</span><span class="p">,</span> <span class="s2">&quot;singlestep_fixed&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;singlestep&quot;</span><span class="p">:</span>
+                <span class="n">orders</span> <span class="o">=</span> <span class="n">get_orders_for_singlestep_solver</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+                <span class="n">timesteps</span> <span class="o">=</span> <span class="n">get_time_steps</span><span class="p">(</span><span class="n">t_T</span><span class="o">=</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="o">=</span><span class="n">t_0</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;singlestep_fixed&quot;</span><span class="p">:</span>
+                <span class="n">K</span> <span class="o">=</span> <span class="n">steps</span> <span class="o">//</span> <span class="n">order</span>
+                <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">order</span><span class="p">,</span>
+                <span class="p">]</span> <span class="o">*</span> <span class="n">K</span>
+                <span class="n">timesteps</span> <span class="o">=</span> <span class="n">get_time_steps</span><span class="p">(</span><span class="n">t_T</span><span class="o">=</span><span class="n">t_T</span><span class="p">,</span> <span class="n">t_0</span><span class="o">=</span><span class="n">t_0</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="p">(</span><span class="n">K</span> <span class="o">*</span> <span class="n">order</span><span class="p">))</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+                    <span class="n">vec_s</span><span class="p">,</span> <span class="n">vec_t</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">timesteps</span><span class="p">[</span>
+                        <span class="n">i</span> <span class="o">+</span> <span class="n">order</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">h</span> <span class="o">=</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span>
+                        <span class="n">t</span><span class="o">=</span><span class="n">timesteps</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">order</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">-</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">timesteps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">r1</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="kc">None</span>
+                        <span class="k">if</span> <span class="n">order</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+                        <span class="k">else</span> <span class="p">(</span>
+                            <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">timesteps</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                            <span class="o">-</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">timesteps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="p">)</span>
+                        <span class="o">/</span> <span class="n">h</span>
+                    <span class="p">)</span>
+                    <span class="n">r2</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="kc">None</span>
+                        <span class="k">if</span> <span class="n">order</span> <span class="o">&lt;=</span> <span class="mi">2</span>
+                        <span class="k">else</span> <span class="p">(</span>
+                            <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">timesteps</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+                            <span class="o">-</span> <span class="n">diffusion_process</span><span class="o">.</span><span class="n">HalfLogSNR</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">timesteps</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="p">)</span>
+                        <span class="o">/</span> <span class="n">h</span>
+                    <span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">singlestep_dpm_solver_update</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">vec_s</span><span class="p">,</span> <span class="n">vec_t</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="o">=</span><span class="n">r2</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                        <span class="n">x_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="n">order</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">denoise</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">denoise_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="n">t_0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+                <span class="n">x_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">save_intermediate</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
