@@ -17,4 +17,4 @@ If you want to try a preview of the latest features, you can install the latest 
 
 .. code-block:: console
 
-   $ pip install git+https://github.com/opendilab/GenerativeRL_Preview.git
+   $ pip install git+https://github.com/opendilab/GenerativeRL.git

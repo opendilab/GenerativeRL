@@ -385,32 +385,17 @@ class SRPOAlgorithm:
                 lr=config.parameter.behaviour_policy.learning_rate,
             )
 
-            # checkpoint = torch.load(
-            #     "/root/github/GenerativeRL_Preview/grl_pipelines/d4rl-halfcheetah-srpo/2024-04-17 06:22:21/checkpoint_diffusion_600000.pt"
-            # )
-            # self.model["SRPOPolicy"].sro.diffusion_model.model.load_state_dict(
-            #     checkpoint["diffusion_model"]
-            # )
-            # behaviour_model_optimizer.load_state_dict(
-            #     checkpoint["behaviour_model_optimizer"]
-            # )
-
             for train_diffusion_iter in track(
                 range(config.parameter.behaviour_policy.iterations),
                 description="Behaviour policy training",
             ):
                 data = next(data_generator)
-                # data["s"].shape  torch.Size([2048, 17])   data["a"].shape torch.Size([2048, 6])  data["r"].shape torch.Size([2048, 1])
                 behaviour_model_training_loss = self.model[
                     "SRPOPolicy"
                 ].behaviour_policy_loss(data["a"], data["s"])
                 behaviour_model_optimizer.zero_grad()
                 behaviour_model_training_loss.backward()
                 behaviour_model_optimizer.step()
-
-                # if train_iter == 0 or (train_iter + 1) % config.parameter.evaluation.evaluation_interval == 0:
-                #     evaluation_results = evaluate(self.model["SRPOPolicy"], train_iter=train_iter)
-                #     wandb_run.log(data=evaluation_results, commit=False)
 
                 wandb_run.log(
                     data=dict(
@@ -444,11 +429,6 @@ class SRPOAlgorithm:
                 lr=config.parameter.critic.learning_rate,
             )
 
-            # checkpoint = torch.load(
-            #     "/root/github/GenerativeRL_Preview/grl_pipelines/d4rl-halfcheetah-srpo/2024-04-17 06:22:21/checkpoint_critic_600000.pt"
-            # )
-            # self.model["SRPOPolicy"].critic.q0.load_state_dict(checkpoint["q_model"])
-            # self.model["SRPOPolicy"].critic.vf.load_state_dict(checkpoint["v_model"])
             data_generator = get_train_data(
                 DataLoader(
                     self.dataset,
