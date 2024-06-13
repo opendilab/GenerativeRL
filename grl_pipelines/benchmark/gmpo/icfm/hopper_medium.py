@@ -114,7 +114,7 @@ config = EasyDict(
             t_span=32,
             critic=dict(
                 batch_size=4096,
-                epochs=2000,
+                epochs=5000,
                 learning_rate=3e-4,
                 discount_factor=0.99,
                 update_momentum=0.005,
@@ -126,7 +126,7 @@ config = EasyDict(
                 epochs=10000,
                 learning_rate=1e-4,
                 beta=16.0,
-                weight_clamp=100,
+                weight_clamp=1000,
             ),
             evaluation=dict(
                 eval=True,

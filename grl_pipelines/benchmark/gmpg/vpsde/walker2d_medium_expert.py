@@ -127,8 +127,8 @@ config = EasyDict(
             ),
             guided_policy=dict(
                 batch_size=40960,
-                epochs=50,
-                learning_rate=1e-4,
+                epochs=500,
+                learning_rate=1e-6,
                 copy_from_basemodel=True,
                 gradtime_step=1000,
                 beta=4.0,
