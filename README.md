@@ -1,5 +1,12 @@
 # Generative Reinforcement Learning (GRL)
-    
+
+[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fopendilab)](https://twitter.com/opendilab)    
+[![GitHub stars](https://img.shields.io/github/stars/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/network)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/opendilab/GenerativeRL)
+[![GitHub issues](https://img.shields.io/github/issues/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/issues)
+[![GitHub pulls](https://img.shields.io/github/issues-pr/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/pulls)
+[![Contributors](https://img.shields.io/github/contributors/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/graphs/contributors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 English | [简体中文(Simplified Chinese)](https://github.com/opendilab/GenerativeRL/blob/main/README.zh.md)
@@ -31,26 +38,26 @@ English | [简体中文(Simplified Chinese)](https://github.com/opendilab/Genera
 
 ## Integrated Generative Models
 
-|                           | Score Machting | Flow Matching |
-|---------------------------| -------------- | ------------- |
-| **Diffusion Model**       |                |               |
-| Linear VP SDE             | ✔              | ✔            |
-| Generalized VP SDE        | ✔              | ✔            |
-| Linear SDE                | ✔              | ✔            |
-| **Conditional Flow Model**|                |               |
-| Independent CFM           |                | ✔            |
-| Optimal Transport CFM     |                | ✔            |
+|                                                                                     | [Score Matching](https://ieeexplore.ieee.org/document/6795935) | [Flow Matching](https://arxiv.org/abs/2210.02747) |
+|-------------------------------------------------------------------------------------| -------------------------------------------------------------- | ------------------------------------------------- |
+| **Diffusion Model**                                                                 |                                                                |                                                   |
+| [Linear VP SDE](https://arxiv.org/abs/2011.13456)                                   | ✔                                                              | ✔                                                |
+| [Generalized VP SDE](https://arxiv.org/abs/2209.15571)                              | ✔                                                              | ✔                                                |
+| [Linear SDE](https://arxiv.org/abs/2206.00364)                                      | ✔                                                              | ✔                                                |
+| **Flow Model**                                                                      |                                                                 |                                                  |
+| [Independent Conditional Flow Matching](https://arxiv.org/abs/2302.00482)           |  🚫                                                            | ✔                                                |
+| [Optimal Transport Conditional Flow Matching](https://arxiv.org/abs/2302.00482)     |  🚫                                                            | ✔                                                |
 
 
 
 ## Integrated Algorithms
 
-| Algo./Models   | Diffusion Model  | Conditional Flow Model |
-|--------------- | ---------------- | ---------------------- |
-| QGPO           | ✔                |                       |
-| SRPO           | ✔                |                       |
-| GMPO           | ✔                | ✔                     |
-| GMPG           | ✔                | ✔                     |
+| Algo./Models                                        | Diffusion Model   |  Flow Model            |
+|---------------------------------------------------- | ----------------- | ---------------------- |
+| [QGPO](https://arxiv.org/abs/2304.12824)            | ✔                |  🚫                   |
+| [SRPO](https://arxiv.org/abs/2310.07297)            | ✔                |  🚫                   |
+| GMPO                                                | ✔                | ✔                     |
+| GMPG                                                | ✔                | ✔                     |
 
 
 ## Installation
@@ -75,7 +82,7 @@ docker run -it --rm --gpus all opendilab/grl:torch2.3.0-cuda12.1-cudnn8-runtime 
 
 ## Quick Start
 
-Here is an example of how to train a diffusion model for Q-guided policy optimization (QGPO) in the LunarLanderContinuous-v2 environment using GenerativeRL.
+Here is an example of how to train a diffusion model for Q-guided policy optimization (QGPO) in the [LunarLanderContinuous-v2](https://www.gymlibrary.dev/environments/box2d/lunar_lander/) environment using GenerativeRL.
 
 Install the required dependencies:
 ```bash

@@ -1,5 +1,12 @@
 # 生成式强化学习
     
+[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fopendilab)](https://twitter.com/opendilab)    
+[![GitHub stars](https://img.shields.io/github/stars/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/network)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/opendilab/GenerativeRL)
+[![GitHub issues](https://img.shields.io/github/issues/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/issues)
+[![GitHub pulls](https://img.shields.io/github/issues-pr/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/pulls)
+[![Contributors](https://img.shields.io/github/contributors/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/graphs/contributors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [英语 (English)](https://github.com/opendilab/GenerativeRL/blob/main/README.md) | 简体中文
@@ -31,24 +38,24 @@
 
 ## 已集成的生成式模型
 
-|                           | Score Machting | Flow Matching |
-|---------------------------| -------------- | ------------- |
-| **扩散模型**               |                |               |
-| Linear VP SDE             | ✔              | ✔            |
-| Generalized VP SDE        | ✔              | ✔            |
-| Linear SDE                | ✔              | ✔            |
-| **条件流模型**             |                |               |
-| Independent CFM           |                | ✔            |
-| Optimal Transport CFM     |                | ✔            |
+|                                                                                     | [Score Matching](https://ieeexplore.ieee.org/document/6795935) | [Flow Matching](https://arxiv.org/abs/2210.02747) |
+|-------------------------------------------------------------------------------------| -------------------------------------------------------------- | ------------------------------------------------- |
+| **扩散模型**                                                                         |                                                                |                                                   |
+| [Linear VP SDE](https://arxiv.org/abs/2011.13456)                                   | ✔                                                              | ✔                                                |
+| [Generalized VP SDE](https://arxiv.org/abs/2209.15571)                              | ✔                                                              | ✔                                                |
+| [Linear SDE](https://arxiv.org/abs/2206.00364)                                      | ✔                                                              | ✔                                                |
+| **流模型**                                                                           |                                                                |                                                   |
+| [Independent Conditional Flow Matching](https://arxiv.org/abs/2302.00482)           | 🚫                                                             | ✔                                                 |
+| [Optimal Transport Conditional Flow Matching](https://arxiv.org/abs/2302.00482)     | 🚫                                                             | ✔                                                 |
 
 ## 已集成的生成式强化学习算法
 
-| 算法/模型       | 扩散模型            | 条件流模型            |
-|--------------- | ---------------- | ---------------------- |
-| QGPO           | ✔                |                       |
-| SRPO           | ✔                |                       |
-| GMPO           | ✔                | ✔                     |
-| GMPG           | ✔                | ✔                     |
+| 算法/模型                                           | 扩散模型            | 流模型            |
+|---------------------------------------------------- | ---------------- | ---------------------- |
+| [QGPO](https://arxiv.org/abs/2304.12824)            | ✔                |  🚫                   |
+| [SRPO](https://arxiv.org/abs/2310.07297)            | ✔                |  🚫                   |
+| GMPO                                                | ✔                | ✔                     |
+| GMPG                                                | ✔                | ✔                     |
 
 ## 安装
 
@@ -72,7 +79,7 @@ docker run -it --rm --gpus all opendilab/grl:torch2.3.0-cuda12.1-cudnn8-runtime 
 
 ## 启动
 
-这是一个在 LunarLanderContinuous-v2 环境中训练 Q-guided policy optimization (QGPO) 的扩散模型的示例。
+这是一个在 [LunarLanderContinuous-v2](https://www.gymlibrary.dev/environments/box2d/lunar_lander/) 环境中训练 Q-guided policy optimization (QGPO) 的扩散模型的示例。
 
 安装所需依赖：
 ```bash
