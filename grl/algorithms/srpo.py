@@ -27,7 +27,14 @@ from grl.utils.log import log
 
 
 class Dirac_Policy(nn.Module):
-    def __init__(self, action_dim, state_dim, layer=2):
+    """
+    Overview:
+        The deterministic policy network used in SRPO algorithm.
+    Interfaces:
+        ``__init__``, ``forward``, ``select_actions``
+    """
+
+    def __init__(self, action_dim: int, state_dim: int, layer: int = 2):
         super().__init__()
         self.net = MultiLayerPerceptron(
             hidden_sizes=[state_dim] + [256 for _ in range(layer)],
@@ -36,19 +43,39 @@ class Dirac_Policy(nn.Module):
             final_activation="tanh",
         )
 
-    def forward(self, state):
+    def forward(self, state: torch.Tensor):
         return self.net(state)
 
-    def select_actions(self, state):
+    def select_actions(self, state: torch.Tensor):
         return self(state)
 
 
 def asymmetric_l2_loss(u, tau):
+    """
+    Overview:
+        Calculate the asymmetric L2 loss, which is used in Implicit Q-Learning.
+    Arguments:
+        u (:obj:`torch.Tensor`): The input tensor.
+        tau (:obj:`float`): The threshold.
+    """
     return torch.mean(torch.abs(tau - (u < 0).float()) * u**2)
 
 
 class ValueFunction(nn.Module):
-    def __init__(self, state_dim):
+    """
+    Overview:
+        The value network used in SRPO algorithm.
+    Interfaces:
+        ``__init__``, ``forward``
+    """
+
+    def __init__(self, state_dim: int):
+        """
+        Overview:
+            Initialize the value network.
+        Arguments:
+            state_dim (:obj:`int`): The dimension of the state.
+        """
         super().__init__()
         self.v = MultiLayerPerceptron(
             hidden_sizes=[state_dim, 256, 256],
@@ -57,17 +84,43 @@ class ValueFunction(nn.Module):
         )
 
     def forward(self, state):
+        """
+        Overview:
+            Forward pass of the value network.
+        Arguments:
+            state (:obj:`torch.Tensor`): The input state.
+        """
         return self.v(state)
 
 
 class SRPOCritic(nn.Module):
+    """
+    Overview:
+        The critic network used in SRPO algorithm.
+    Interfaces:
+        ``__init__``, ``v_loss``, ``q_loss
+    """
+
     def __init__(self, config) -> None:
+        """
+        Overview:
+            Initialize the critic network.
+        Arguments:
+            config (:obj:`EasyDict`): The configuration.
+        """
         super().__init__()
         self.q0 = DoubleQNetwork(config.DoubleQNetwork)
         self.q0_target = copy.deepcopy(self.q0).requires_grad_(False)
         self.vf = ValueFunction(config.sdim)
 
     def v_loss(self, data, tau):
+        """
+        Overview:
+            Calculate the value loss.
+        Arguments:
+            data (:obj:`Dict`): The input data.
+            tau (:obj:`float`): The threshold.
+        """
         s = data["s"]
         a = data["a"]
         r = data["r"]
@@ -83,6 +136,14 @@ class SRPOCritic(nn.Module):
         return v_loss, next_v
 
     def q_loss(self, data, next_v, discount):
+        """
+        Overview:
+            Calculate the Q loss.
+        Arguments:
+            data (:obj:`Dict`): The input data.
+            next_v (:obj:`torch.Tensor`): The input next state value.
+            discount (:obj:`float`): The discount factor.
+        """
         # Update Q function
         s = data["s"]
         a = data["a"]
@@ -95,7 +156,20 @@ class SRPOCritic(nn.Module):
 
 
 class SRPOPolicy(nn.Module):
+    """
+    Overview:
+        The SRPO policy network.
+    Interfaces:
+        ``__init__``, ``forward``, ``behaviour_policy_loss``, ``v_loss``, ``q_loss``, ``srpo_actor_loss``
+    """
+
     def __init__(self, config: EasyDict):
+        """
+        Overview:
+            Initialize the SRPO policy network.
+        Arguments:
+            config (:obj:`EasyDict`): The configuration.
+        """
         super().__init__()
         self.config = config
         self.device = config.device
@@ -138,8 +212,8 @@ class SRPOPolicy(nn.Module):
 
     def v_loss(
         self,
-        data,
-        tau=0.9,
+        data: Dict[str, torch.Tensor],
+        tau: int = 0.9,
     ) -> torch.Tensor:
         """
         Overview:
@@ -157,8 +231,8 @@ class SRPOPolicy(nn.Module):
 
     def q_loss(
         self,
-        data,
-        next_v,
+        data: Dict[str, torch.Tensor],
+        next_v: torch.Tensor,
         discount_factor: float = 1.0,
     ) -> torch.Tensor:
         """
@@ -179,7 +253,7 @@ class SRPOPolicy(nn.Module):
 
     def srpo_actor_loss(
         self,
-        data,
+        data: Dict[str, torch.Tensor],
     ) -> torch.Tensor:
         """
         Overview:
@@ -568,6 +642,12 @@ class SRPOAlgorithm:
         wandb.finish()
 
     def deploy(self, config: EasyDict = None) -> SRPOAgent:
+        """
+        Overview:
+            Deploy the model using the given configuration.
+        Arguments:
+            config (:obj:`EasyDict`): The deployment configuration.
+        """
 
         if config is not None:
             config = merge_two_dicts_into_newone(self.config.deploy, config)

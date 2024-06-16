@@ -4,7 +4,6 @@ from typing import Callable
 import matplotlib.pyplot as plt
 import torch
 import torch.distributions.uniform as uniform
-import torch.nn.functional as F
 
 
 class MonteCarloSampler:

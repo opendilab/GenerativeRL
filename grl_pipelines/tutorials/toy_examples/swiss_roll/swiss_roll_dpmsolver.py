@@ -1,3 +1,19 @@
+################################################################################################
+# This script demonstrates how to use DPM solver in the DiffusionModel for training Swiss Roll dataset.
+# We can change the solver type to DPM solver in the configuration file, such as:
+#   ```
+#   solver=dict(
+#       type="DPMSolver",
+#       args=dict(
+#           order=2,
+#           device=device,
+#           steps=17,
+#       ),
+#   ),
+#   ```
+# The DPM solver is a high-order solver that can solve the diffusion process with high accuracy and fast speed theorectically.
+################################################################################################
+
 import os
 import signal
 import sys
@@ -11,7 +27,6 @@ from sklearn.datasets import make_swiss_roll
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
-import torch.nn as nn
 from easydict import EasyDict
 from matplotlib import animation
 

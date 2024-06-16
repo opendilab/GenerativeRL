@@ -1,10 +1,18 @@
 Quick Start
 ===========
 
-GenerativeRL provides a simple and flexible interface for training and deploying reinforcement learning agents powered by generative models. Here's an example of how to use the library to train a Q-guided policy optimization (QGPO) agent on the HalfCheetah environment and deploy it for evaluation.
+Generative model in GenerativeRL
+---------
 
-Code Example
+GenerativeRL support easy-to-use APIs for training and deploying generative model.
+We provide a simple example of how to train a diffusion model on the swiss roll dataset in [Colab](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk?usp=drive_link).
+
+More usage examples can be found in the folder `grl_pipelines/tutorials/`.
+
+Reinforcement Learning 
 ------------
+
+GenerativeRL provides a simple and flexible interface for training and deploying reinforcement learning agents powered by generative models. Here's an example of how to use the library to train a Q-guided policy optimization (QGPO) agent on the HalfCheetah environment and deploy it for evaluation.
 
 .. code-block:: python
 

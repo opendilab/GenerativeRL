@@ -1,5 +1,5 @@
 import copy
-from typing import Any, Dict, List, Tuple, Union
+from typing import Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -12,7 +12,7 @@ from grl.rl_modules.value_network.value_network import DoubleVNetwork
 class OneShotValueFunction(nn.Module):
     """
     Overview:
-        Value network for one-shot cases.
+        Value network for one-shot cases, which means that no Bellman backup is needed for training.
     Interfaces:
         ``__init__``, ``forward``
     """

@@ -11,7 +11,6 @@ from sklearn.datasets import make_swiss_roll
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
-import torch.nn as nn
 from easydict import EasyDict
 from matplotlib import animation
 

@@ -113,8 +113,20 @@ class GMPOCritic(nn.Module):
 
 
 class GMPOPolicy(nn.Module):
+    """
+    Overview:
+        GMPO policy network for GMPO algorithm, which includes the base model (optinal), the guided model and the critic.
+    Interfaces:
+        ``__init__``, ``forward``, ``sample``, ``compute_q``, ``behaviour_policy_loss``, ``policy_optimization_loss_by_advantage_weighted_regression``, ``policy_optimization_loss_by_advantage_weighted_regression_softmax``
+    """
 
     def __init__(self, config: EasyDict):
+        """
+        Overview:
+            Initialize the GMPO policy network.
+        Arguments:
+            config (:obj:`EasyDict`): The configuration dict.
+        """
         super().__init__()
         self.config = config
         self.device = config.device
@@ -392,6 +404,12 @@ class GMPOPolicy(nn.Module):
 
 
 class GMPOAlgorithm:
+    """
+    Overview:
+        The Generative Model Policy Optimization(GMPO) algorithm.
+    Interfaces:
+        ``__init__``, ``train``, ``deploy``
+    """
 
     def __init__(
         self,

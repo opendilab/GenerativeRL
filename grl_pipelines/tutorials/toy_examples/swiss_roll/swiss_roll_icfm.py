@@ -1,3 +1,7 @@
+################################################################################################
+# This script demonstrates how to use an Independent Conditional Flow Matching (ICFM), which is a flow model, to train Swiss Roll dataset.
+################################################################################################
+
 import os
 import signal
 import sys
@@ -11,12 +15,11 @@ from sklearn.datasets import make_swiss_roll
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
-import torch.nn as nn
 from easydict import EasyDict
 from matplotlib import animation
 
-from grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model import (
-    OptimalTransportConditionalFlowModel,
+from grl.generative_models.conditional_flow_model.independent_conditional_flow_model import (
+    IndependentConditionalFlowModel,
 )
 from grl.generative_models.metric import compute_likelihood
 from grl.utils import set_seed
@@ -72,8 +75,8 @@ config = EasyDict(
             clip_grad_norm=1.0,
             eval_freq=500,
             checkpoint_freq=100,
-            checkpoint_path="./checkpoint-swiss-roll-otcfm",
-            video_save_path="./video-swiss-roll-otcfm",
+            checkpoint_path="./checkpoint",
+            video_save_path="./video",
             device=device,
         ),
     )
@@ -82,7 +85,7 @@ config = EasyDict(
 if __name__ == "__main__":
     seed_value = set_seed()
     log.info(f"start exp with seed value {seed_value}.")
-    flow_model = OptimalTransportConditionalFlowModel(config=config.flow_model).to(
+    flow_model = IndependentConditionalFlowModel(config=config.flow_model).to(
         config.flow_model.device
     )
     flow_model = torch.compile(flow_model)
@@ -133,7 +136,7 @@ if __name__ == "__main__":
         last_iteration = -1
 
     data_loader = torch.utils.data.DataLoader(
-        data, batch_size=config.parameter.batch_size, shuffle=True, drop_last=True
+        data, batch_size=config.parameter.batch_size, shuffle=True
     )
 
     def get_train_data(dataloader):
@@ -165,7 +168,7 @@ if __name__ == "__main__":
             # image alpha frm 0 to 1
             im = plt.scatter(data[:, 0], data[:, 1], s=1)
             ims.append([im])
-        ani = animation.ArtistAnimation(fig, ims, interval=10, blit=True)
+        ani = animation.ArtistAnimation(fig, ims, interval=0.1, blit=True)
         ani.save(
             os.path.join(video_save_path, f"iteration_{iteration}.mp4"),
             fps=fps,
@@ -218,9 +221,7 @@ if __name__ == "__main__":
             x_t = [
                 x.squeeze(0) for x in torch.split(x_t, split_size_or_sections=1, dim=0)
             ]
-            render_video(
-                x_t, config.parameter.video_save_path, iteration, fps=100, dpi=100
-            )
+            # render_video(x_t, config.parameter.video_save_path, iteration, fps=100, dpi=100)
 
         batch_data = next(data_generator)
         batch_data = batch_data.to(config.device)

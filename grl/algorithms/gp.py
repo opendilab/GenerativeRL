@@ -902,6 +902,14 @@ class GPPolicy(nn.Module):
 
 
 class GPAlgorithm:
+    """
+    Overview:
+        The algorithm pipeline of the Generative Policy algorithm.
+        ``GPAlgorithm`` is an experimental algorithm pipeline that is not included in the official release, which is divided into two parts: ``GMPGAlgorithm`` and ``GMPOAlgorithm`` for clarity.
+        And this agent is going to be deprecated in the future.
+    Interfaces:
+        ``__init__``, ``train``, ``deploy``
+    """
 
     def __init__(
         self,

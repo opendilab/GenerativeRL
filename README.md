@@ -86,8 +86,9 @@ Here is an example of how to train a diffusion model for Q-guided policy optimiz
 
 Install the required dependencies:
 ```bash
-pip install gym[box2d]==0.23.1
+pip install 'gym[box2d]==0.23.1'
 ```
+(The gym version can be from 0.23 to 0.25 for box2d environments, but it is recommended to use 0.23.1 for compatibility with D4RL.)
 
 Download dataset from [here](https://drive.google.com/file/d/1YnT-Oeu9LPKuS_ZqNc5kol_pMlJ1DwyG/view?usp=drive_link) and save it as `data.npz` in the current directory.
 

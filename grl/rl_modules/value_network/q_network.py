@@ -10,8 +10,20 @@ from grl.neural_network.encoders import get_encoder
 
 
 class QNetwork(nn.Module):
+    """
+    Overview:
+        Q network, which is used to approximate the Q value.
+    Interfaces:
+        ``__init__``, ``forward``
+    """
 
     def __init__(self, config: EasyDict):
+        """
+        Overview:
+            Initialization of Q network.
+        Arguments:
+            config (:obj:`EasyDict`): The configuration dict.
+        """
         super().__init__()
         self.config = config
         self.model = torch.nn.ModuleDict()

@@ -83,8 +83,9 @@ docker run -it --rm --gpus all opendilab/grl:torch2.3.0-cuda12.1-cudnn8-runtime 
 
 安装所需依赖：
 ```bash
-pip install gym[box2d]==0.23.1
+pip install 'gym[box2d]==0.23.1'
 ```
+(此处的 gym 版本可以为'0.23~0.25', 但为了同时兼容 D4RL 推荐使用 '0.23.1'。)
 
 数据集可以从 [这里](https://drive.google.com/file/d/1YnT-Oeu9LPKuS_ZqNc5kol_pMlJ1DwyG/view?usp=drive_link) 下载，请将其置于工作路径下，并命名为 `data.npz`。
 

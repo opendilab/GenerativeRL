@@ -3,7 +3,7 @@
 #############################################################
 
 import copy
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import List, Tuple, Union
 
 import numpy as np
 import torch
@@ -126,6 +126,12 @@ class QGPOCritic(nn.Module):
 
 
 class QGPOPolicy(nn.Module):
+    """
+    Overview:
+        QGPO policy network.
+    Interfaces:
+        ``__init__``, ``forward``, ``sample``, ``behaviour_policy_sample``, ``compute_q``, ``behaviour_policy_loss``, ``energy_guidance_loss``, ``q_loss``
+    """
 
     def __init__(self, config: EasyDict):
         super().__init__()
@@ -279,6 +285,12 @@ class QGPOPolicy(nn.Module):
 
 
 class QGPOAlgorithm:
+    """
+    Overview:
+        Q-guided policy optimization (QGPO) algorithm, which is an offline reinforcement learning algorithm that uses energy-based diffusion model for policy modeling.
+    Interfaces:
+        ``__init__``, ``train``, ``deploy``
+    """
 
     def __init__(
         self,
@@ -593,6 +605,12 @@ class QGPOAlgorithm:
             wandb.finish()
 
     def deploy(self, config: EasyDict = None) -> QGPOAgent:
+        """
+        Overview:
+            Deploy the model using the given configuration.
+        Arguments:
+            config (:obj:`EasyDict`): The deployment configuration.
+        """
 
         if config is not None:
             config = merge_two_dicts_into_newone(self.config.deploy, config)

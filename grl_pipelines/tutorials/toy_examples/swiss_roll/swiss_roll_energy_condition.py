@@ -1,7 +1,68 @@
+################################################################################################
+# This script demonstrates how to use an energy-conditioned diffusion model to train the Swiss Roll
+# dataset with artificial values. We can model the energy function with a value function model and
+# use the energy function to guide the diffusion process. We use a OneShotValueFunction as the value
+# function model in this script.
+#
+# Configuration for OneShotValueFunction:
+#
+# value_function_model=dict(
+#     device=device,
+#     v_alpha=1.0,
+#     DoubleVNetwork=dict(
+#         state_encoder=dict(
+#             type="GaussianFourierProjectionEncoder",
+#             args=dict(
+#                 embed_dim=128,
+#                 x_shape=[x_size],
+#                 scale=0.5,
+#             ),
+#         ),
+#         backbone=dict(
+#             type="ConcatenateMLP",
+#             args=dict(
+#                 hidden_sizes=[128 * x_size, 256, 256],
+#                 output_size=1,
+#                 activation="silu",
+#             ),
+#         ),
+#     ),
+# ),
+#
+# Then we can use the value function model to guide the diffusion process in the energy-conditioned
+# diffusion model. An energy-conditioned diffusion model is a diffusion model that is conditioned on
+# the energy function, which has an extra intermediate energy guidance module.
+#
+# Configuration for energy guidance:
+#
+# energy_guidance=dict(
+#     t_encoder=t_encoder,
+#     backbone=dict(
+#         type="ConcatenateMLP",
+#         args=dict(
+#             hidden_sizes=[x_size + t_embedding_dim, 256, 256],
+#             output_size=1,
+#             activation="silu",
+#         ),
+#     ),
+# ),
+#
+# We can train the energy-conditioned diffusion model with the energy guidance loss and the score
+# matching loss, such as:
+#
+# energy_guidance_loss = energy_conditioned_diffusion_model.energy_guidance_loss(
+#     x=train_fake_x,
+# )
+# energy_guidance_optimizer.zero_grad()
+# energy_guidance_loss.backward()
+# energy_guidance_optimizer.step()
+#
+# The fake_x is sampled from the energy-conditioned diffusion model in a way of data augmentation.
+################################################################################################
+
+
 import multiprocessing as mp
 import os
-import signal
-import sys
 
 import matplotlib
 import numpy as np

@@ -1,8 +1,5 @@
 from typing import Callable, Union
 
-import torch
-from easydict import EasyDict
-from tensordict import TensorDict
 from torch import nn
 
 

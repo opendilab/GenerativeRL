@@ -1,3 +1,7 @@
+################################################################################################
+# This script demonstrates how to use a diffusion model to train Swiss Roll dataset.
+################################################################################################
+
 import os
 import signal
 import sys
@@ -11,14 +15,10 @@ from sklearn.datasets import make_swiss_roll
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import torch
-import torch.nn as nn
 from easydict import EasyDict
 from matplotlib import animation
 
-from grl.generative_models.conditional_flow_model.independent_conditional_flow_model import (
-    IndependentConditionalFlowModel,
-)
-from grl.generative_models.metric import compute_likelihood
+from grl.generative_models.diffusion_model.diffusion_model import DiffusionModel
 from grl.utils import set_seed
 from grl.utils.log import log
 
@@ -35,7 +35,7 @@ t_encoder = dict(
 config = EasyDict(
     dict(
         device=device,
-        flow_model=dict(
+        diffusion_model=dict(
             device=device,
             x_size=x_size,
             alpha=1.0,
@@ -46,10 +46,12 @@ config = EasyDict(
                 ),
             ),
             path=dict(
-                sigma=0.1,
+                type="linear_vp_sde",
+                beta_0=0.1,
+                beta_1=20.0,
             ),
             model=dict(
-                type="velocity_function",
+                type="noise_function",
                 args=dict(
                     t_encoder=t_encoder,
                     backbone=dict(
@@ -64,10 +66,10 @@ config = EasyDict(
             ),
         ),
         parameter=dict(
-            training_loss_type="flow_matching",
+            training_loss_type="score_matching",
             lr=5e-3,
             data_num=10000,
-            iterations=2000,
+            iterations=1000,
             batch_size=2048,
             clip_grad_norm=1.0,
             eval_freq=500,
@@ -82,10 +84,10 @@ config = EasyDict(
 if __name__ == "__main__":
     seed_value = set_seed()
     log.info(f"start exp with seed value {seed_value}.")
-    flow_model = IndependentConditionalFlowModel(config=config.flow_model).to(
-        config.flow_model.device
+    diffusion_model = DiffusionModel(config=config.diffusion_model).to(
+        config.diffusion_model.device
     )
-    flow_model = torch.compile(flow_model)
+    diffusion_model = torch.compile(diffusion_model)
 
     # get data
     data = make_swiss_roll(n_samples=config.parameter.data_num, noise=0.01)[0].astype(
@@ -99,7 +101,7 @@ if __name__ == "__main__":
 
     #
     optimizer = torch.optim.Adam(
-        flow_model.parameters(),
+        diffusion_model.parameters(),
         lr=config.parameter.lr,
     )
 
@@ -126,7 +128,7 @@ if __name__ == "__main__":
                 os.path.join(config.parameter.checkpoint_path, checkpoint_files[-1]),
                 map_location="cpu",
             )
-            flow_model.load_state_dict(checkpoint["model"])
+            diffusion_model.load_state_dict(checkpoint["model"])
             optimizer.load_state_dict(checkpoint["optimizer"])
             last_iteration = checkpoint["iteration"]
     else:
@@ -200,18 +202,18 @@ if __name__ == "__main__":
 
         signal.signal(signal.SIGINT, exit_handler)
 
-    save_checkpoint_on_exit(flow_model, optimizer, history_iteration)
+    save_checkpoint_on_exit(diffusion_model, optimizer, history_iteration)
 
     for iteration in track(range(config.parameter.iterations), description="Training"):
 
         if iteration <= last_iteration:
             continue
 
-        if iteration > 0 and iteration % config.parameter.eval_freq == 0:
-            flow_model.eval()
+        if iteration >= 0 and iteration % config.parameter.eval_freq == 0:
+            diffusion_model.eval()
             t_span = torch.linspace(0.0, 1.0, 1000)
             x_t = (
-                flow_model.sample_forward_process(t_span=t_span, batch_size=500)
+                diffusion_model.sample_forward_process(t_span=t_span, batch_size=500)
                 .cpu()
                 .detach()
             )
@@ -223,16 +225,17 @@ if __name__ == "__main__":
         batch_data = next(data_generator)
         batch_data = batch_data.to(config.device)
         # plot2d(batch_data.cpu().numpy())
-        flow_model.train()
+        diffusion_model.train()
         if config.parameter.training_loss_type == "flow_matching":
-            x0 = flow_model.gaussian_generator(batch_data.shape[0]).to(config.device)
-            loss = flow_model.flow_matching_loss(x0=x0, x1=batch_data)
+            loss = diffusion_model.flow_matching_loss(batch_data)
+        elif config.parameter.training_loss_type == "score_matching":
+            loss = diffusion_model.score_matching_loss(batch_data)
         else:
             raise NotImplementedError("Unknown loss type")
         optimizer.zero_grad()
         loss.backward()
         gradien_norm = torch.nn.utils.clip_grad_norm_(
-            flow_model.parameters(), config.parameter.clip_grad_norm
+            diffusion_model.parameters(), config.parameter.clip_grad_norm
         )
         optimizer.step()
         gradient_sum += gradien_norm.item()
@@ -242,43 +245,13 @@ if __name__ == "__main__":
         log.info(
             f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}"
         )
-
-        if iteration >= 0 and iteration % 100 == 0:
-            logp = compute_likelihood(
-                model=flow_model,
-                x=torch.tensor(data).to(config.device),
-                using_Hutchinson_trace_estimator=True,
-            )
-            logp_mean = logp.mean()
-            bits_per_dim = -logp_mean / (
-                torch.prod(torch.tensor(x_size, device=config.device))
-                * torch.log(torch.tensor(2.0, device=config.device))
-            )
-            log.info(
-                f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}, log likelihood {logp_mean.item()}, bits_per_dim {bits_per_dim.item()}"
-            )
-
-            logp = compute_likelihood(
-                model=flow_model,
-                x=torch.tensor(data).to(config.device),
-                using_Hutchinson_trace_estimator=False,
-            )
-            logp_mean = logp.mean()
-            bits_per_dim = -logp_mean / (
-                torch.prod(torch.tensor(x_size, device=config.device))
-                * torch.log(torch.tensor(2.0, device=config.device))
-            )
-            log.info(
-                f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}, log likelihood {logp_mean.item()}, bits_per_dim {bits_per_dim.item()}"
-            )
-
         history_iteration.append(iteration)
 
         if iteration == config.parameter.iterations - 1:
-            flow_model.eval()
+            diffusion_model.eval()
             t_span = torch.linspace(0.0, 1.0, 1000)
             x_t = (
-                flow_model.sample_forward_process(t_span=t_span, batch_size=500)
+                diffusion_model.sample_forward_process(t_span=t_span, batch_size=500)
                 .cpu()
                 .detach()
             )
@@ -290,4 +263,4 @@ if __name__ == "__main__":
             )
 
         if (iteration + 1) % config.parameter.checkpoint_freq == 0:
-            save_checkpoint(flow_model, optimizer, iteration)
+            save_checkpoint(diffusion_model, optimizer, iteration)

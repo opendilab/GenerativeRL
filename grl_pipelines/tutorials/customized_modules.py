@@ -1,3 +1,33 @@
+################################################################################################
+# This script demonstrates how to use customized neural network modules in GRL.
+#
+# In this example, we define a customized neural network module named `MyModule`
+# and use it in the DiffusionModel. For convenience, we redefine `MyModule` by
+# reusing `TemporalSpatialResidualNet` in this script.
+#
+# We can call `register_module` to register the customized module, such as:
+#   ```
+#   register_module(TemporalSpatialResidualNet, "MyModule")
+#   ```
+# The `register_module` function is used to register the customized module to the
+# module registry. The module registry is a global dictionary that stores the mapping
+# from the module name to the module class. The module registry is used to create
+# the module instance by the module name.
+#
+# The module name is used to specify the module type in the configuration file, such as:
+#   ```
+#   backbone=dict(
+#       type="MyModule",
+#       args=dict(
+#           hidden_sizes=[512, 256, 128],
+#           output_dim=x_size,
+#           t_dim=t_embedding_dim,
+#       ),
+#   ),
+#   ```
+# The module type is used to create the module instance in the `DiffusionModel`.
+################################################################################################
+
 import os
 import signal
 import sys
@@ -15,12 +45,12 @@ import torch.nn as nn
 from easydict import EasyDict
 from matplotlib import animation
 
-from grl.generative_models.bridge_flow_model.schrodinger_bridge_conditional_flow_model import (
-    SchrodingerBridgeConditionalFlowModel,
-)
-from grl.generative_models.metric import compute_likelihood
+from grl.generative_models.diffusion_model.diffusion_model import DiffusionModel
+from grl.neural_network import TemporalSpatialResidualNet, register_module
 from grl.utils import set_seed
 from grl.utils.log import log
+
+register_module(TemporalSpatialResidualNet, "MyModule")
 
 x_size = 2
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
@@ -35,39 +65,27 @@ t_encoder = dict(
 config = EasyDict(
     dict(
         device=device,
-        flow_model=dict(
+        diffusion_model=dict(
             device=device,
             x_size=x_size,
             alpha=1.0,
             solver=dict(
                 type="ODESolver",
                 args=dict(
-                    library="torchdyn_NeuralODE",
+                    library="torchdyn",
                 ),
             ),
             path=dict(
-                sigma=0.1,
+                type="linear_vp_sde",
+                beta_0=0.1,
+                beta_1=20.0,
             ),
-            velocity_model=dict(
-                type="velocity_function",
+            model=dict(
+                type="noise_function",
                 args=dict(
                     t_encoder=t_encoder,
                     backbone=dict(
-                        type="TemporalSpatialResidualNet",
-                        args=dict(
-                            hidden_sizes=[512, 256, 128],
-                            output_dim=x_size,
-                            t_dim=t_embedding_dim,
-                        ),
-                    ),
-                ),
-            ),
-            score_model=dict(
-                type="score_function",
-                args=dict(
-                    t_encoder=t_encoder,
-                    backbone=dict(
-                        type="TemporalSpatialResidualNet",
+                        type="MyModule",
                         args=dict(
                             hidden_sizes=[512, 256, 128],
                             output_dim=x_size,
@@ -78,16 +96,16 @@ config = EasyDict(
             ),
         ),
         parameter=dict(
-            training_loss_type="flow_matching",
+            training_loss_type="score_matching",
             lr=5e-3,
             data_num=10000,
-            iterations=2000,
+            iterations=1000,
             batch_size=2048,
             clip_grad_norm=1.0,
-            eval_freq=200,
+            eval_freq=500,
             checkpoint_freq=100,
-            checkpoint_path="./checkpoint-swiss-roll-SchrodingerBridge",
-            video_save_path="./video-swiss-roll-SchrodingerBridge",
+            checkpoint_path="./checkpoint",
+            video_save_path="./video",
             device=device,
         ),
     )
@@ -96,12 +114,11 @@ config = EasyDict(
 if __name__ == "__main__":
     seed_value = set_seed()
     log.info(f"start exp with seed value {seed_value}.")
-    flow_model = SchrodingerBridgeConditionalFlowModel(config=config.flow_model).to(
-        config.flow_model.device
+    diffusion_model = DiffusionModel(config=config.diffusion_model).to(
+        config.diffusion_model.device
     )
-    flow_model = torch.compile(flow_model)
-    ver = flow_model.velocity_model
-    scr = flow_model.score_model
+    diffusion_model = torch.compile(diffusion_model)
+
     # get data
     data = make_swiss_roll(n_samples=config.parameter.data_num, noise=0.01)[0].astype(
         np.float32
@@ -112,39 +129,40 @@ if __name__ == "__main__":
     data = (data - data.min()) / (data.max() - data.min())
     data = data * 10 - 5
 
+    #
     optimizer = torch.optim.Adam(
-        list(ver.parameters()) + list(scr.parameters()),
+        diffusion_model.parameters(),
         lr=config.parameter.lr,
     )
 
-    # if config.parameter.checkpoint_path is not None:
+    if config.parameter.checkpoint_path is not None:
 
-    #     if (
-    #         not os.path.exists(config.parameter.checkpoint_path)
-    #         or len(os.listdir(config.parameter.checkpoint_path)) == 0
-    #     ):
-    #         log.warning(
-    #             f"Checkpoint path {config.parameter.checkpoint_path} does not exist"
-    #         )
-    #         last_iteration = -1
-    #     else:
-    #         checkpoint_files = [
-    #             f
-    #             for f in os.listdir(config.parameter.checkpoint_path)
-    #             if f.endswith(".pt")
-    #         ]
-    #         checkpoint_files = sorted(
-    #             checkpoint_files, key=lambda x: int(x.split("_")[-1].split(".")[0])
-    #         )
-    #         checkpoint = torch.load(
-    #             os.path.join(config.parameter.checkpoint_path, checkpoint_files[-1]),
-    #             map_location="cpu",
-    #         )
-    #         flow_model.load_state_dict(checkpoint["model"])
-    #         optimizer.load_state_dict(checkpoint["optimizer"])
-    #         last_iteration = checkpoint["iteration"]
-    # else:
-    #     last_iteration = -1
+        if (
+            not os.path.exists(config.parameter.checkpoint_path)
+            or len(os.listdir(config.parameter.checkpoint_path)) == 0
+        ):
+            log.warning(
+                f"Checkpoint path {config.parameter.checkpoint_path} does not exist"
+            )
+            last_iteration = -1
+        else:
+            checkpoint_files = [
+                f
+                for f in os.listdir(config.parameter.checkpoint_path)
+                if f.endswith(".pt")
+            ]
+            checkpoint_files = sorted(
+                checkpoint_files, key=lambda x: int(x.split("_")[-1].split(".")[0])
+            )
+            checkpoint = torch.load(
+                os.path.join(config.parameter.checkpoint_path, checkpoint_files[-1]),
+                map_location="cpu",
+            )
+            diffusion_model.load_state_dict(checkpoint["model"])
+            optimizer.load_state_dict(checkpoint["optimizer"])
+            last_iteration = checkpoint["iteration"]
+    else:
+        last_iteration = -1
 
     data_loader = torch.utils.data.DataLoader(
         data, batch_size=config.parameter.batch_size, shuffle=True
@@ -214,18 +232,18 @@ if __name__ == "__main__":
 
         signal.signal(signal.SIGINT, exit_handler)
 
-    # save_checkpoint_on_exit(velocity_model, optimizer, history_iteration)
+    save_checkpoint_on_exit(diffusion_model, optimizer, history_iteration)
 
     for iteration in track(range(config.parameter.iterations), description="Training"):
 
-        # if iteration <= last_iteration:
-        #     continue
+        if iteration <= last_iteration:
+            continue
 
-        if iteration > 0 and iteration % config.parameter.eval_freq == 0:
-            flow_model.eval()
+        if iteration >= 0 and iteration % config.parameter.eval_freq == 0:
+            diffusion_model.eval()
             t_span = torch.linspace(0.0, 1.0, 1000)
             x_t = (
-                flow_model.sample_forward_process(t_span=t_span, batch_size=500)
+                diffusion_model.sample_forward_process(t_span=t_span, batch_size=500)
                 .cpu()
                 .detach()
             )
@@ -239,56 +257,33 @@ if __name__ == "__main__":
         batch_data = next(data_generator)
         batch_data = batch_data.to(config.device)
         # plot2d(batch_data.cpu().numpy())
-        flow_model.train()
+        diffusion_model.train()
         if config.parameter.training_loss_type == "flow_matching":
-            x0 = flow_model.gaussian_generator(batch_data.shape[0]).to(config.device)
-            loss = flow_model.flow_matching_loss(x0=x0, x1=batch_data)
+            loss = diffusion_model.flow_matching_loss(batch_data)
+        elif config.parameter.training_loss_type == "score_matching":
+            loss = diffusion_model.score_matching_loss(batch_data)
         else:
             raise NotImplementedError("Unknown loss type")
         optimizer.zero_grad()
         loss.backward()
-        # gradien_norm = torch.nn.utils.clip_grad_norm_(
-        #     velocity_model.parameters(),config.parameter.clip_grad_norm
-        # )
+        gradien_norm = torch.nn.utils.clip_grad_norm_(
+            diffusion_model.parameters(), config.parameter.clip_grad_norm
+        )
         optimizer.step()
-        log.info(f"iteration {iteration},loss {loss.item()}")
+        gradient_sum += gradien_norm.item()
+        loss_sum += loss.item()
+        counter += 1
 
-        # if iteration > 0 and iteration % 100 == 0:
-        #     logp = compute_likelihood(
-        #         model=flow_model,
-        #         x=torch.tensor(data).to(config.device),
-        #         using_Hutchinson_trace_estimator=True,
-        #     )
-        #     logp_mean = logp.mean()
-        #     bits_per_dim = -logp_mean / (
-        #         torch.prod(torch.tensor(x_size, device=config.device))
-        #         * torch.log(torch.tensor(2.0, device=config.device))
-        #     )
-        #     log.info(
-        #         f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}, log likelihood {logp_mean.item()}, bits_per_dim {bits_per_dim.item()}"
-        #     )
-
-        #     logp = compute_likelihood(
-        #         model=flow_model,
-        #         x=torch.tensor(data).to(config.device),
-        #         using_Hutchinson_trace_estimator=False,
-        #     )
-        #     logp_mean = logp.mean()
-        #     bits_per_dim = -logp_mean / (
-        #         torch.prod(torch.tensor(x_size, device=config.device))
-        #         * torch.log(torch.tensor(2.0, device=config.device))
-        #     )
-        #     log.info(
-        #         f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}, log likelihood {logp_mean.item()}, bits_per_dim {bits_per_dim.item()}"
-        #     )
-
+        log.info(
+            f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}"
+        )
         history_iteration.append(iteration)
 
         if iteration == config.parameter.iterations - 1:
-            flow_model.eval()
+            diffusion_model.eval()
             t_span = torch.linspace(0.0, 1.0, 1000)
             x_t = (
-                flow_model.sample_forward_process(t_span=t_span, batch_size=500)
+                diffusion_model.sample_forward_process(t_span=t_span, batch_size=500)
                 .cpu()
                 .detach()
             )
@@ -300,4 +295,4 @@ if __name__ == "__main__":
             )
 
         if (iteration + 1) % config.parameter.checkpoint_freq == 0:
-            save_checkpoint(flow_model, optimizer, iteration)
+            save_checkpoint(diffusion_model, optimizer, iteration)

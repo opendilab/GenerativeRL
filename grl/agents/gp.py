@@ -1,14 +1,19 @@
-from typing import Any, Dict, List, Tuple, Union
+from typing import Dict, Union
 
 import numpy as np
 import torch
 from easydict import EasyDict
+
+from grl.agents import obs_transform, action_transform
 
 
 class GPAgent:
     """
     Overview:
         The agent trained for generative policies.
+        This class is designed to be used with the ``GPAlgorithm``.
+        ``GPAlgorithm`` is an experimental algorithm pipeline that is not included in the official release, which is divided into two parts: ``GMPGAlgorithm`` and ``GMPOAlgorithm``.
+        And this agent is going to be deprecated in the future.
     Interface:
         ``__init__``, ``action``
     """
@@ -50,16 +55,7 @@ class GPAgent:
             action (:obj:`Union[np.ndarray, torch.Tensor, Dict]`): The action.
         """
 
-        if isinstance(obs, np.ndarray):
-            obs = torch.from_numpy(obs).float().to(self.device)
-        elif isinstance(obs, Dict):
-            obs = {
-                k: torch.from_numpy(v).float().to(self.device) for k, v in obs.items()
-            }
-        elif isinstance(obs, torch.Tensor):
-            obs = obs.float().to(self.device)
-        else:
-            raise ValueError("observation must be a dict, torch.Tensor, or np.ndarray")
+        obs = obs_transform(obs, self.device)
 
         with torch.no_grad():
 
@@ -91,19 +87,6 @@ class GPAgent:
             # Customized inference code ↑
             # ---------------------------------------
 
-        if isinstance(action, Dict):
-            if return_as_torch_tensor:
-                action = {k: v.cpu() for k, v in action.items()}
-            else:
-                action = {k: v.cpu().numpy() for k, v in action.items()}
-        elif isinstance(action, torch.Tensor):
-            if return_as_torch_tensor:
-                action = action.cpu()
-            else:
-                action = action.numpy()
-        elif isinstance(action, np.ndarray):
-            pass
-        else:
-            raise ValueError("action must be a dict, torch.Tensor, or np.ndarray")
+        action = action_transform(action, return_as_torch_tensor)
 
         return action
