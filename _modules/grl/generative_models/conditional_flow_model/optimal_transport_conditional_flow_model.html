@@ -99,13 +99,8 @@
 <span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
 
-<span class="kn">from</span> <span class="nn">grl.generative_models.diffusion_process</span> <span class="kn">import</span> <span class="n">DiffusionProcess</span>
 <span class="kn">from</span> <span class="nn">grl.generative_models.intrinsic_model</span> <span class="kn">import</span> <span class="n">IntrinsicModel</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.data_prediction_function</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">DataPredictionFunction</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.noise_function</span> <span class="kn">import</span> <span class="n">NoiseFunction</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.score_function</span> <span class="kn">import</span> <span class="n">ScoreFunction</span>
+
 <span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.velocity_function</span> <span class="kn">import</span> <span class="n">VelocityFunction</span>
 <span class="kn">from</span> <span class="nn">grl.generative_models.random_generator</span> <span class="kn">import</span> <span class="n">gaussian_random_variable</span>
 <span class="kn">from</span> <span class="nn">grl.generative_models.stochastic_process</span> <span class="kn">import</span> <span class="n">StochasticProcess</span>
@@ -118,7 +113,6 @@
 <span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.sde_solver</span> <span class="kn">import</span> <span class="n">SDESolver</span>
 <span class="kn">from</span> <span class="nn">grl.numerical_methods.probability_path</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConditionalProbabilityPath</span><span class="p">,</span>
-    <span class="n">GaussianConditionalProbabilityPath</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">grl.utils</span> <span class="kn">import</span> <span class="n">find_parameters</span>
 

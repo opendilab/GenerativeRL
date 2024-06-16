@@ -247,7 +247,7 @@ No history will be stored in this method. The evaluation resultswill be returned
 <dt class="sig sig-object py" id="grl.rl_modules.OneShotValueFunction">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">OneShotValueFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/one_shot_value_function.html#OneShotValueFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.OneShotValueFunction" title="Link to this definition"></a></dt>
 <dd><dl class="simple">
-<dt>Overview:</dt><dd><p>Value network for one-shot cases.</p>
+<dt>Overview:</dt><dd><p>Value network for one-shot cases, which means that no Bellman backup is needed for training.</p>
 </dd>
 <dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code></p>
 </dd>
@@ -342,10 +342,24 @@ v2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.rl_modules.VNetwork">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">VNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#VNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.VNetwork" title="Link to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Value network, which is used to approximate the value function.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="grl.rl_modules.VNetwork.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/value_network.html#VNetwork.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.VNetwork.__init__" title="Link to this definition"></a></dt>
-<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialization of value network.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The configuration dict.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -469,10 +483,24 @@ v2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.rl_modules.QNetwork">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.rl_modules.</span></span><span class="sig-name descname"><span class="pre">QNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#QNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.QNetwork" title="Link to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Q network, which is used to approximate the Q value.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="grl.rl_modules.QNetwork.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/rl_modules/value_network/q_network.html#QNetwork.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.rl_modules.QNetwork.__init__" title="Link to this definition"></a></dt>
-<dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialization of Q network.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The configuration dict.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

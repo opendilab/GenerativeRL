@@ -103,10 +103,22 @@
 <div class="viewcode-block" id="QNetwork">
 <a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork">[docs]</a>
 <span class="k">class</span> <span class="nc">QNetwork</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overview:</span>
+<span class="sd">        Q network, which is used to approximate the Q value.</span>
+<span class="sd">    Interfaces:</span>
+<span class="sd">        ``__init__``, ``forward``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="QNetwork.__init__">
 <a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Initialization of Q network.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            config (:obj:`EasyDict`): The configuration dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>

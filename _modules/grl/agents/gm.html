@@ -89,11 +89,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grl.agents.gm</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
+
+<span class="kn">from</span> <span class="nn">grl.agents</span> <span class="kn">import</span> <span class="n">obs_transform</span><span class="p">,</span> <span class="n">action_transform</span>
 
 
 <div class="viewcode-block" id="GPAgent">
@@ -102,6 +104,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        The agent trained for generative policies.</span>
+<span class="sd">        This class is designed to be used with the ``GMPGAlgorithm`` and ``GMPOAlgorithm``.</span>
 <span class="sd">    Interface:</span>
 <span class="sd">        ``__init__``, ``action``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -143,16 +146,7 @@
 <span class="sd">            action (:obj:`Union[np.ndarray, torch.Tensor, Dict]`): The action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">k</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observation must be a dict, torch.Tensor, or np.ndarray&quot;</span><span class="p">)</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">obs_transform</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
 
@@ -180,20 +174,7 @@
             <span class="c1"># Customized inference code ↑</span>
             <span class="c1"># ---------------------------------------</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">return_as_torch_tensor</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">return_as_torch_tensor</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;action must be a dict, torch.Tensor, or np.ndarray&quot;</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action_transform</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">return_as_torch_tensor</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">action</span></div>
 </div>

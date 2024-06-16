@@ -89,11 +89,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for grl.agents.qgpo</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
+
+<span class="kn">from</span> <span class="nn">grl.agents</span> <span class="kn">import</span> <span class="n">obs_transform</span><span class="p">,</span> <span class="n">action_transform</span>
 
 
 <div class="viewcode-block" id="QGPOAgent">
@@ -148,16 +150,7 @@
 <span class="sd">            action (:obj:`Union[np.ndarray, torch.Tensor, Dict]`): The action.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">k</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observation must be a dict, torch.Tensor, or np.ndarray&quot;</span><span class="p">)</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">obs_transform</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
 
@@ -187,130 +180,11 @@
             <span class="c1"># Customized inference code ↑</span>
             <span class="c1"># ---------------------------------------</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">return_as_torch_tensor</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">return_as_torch_tensor</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;action must be a dict, torch.Tensor, or np.ndarray&quot;</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action_transform</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">return_as_torch_tensor</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">action</span></div>
 </div>
 
-
-
-<span class="k">class</span> <span class="nc">QGPOISAgent</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Overview:</span>
-<span class="sd">        The QGPO agent trained by importance sampling.</span>
-<span class="sd">    Interface:</span>
-<span class="sd">        ``__init__``, ``action``</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">],</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overview:</span>
-<span class="sd">            Initialize the agent.</span>
-<span class="sd">        Arguments:</span>
-<span class="sd">            config (:obj:`EasyDict`): The configuration.</span>
-<span class="sd">            model (:obj:`Union[torch.nn.Module, torch.nn.ModuleDict]`): The model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">device</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;guidance_scale&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">guidance_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">guidance_scale</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">guidance_scale</span> <span class="o">=</span> <span class="mf">1.0</span>
-
-    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">obs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span>
-        <span class="n">return_as_torch_tensor</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overview:</span>
-<span class="sd">            Given an observation, return an action.</span>
-<span class="sd">        Arguments:</span>
-<span class="sd">            obs (:obj:`Union[np.ndarray, torch.Tensor, Dict]`): The observation.</span>
-<span class="sd">            return_as_torch_tensor (:obj:`bool`): Whether to return the action as a torch tensor.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            action (:obj:`Union[np.ndarray, torch.Tensor, Dict]`): The action.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">k</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;observation must be a dict, torch.Tensor, or np.ndarray&quot;</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-
-            <span class="c1"># ---------------------------------------</span>
-            <span class="c1"># Customized inference code ↓</span>
-            <span class="c1"># ---------------------------------------</span>
-
-            <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;GuidedPolicy&quot;</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">sample</span><span class="p">(</span>
-                    <span class="n">base_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;QGPOPolicy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diffusion_model</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-                    <span class="n">guided_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span>
-                        <span class="s2">&quot;QGPOPolicy&quot;</span>
-                    <span class="p">]</span><span class="o">.</span><span class="n">diffusion_model_important_sampling</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-                    <span class="n">state</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
-                    <span class="n">t_span</span><span class="o">=</span><span class="p">(</span>
-                        <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">t_span</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">t_span</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                        <span class="k">else</span> <span class="kc">None</span>
-                    <span class="p">),</span>
-                    <span class="n">guidance_scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">guidance_scale</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">detach</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-            <span class="p">)</span>
-
-            <span class="c1"># ---------------------------------------</span>
-            <span class="c1"># Customized inference code ↑</span>
-            <span class="c1"># ---------------------------------------</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">return_as_torch_tensor</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">action</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">return_as_torch_tensor</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;action must be a dict, torch.Tensor, or np.ndarray&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">action</span>
 </pre></div>
 
            </div>
