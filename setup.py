@@ -10,7 +10,7 @@ setup(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     install_requires=[
         'gym',
-        'numpy',
+        'numpy<=1.26.4',
         'torch>=2.2.0',
         'opencv-python',
         'tensordict',
