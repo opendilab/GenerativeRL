@@ -40,7 +40,7 @@
 
 |                                                                                     | [Score Matching](https://ieeexplore.ieee.org/document/6795935) | [Flow Matching](https://arxiv.org/abs/2210.02747) |
 |-------------------------------------------------------------------------------------| -------------------------------------------------------------- | ------------------------------------------------- |
-| **扩散模型**                                                                         |                                                                |                                                   |
+| **扩散模型**   [Colab](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk#scrollTo=xcfAsMbM2yCP)    |                          |                                                  |
 | [Linear VP SDE](https://arxiv.org/abs/2011.13456)                                   | ✔                                                              | ✔                                                |
 | [Generalized VP SDE](https://arxiv.org/abs/2209.15571)                              | ✔                                                              | ✔                                                |
 | [Linear SDE](https://arxiv.org/abs/2206.00364)                                      | ✔                                                              | ✔                                                |
@@ -119,6 +119,14 @@ if __name__ == '__main__':
 ```
 
 更多详细示例和文档，请参考 GenerativeRL 文档。
+
+## 教程
+
+我们提供了一些案例教程，用于帮助你更好地了解 GenerativeRL。详见于 [tutorials](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials)。
+
+## 基线实验
+
+我们提供了一些基线实验，用于评估生成式强化学习算法的性能。详见于 [benchmark](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/benchmark)。
 
 ## 开源支持
 

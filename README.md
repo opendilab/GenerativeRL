@@ -40,7 +40,7 @@ English | [简体中文(Simplified Chinese)](https://github.com/opendilab/Genera
 
 |                                                                                     | [Score Matching](https://ieeexplore.ieee.org/document/6795935) | [Flow Matching](https://arxiv.org/abs/2210.02747) |
 |-------------------------------------------------------------------------------------| -------------------------------------------------------------- | ------------------------------------------------- |
-| **Diffusion Model**                                                                 |                                                                |                                                   |
+| **Diffusion Model**  [Colab](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk#scrollTo=xcfAsMbM2yCP)    |                   |                                                   |
 | [Linear VP SDE](https://arxiv.org/abs/2011.13456)                                   | ✔                                                              | ✔                                                |
 | [Generalized VP SDE](https://arxiv.org/abs/2209.15571)                              | ✔                                                              | ✔                                                |
 | [Linear SDE](https://arxiv.org/abs/2206.00364)                                      | ✔                                                              | ✔                                                |
@@ -122,6 +122,14 @@ if __name__ == '__main__':
 ```
 
 For more detailed examples and documentation, please refer to the GenerativeRL documentation.
+
+## Tutorials
+
+We provide several case tutorials to help you better understand GenerativeRL. See more at [tutorials](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials).
+
+## Benchmark experiments
+
+We offer some baseline experiments to evaluate the performance of generative reinforcement learning algorithms. See more at [benchmark](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/benchmark).
 
 ## Contributing
 
