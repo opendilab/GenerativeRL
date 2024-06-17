@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model &mdash; GenerativeRL v0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=2fea6348"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            GenerativeRL
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/quick_start/index.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/agents/index.html">grl.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/algorithms/index.html">grl.algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/datasets/index.html">grl.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/generative_models/index.html">grl.generative_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/neural_network/index.html">grl.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/numerical_methods/index.html">grl.numerical_methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/rl_modules/index.html">grl.rl_modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/utils/index.html">grl.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">GenerativeRL</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">ot</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">treetensor</span>
+<span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
+<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+
+<span class="kn">from</span> <span class="nn">grl.generative_models.intrinsic_model</span> <span class="kn">import</span> <span class="n">IntrinsicModel</span>
+
+<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.velocity_function</span> <span class="kn">import</span> <span class="n">VelocityFunction</span>
+<span class="kn">from</span> <span class="nn">grl.generative_models.random_generator</span> <span class="kn">import</span> <span class="n">gaussian_random_variable</span>
+<span class="kn">from</span> <span class="nn">grl.generative_models.stochastic_process</span> <span class="kn">import</span> <span class="n">StochasticProcess</span>
+<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers</span> <span class="kn">import</span> <span class="n">get_solver</span>
+<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.dpm_solver</span> <span class="kn">import</span> <span class="n">DPMSolver</span>
+<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.ode_solver</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DictTensorODESolver</span><span class="p">,</span>
+    <span class="n">ODESolver</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.sde_solver</span> <span class="kn">import</span> <span class="n">SDESolver</span>
+<span class="kn">from</span> <span class="nn">grl.numerical_methods.probability_path</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ConditionalProbabilityPath</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">grl.utils</span> <span class="kn">import</span> <span class="n">find_parameters</span>
+
+
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel">
+<a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel">[docs]</a>
+<span class="k">class</span> <span class="nc">OptimalTransportConditionalFlowModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overview:</span>
+<span class="sd">        The optimal transport conditional flow model, which is based on an optimal transport plan between two distributions.</span>
+<span class="sd">    Interfaces:</span>
+<span class="sd">        ``__init__``, ``get_type``, ``sample``, ``sample_forward_process``, ``flow_matching_loss``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.__init__">
+<a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Initialize the model.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            - config (:obj:`EasyDict`): The configuration of the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">x_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_generator</span> <span class="o">=</span> <span class="n">gaussian_random_variable</span><span class="p">(</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">use_tree_tensor</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;use_tree_tensor&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">ConditionalProbabilityPath</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;reverse_path&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reverse_path</span> <span class="o">=</span> <span class="n">ConditionalProbabilityPath</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">reverse_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reverse_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">type</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;velocity_function&quot;</span><span class="p">,</span>
+        <span class="p">],</span> <span class="s2">&quot;Unknown type of model </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">IntrinsicModel</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span> <span class="o">=</span> <span class="n">StochasticProcess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity_function_</span> <span class="o">=</span> <span class="n">VelocityFunction</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;solver&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">type</span><span class="p">)(</span><span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">args</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;OptimalTransportConditionalFlowModel&quot;</span>
+
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.sample">
+<a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">x_0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">with_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">solver_config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Sample from the model, return the final state.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            t_span (:obj:`torch.Tensor`): The time span.</span>
+<span class="sd">            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): The batch size.</span>
+<span class="sd">            x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state, if not provided, it will be sampled from the Gaussian distribution.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.</span>
+<span class="sd">            with_grad (:obj:`bool`): Whether to return the gradient.</span>
+<span class="sd">            solver_config (:obj:`EasyDict`): The configuration of the solver.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The sampled result.</span>
+
+<span class="sd">        Shapes:</span>
+<span class="sd">            t_span: :math:`(T)`, where :math:`T` is the number of time steps.</span>
+<span class="sd">            batch_size: :math:`(B)`, where :math:`B` is the batch size of data, which could be a scalar or a tensor such as :math:`(B1, B2)`.</span>
+<span class="sd">            x_0: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the state, which could be a scalar or a tensor such as :math:`(D1, D2)`.</span>
+<span class="sd">            condition: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the condition, which could be a scalar or a tensor such as :math:`(D1, D2)`.</span>
+<span class="sd">            x: :math:`(N, D)`, if extra batch size :math:`B` is provided, the shape will be :math:`(B, N, D)`. If x_0 is not provided, the shape will be :math:`(B, D)`. If x_0 and condition are not provided, the shape will be :math:`(D)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_forward_process</span><span class="p">(</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">x_0</span><span class="o">=</span><span class="n">x_0</span><span class="p">,</span>
+            <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+            <span class="n">with_grad</span><span class="o">=</span><span class="n">with_grad</span><span class="p">,</span>
+            <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
+        <span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.sample_forward_process">
+<a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process">[docs]</a>
+    <span class="k">def</span> <span class="nf">sample_forward_process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">x_0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">with_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">solver_config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Sample from the model, return all intermediate states.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            t_span (:obj:`torch.Tensor`): The time span.</span>
+<span class="sd">            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): An extra batch size used for repeated sampling with the same initial state.</span>
+<span class="sd">            x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state, if not provided, it will be sampled from the Gaussian distribution.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.</span>
+<span class="sd">            with_grad (:obj:`bool`): Whether to return the gradient.</span>
+<span class="sd">            solver_config (:obj:`EasyDict`): The configuration of the solver.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The sampled result.</span>
+
+<span class="sd">        Shapes:</span>
+<span class="sd">            t_span: :math:`(T)`, where :math:`T` is the number of time steps.</span>
+<span class="sd">            batch_size: :math:`(B)`, where :math:`B` is the batch size of data, which could be a scalar or a tensor such as :math:`(B1, B2)`.</span>
+<span class="sd">            x_0: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the state, which could be a scalar or a tensor such as :math:`(D1, D2)`.</span>
+<span class="sd">            condition: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the condition, which could be a scalar or a tensor such as :math:`(D1, D2)`.</span>
+<span class="sd">            x: :math:`(T, N, D)`, if extra batch size :math:`B` is provided, the shape will be :math:`(T, B, N, D)`. If x_0 is not provided, the shape will be :math:`(T, B, D)`. If x_0 and condition are not provided, the shape will be :math:`(T, D)`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">t_span</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">t_span</span> <span class="o">=</span> <span class="n">t_span</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extra_batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">((</span><span class="mi">1</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">extra_batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">List</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">extra_batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Invalid batch size&quot;</span>
+
+        <span class="k">if</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">),</span> <span class="s2">&quot;The batch size of x_0 and condition must be the same&quot;</span>
+            <span class="n">data_batch_size</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_batch_size</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_batch_size</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_batch_size</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">solver_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">solver</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">solver_config</span><span class="o">.</span><span class="n">type</span><span class="p">)(</span><span class="o">**</span><span class="n">solver_config</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;solver&quot;</span>
+            <span class="p">),</span> <span class="s2">&quot;solver must be specified in config or solver_config&quot;</span>
+            <span class="n">solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span>
+
+        <span class="k">if</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_generator</span><span class="p">(</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">data_batch_size</span>
+            <span class="p">)</span>
+            <span class="c1"># x.shape = (B*N, D)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">])</span> <span class="o">==</span> <span class="n">x_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+                <span class="p">),</span> <span class="s2">&quot;The shape of x_0 must be the same as the x_size that is specified in the config&quot;</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">List</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">assert</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">)</span> <span class="o">==</span> <span class="n">x_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+                <span class="p">),</span> <span class="s2">&quot;The shape of x_0 must be the same as the x_size that is specified in the config&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Invalid x_size&quot;</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># x.shape = (B*N, D)</span>
+
+        <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">condition</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span>
+                <span class="n">condition</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)</span>
+            <span class="c1"># condition.shape = (B*N, D)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DPMSolver</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">ODESolver</span><span class="p">):</span>
+            <span class="c1"># TODO: make it compatible with TensorDict</span>
+            <span class="k">def</span> <span class="nf">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;torchdiffeq_adjoint&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">with_grad</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+                        <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+                        <span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+                        <span class="n">adjoint_params</span><span class="o">=</span><span class="n">find_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+                            <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+                            <span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+                            <span class="n">adjoint_params</span><span class="o">=</span><span class="n">find_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">),</span>
+                        <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">with_grad</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+                        <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+                        <span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+                            <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+                            <span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+                        <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DictTensorODESolver</span><span class="p">):</span>
+            <span class="c1"># TODO: make it compatible with TensorDict</span>
+            <span class="k">def</span> <span class="nf">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">with_grad</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+                    <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+                    <span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+                    <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">data_batch_size</span><span class="p">,</span>
+                    <span class="n">x_size</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+                        <span class="n">drift</span><span class="o">=</span><span class="n">drift</span><span class="p">,</span>
+                        <span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+                        <span class="n">batch_size</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">data_batch_size</span><span class="p">,</span>
+                        <span class="n">x_size</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                    <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">SDESolver</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Solver type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="c1"># data.shape = (T, B*N, D)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">List</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Invalid x_size&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">List</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Invalid x_size&quot;</span>
+            <span class="c1"># data.shape = (T, B, N, D)</span>
+
+            <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># data.shape = (T, D)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># data.shape = (T, N, D)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                    <span class="c1"># data.shape = (T, B, D)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># data.shape = (T, B, N, D)</span>
+                    <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="p">(</span>
+                        <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">List</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Invalid x_size&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="p">(</span>
+                        <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">List</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                            <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_batch_size</span><span class="p">,</span> <span class="n">data_batch_size</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x_size</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Invalid x_size&quot;</span>
+                <span class="c1"># data.shape = (T, B, N, D)</span>
+
+                <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="c1"># data.shape = (T, D)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="c1"># data.shape = (T, N, D)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">x_0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                        <span class="c1"># data.shape = (T, B, D)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># data.shape = (T, B, N, D)</span>
+                        <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan">
+<a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan">[docs]</a>
+    <span class="k">def</span> <span class="nf">flow_matching_loss_small_batch_OT_plan</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Return the flow matching loss function of the model given the initial state and the condition, using the optimal transport plan for small batch size to accelerate the computation.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">split_size</span> <span class="o">=</span> <span class="mi">128</span>
+            <span class="n">x0_split</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">split_size</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">x1_split</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">split_size</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">x0_ot</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">x1_ot</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">condition_split</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">split_size</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">condition_ot</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">x0_i</span><span class="p">,</span> <span class="n">x1_i</span><span class="p">,</span> <span class="n">condition_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x0_split</span><span class="p">,</span> <span class="n">x1_split</span><span class="p">,</span> <span class="n">condition_split</span><span class="p">):</span>
+
+                <span class="n">a</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">unif</span><span class="p">(</span><span class="n">x0_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">unif</span><span class="p">(</span><span class="n">x1_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1"># TODO: make it compatible with TensorDict and treetensor.torch.Tensor</span>
+                <span class="k">if</span> <span class="n">x0_i</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">x0_i_</span> <span class="o">=</span> <span class="n">x0_i</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x0_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x0_i_</span> <span class="o">=</span> <span class="n">x0_i</span>
+                <span class="k">if</span> <span class="n">x1_i</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">x1_i_</span> <span class="o">=</span> <span class="n">x1_i</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x1_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x1_i_</span> <span class="o">=</span> <span class="n">x1_i</span>
+
+                <span class="n">M</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x0_i_</span><span class="p">,</span> <span class="n">x1_i_</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">emd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+                <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="s2">&quot;p is not finite&quot;</span>
+
+                <span class="n">p_flatten</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="n">p_flatten</span> <span class="o">=</span> <span class="n">p_flatten</span> <span class="o">/</span> <span class="n">p_flatten</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                <span class="n">choices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">p</span><span class="o">=</span><span class="n">p_flatten</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">x0_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">x0_ot_i</span> <span class="o">=</span> <span class="n">x0_i</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">x0_ot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x0_ot_i</span><span class="p">)</span>
+                <span class="n">x1_ot_i</span> <span class="o">=</span> <span class="n">x1_i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">x1_ot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1_ot_i</span><span class="p">)</span>
+
+                <span class="c1"># condition_ot = condition0_ot = condition1_ot = condition[j]</span>
+                <span class="n">condition_ot_i</span> <span class="o">=</span> <span class="n">condition_i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">condition_ot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">condition_ot_i</span><span class="p">)</span>
+
+            <span class="c1"># torch stack</span>
+            <span class="n">x0_ot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x0_ot</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">x1_ot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x1_ot</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">condition_ot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">condition_ot</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_function_</span><span class="o">.</span><span class="n">flow_matching_loss_icfm</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">x0_ot</span><span class="p">,</span> <span class="n">x1_ot</span><span class="p">,</span> <span class="n">condition_ot</span><span class="p">,</span> <span class="n">average</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">split_size</span> <span class="o">=</span> <span class="mi">128</span>
+
+            <span class="n">x0_split</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">split_size</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">x1_split</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">split_size</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">x0_ot</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">x1_ot</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">x0_i</span><span class="p">,</span> <span class="n">x1_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x0_split</span><span class="p">,</span> <span class="n">x1_split</span><span class="p">):</span>
+
+                <span class="n">a</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">unif</span><span class="p">(</span><span class="n">x0_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">unif</span><span class="p">(</span><span class="n">x1_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1"># TODO: make it compatible with TensorDict and treetensor.torch.Tensor</span>
+                <span class="k">if</span> <span class="n">x0_i</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">x0_i_</span> <span class="o">=</span> <span class="n">x0_i</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x0_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x0_i_</span> <span class="o">=</span> <span class="n">x0_i</span>
+                <span class="k">if</span> <span class="n">x1_i</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">x1_i_</span> <span class="o">=</span> <span class="n">x1_i</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x1_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">x1_i_</span> <span class="o">=</span> <span class="n">x1_i</span>
+
+                <span class="n">M</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x0_i_</span><span class="p">,</span> <span class="n">x1_i_</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">emd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+                <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="s2">&quot;p is not finite&quot;</span>
+
+                <span class="n">p_flatten</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="n">p_flatten</span> <span class="o">=</span> <span class="n">p_flatten</span> <span class="o">/</span> <span class="n">p_flatten</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                <span class="n">choices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">p</span><span class="o">=</span><span class="n">p_flatten</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">x0_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">x0_ot_i</span> <span class="o">=</span> <span class="n">x0_i</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">x0_ot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x0_ot_i</span><span class="p">)</span>
+                <span class="n">x1_ot_i</span> <span class="o">=</span> <span class="n">x1_i</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">x1_ot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1_ot_i</span><span class="p">)</span>
+
+            <span class="c1"># torch stack</span>
+            <span class="n">x0_ot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x0_ot</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">x1_ot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x1_ot</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_function_</span><span class="o">.</span><span class="n">flow_matching_loss_icfm</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">x0_ot</span><span class="p">,</span> <span class="n">x1_ot</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">average</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.flow_matching_loss">
+<a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss">[docs]</a>
+    <span class="k">def</span> <span class="nf">flow_matching_loss</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">average</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Return the flow matching loss function of the model given the initial state and the condition, using the optimal transport plan to match samples from two distributions.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">unif</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">unif</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># TODO: make it compatible with TensorDict and treetensor.torch.Tensor</span>
+        <span class="k">if</span> <span class="n">x0</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">x0_</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x0_</span> <span class="o">=</span> <span class="n">x0</span>
+        <span class="k">if</span> <span class="n">x1</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">x1_</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x1_</span> <span class="o">=</span> <span class="n">x1</span>
+
+        <span class="n">M</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">x0_</span><span class="p">,</span> <span class="n">x1_</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">emd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="s2">&quot;p is not finite&quot;</span>
+
+        <span class="n">p_flatten</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">p_flatten</span> <span class="o">=</span> <span class="n">p_flatten</span> <span class="o">/</span> <span class="n">p_flatten</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="n">choices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="n">p_flatten</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">x0_ot</span> <span class="o">=</span> <span class="n">x0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">x1_ot</span> <span class="o">=</span> <span class="n">x1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># condition_ot = condition0_ot = condition1_ot = condition[j]</span>
+            <span class="n">condition_ot</span> <span class="o">=</span> <span class="n">condition</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">condition_ot</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_function_</span><span class="o">.</span><span class="n">flow_matching_loss_icfm</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">x0_ot</span><span class="p">,</span> <span class="n">x1_ot</span><span class="p">,</span> <span class="n">condition_ot</span><span class="p">,</span> <span class="n">average</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
