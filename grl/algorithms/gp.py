@@ -16,7 +16,7 @@ import wandb
 from grl.agents.gp import GPAgent
 
 from grl.datasets import create_dataset
-from grl.datasets.gpo import GPDataset, GPD4RLDataset
+from grl.datasets.gp import GPDataset, GPD4RLDataset
 from grl.generative_models.diffusion_model import DiffusionModel
 from grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model import (
     OptimalTransportConditionalFlowModel,
