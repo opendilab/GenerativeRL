@@ -101,7 +101,7 @@
 <section id="generative-model-in-generativerl">
 <h2>Generative model in GenerativeRL<a class="headerlink" href="#generative-model-in-generativerl" title="Link to this heading"></a></h2>
 <p>GenerativeRL support easy-to-use APIs for training and deploying generative model.
-We provide a simple example of how to train a diffusion model on the swiss roll dataset in [Colab](<a class="reference external" href="https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk?usp=drive_link">https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk?usp=drive_link</a>).</p>
+We provide a simple example of how to train a diffusion model on the swiss roll dataset in <a class="reference external" href="https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk?usp=drive_link">Colab</a>.</p>
 <p>More usage examples can be found in the folder <cite>grl_pipelines/tutorials/</cite>.</p>
 </section>
 <section id="reinforcement-learning">
@@ -133,17 +133,17 @@ We provide a simple example of how to train a diffusion model on the swiss roll 
 <h2>Explanation<a class="headerlink" href="#explanation" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>First, we import the necessary components from the GenerativeRL library, including the configuration for the HalfCheetah environment and the QGPO algorithm, as well as the logging utility and the OpenAI Gym environment.</p></li>
-<li><p>The <cite>qgpo_pipeline</cite> function encapsulates the training and deployment process:</p>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">qgpo_pipeline</span></code> function encapsulates the training and deployment process:</p>
 <ul class="simple">
-<li><p>An instance of the <cite>QGPOAlgorithm</cite> is created with the provided configuration.</p></li>
-<li><p>The <cite>qgpo.train()</cite> method is called to train the QGPO agent on the HalfCheetah environment.</p></li>
-<li><p>After training, the <cite>qgpo.deploy()</cite> method is called to obtain the trained agent for deployment.</p></li>
-<li><p>A new instance of the HalfCheetah environment is created using <cite>gym.make</cite>.</p></li>
-<li><p>The environment is reset to its initial state with <cite>env.reset()</cite>.</p></li>
-<li><p>A loop is executed for the specified number of steps (<cite>config.deploy.num_deploy_steps</cite>), rendering the environment and stepping through it using the agent’s <cite>act</cite> method.</p></li>
+<li><p>An instance of the <code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm</span></code> is created with the provided configuration.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">qgpo.train()</span></code> method is called to train the QGPO agent on the HalfCheetah environment.</p></li>
+<li><p>After training, the <code class="docutils literal notranslate"><span class="pre">qgpo.deploy()</span></code> method is called to obtain the trained agent for deployment.</p></li>
+<li><p>A new instance of the HalfCheetah environment is created using <code class="docutils literal notranslate"><span class="pre">gym.make</span></code>.</p></li>
+<li><p>The environment is reset to its initial state with <code class="docutils literal notranslate"><span class="pre">env.reset()</span></code>.</p></li>
+<li><p>A loop is executed for the specified number of steps (<code class="docutils literal notranslate"><span class="pre">config.deploy.num_deploy_steps</span></code>), rendering the environment and stepping through it using the agent’s <code class="docutils literal notranslate"><span class="pre">act</span></code> method.</p></li>
 </ul>
 </li>
-<li><p>In the <cite>if __name__ == ‘__main__’</cite> block, the configuration is printed to the console using the logging utility, and the <cite>qgpo_pipeline</cite> function is called with the provided configuration.</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">'__main__'</span></code> block, the configuration is printed to the console using the logging utility, and the <code class="docutils literal notranslate"><span class="pre">qgpo_pipeline</span></code> function is called with the provided configuration.</p></li>
 </ol>
 <p>This example demonstrates how to utilize the GenerativeRL library to train a QGPO agent on the HalfCheetah environment and then deploy the trained agent for evaluation within the environment. You can modify the configuration and algorithm as needed to suit your specific use case.</p>
 <p>For more detailed information and advanced usage examples, please refer to the API documentation and other sections of the GenerativeRL documentation.</p>
