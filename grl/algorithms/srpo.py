@@ -1,15 +1,13 @@
 import copy
 import os
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Dict, Union
 
-import d4rl
-import gym
 import numpy as np
 import torch
 import torch.nn as nn
 from easydict import EasyDict
-from rich.progress import Progress, track
+from rich.progress import track
 from tensordict import TensorDict
 from torch.utils.data import DataLoader
 
@@ -387,45 +385,6 @@ class SRPOAlgorithm:
             def get_train_data(dataloader):
                 while True:
                     yield from dataloader
-
-            def pallaral_simple_eval_policy(
-                policy_fn, env_name, seed, eval_episodes=20
-            ):
-                eval_envs = []
-                for i in range(eval_episodes):
-                    env = gym.make(env_name)
-                    eval_envs.append(env)
-                    env.seed(seed + 1001 + i)
-                    env.buffer_state = env.reset()
-                    env.buffer_return = 0.0
-                ori_eval_envs = [env for env in eval_envs]
-                import time
-
-                t = time.time()
-                while len(eval_envs) > 0:
-                    new_eval_envs = []
-                    states = np.stack([env.buffer_state for env in eval_envs])
-                    states = torch.Tensor(states).to("cuda")
-                    with torch.no_grad():
-                        actions = policy_fn(states).detach().cpu().numpy()
-                    for i, env in enumerate(eval_envs):
-                        state, reward, done, info = env.step(actions[i])
-                        env.buffer_return += reward
-                        env.buffer_state = state
-                        if not done:
-                            new_eval_envs.append(env)
-                    eval_envs = new_eval_envs
-                for i in range(eval_episodes):
-                    ori_eval_envs[i].buffer_return = d4rl.get_normalized_score(
-                        env_name, ori_eval_envs[i].buffer_return
-                    )
-                mean = np.mean(
-                    [ori_eval_envs[i].buffer_return for i in range(eval_episodes)]
-                )
-                std = np.std(
-                    [ori_eval_envs[i].buffer_return for i in range(eval_episodes)]
-                )
-                return mean, std
 
             def evaluate(policy_fn, train_iter):
                 evaluation_results = dict()

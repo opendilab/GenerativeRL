@@ -11,7 +11,6 @@ from tensordict import TensorDict
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
-import d4rl
 import wandb
 from grl.agents.gp import GPAgent
 
@@ -1439,6 +1438,7 @@ class GPAlgorithm:
                     ] = return_min
 
                     if isinstance(self.dataset, GPD4RLDataset):
+                        import d4rl
                         env_id = config.dataset.args.env_id
                         evaluation_results[
                             f"evaluation/guidance_scale:[{guidance_scale}]/return_mean_normalized"

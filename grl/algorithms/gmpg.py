@@ -9,7 +9,6 @@ from easydict import EasyDict
 from rich.progress import track
 from tensordict import TensorDict
 
-import d4rl
 import wandb
 from grl.agents.gm import GPAgent
 
@@ -830,6 +829,7 @@ class GMPGAlgorithm:
                 evaluation_results[f"evaluation/return_min"] = return_min
 
                 if isinstance(self.dataset, GPD4RLDataset):
+                    import d4rl
                     env_id = config.dataset.args.env_id
                     evaluation_results[f"evaluation/return_mean_normalized"] = (
                         d4rl.get_normalized_score(env_id, return_mean)
