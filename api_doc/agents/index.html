@@ -66,7 +66,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#srpoagent">SRPOAgent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#srpoagent">SRPOAgent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.agents.SRPOAgent"><code class="docutils literal notranslate"><span class="pre">SRPOAgent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.agents.SRPOAgent.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOAgent.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.agents.SRPOAgent.act"><code class="docutils literal notranslate"><span class="pre">SRPOAgent.act()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#gpagent">GPAgent</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#grl.agents.GPAgent"><code class="docutils literal notranslate"><span class="pre">GPAgent</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#grl.agents.GPAgent.__init__"><code class="docutils literal notranslate"><span class="pre">GPAgent.__init__()</span></code></a></li>
@@ -168,6 +175,57 @@
 </section>
 <section id="srpoagent">
 <h2>SRPOAgent<a class="headerlink" href="#srpoagent" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.agents.SRPOAgent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.agents.</span></span><span class="sig-name descname"><span class="pre">SRPOAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/agents/srpo.html#SRPOAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.agents.SRPOAgent" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>The QGPO agent.</p>
+</dd>
+<dt>Interface:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">action</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.agents.SRPOAgent.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/agents/srpo.html#SRPOAgent.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.agents.SRPOAgent.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the agent.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The configuration.</p></li>
+<li><p><strong>model</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.nn.Module,</span> <span class="pre">torch.nn.ModuleDict]</span></code>) – The model.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.agents.SRPOAgent.act">
+<span class="sig-name descname"><span class="pre">act</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_as_torch_tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/agents/srpo.html#SRPOAgent.act"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.agents.SRPOAgent.act" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Given an observation, return an action.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obs</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[np.ndarray,</span> <span class="pre">torch.Tensor,</span> <span class="pre">Dict]</span></code>) – The observation.</p></li>
+<li><p><strong>return_as_torch_tensor</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to return the action as a torch tensor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The action.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>action (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[np.ndarray,</span> <span class="pre">torch.Tensor,</span> <span class="pre">Dict]</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="gpagent">
 <h2>GPAgent<a class="headerlink" href="#gpagent" title="Link to this heading"></a></h2>

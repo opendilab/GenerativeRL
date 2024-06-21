@@ -105,8 +105,19 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#dit1d">DiT1D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dit2d">DiT2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dit1d">DiT1D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.neural_network.DiT1D"><code class="docutils literal notranslate"><span class="pre">DiT1D</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#grl.neural_network.DiT1D.__init__"><code class="docutils literal notranslate"><span class="pre">DiT1D.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.neural_network.DiT1D.forward"><code class="docutils literal notranslate"><span class="pre">DiT1D.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grl.neural_network.DiT1D.initialize_weights"><code class="docutils literal notranslate"><span class="pre">DiT1D.initialize_weights()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dit2d">DiT2D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grl.neural_network.DiT2D"><code class="docutils literal notranslate"><span class="pre">DiT2D</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#dit3d">DiT3D</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#grl.neural_network.DiT3D"><code class="docutils literal notranslate"><span class="pre">DiT3D</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#grl.neural_network.DiT3D.__init__"><code class="docutils literal notranslate"><span class="pre">DiT3D.__init__()</span></code></a></li>
@@ -458,9 +469,73 @@ imgs (<code class="xref py py-obj docutils literal notranslate"><span class="pre
 </section>
 <section id="dit1d">
 <h2>DiT1D<a class="headerlink" href="#dit1d" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="grl.neural_network.DiT1D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.neural_network.</span></span><span class="sig-name descname"><span class="pre">DiT1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1152</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">28</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlp_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_embedder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/neural_network/transformers/dit.html#DiT1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.neural_network.DiT1D" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Transformer backbone for Diffusion model for 1D data.</p>
+</dd>
+<dt>Interfaces:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">__init__</span></code>, <code class="docutils literal notranslate"><span class="pre">forward</span></code></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.neural_network.DiT1D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1152</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">28</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlp_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_embedder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/neural_network/transformers/dit.html#DiT1D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.neural_network.DiT1D.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the DiT model.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[int,</span> <span class="pre">List[int],</span> <span class="pre">Tuple[int]]</span></code>) – The number of input channels, defaults to 4.</p></li>
+<li><p><strong>hidden_size</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The hidden size of attention layer, defaults to 1152.</p></li>
+<li><p><strong>depth</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The depth of transformer, defaults to 28.</p></li>
+<li><p><strong>num_heads</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – The number of attention heads, defaults to 16.</p></li>
+<li><p><strong>mlp_ratio</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The hidden size of the MLP with respect to the hidden size of Attention, defaults to 4.0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.neural_network.DiT1D.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/neural_network/transformers/dit.html#DiT1D.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.neural_network.DiT1D.forward" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Forward pass of DiT for 3D data.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – Tensor of diffusion timesteps.</p></li>
+<li><p><strong>x</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.Tensor</span></code>) – Tensor of inputs with spatial information (originally at t=0 it is tensor of videos or latent representations of videos).</p></li>
+<li><p><strong>condition</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union[torch.Tensor,</span> <span class="pre">TensorDict]</span></code>, optional) – The input condition, such as class labels.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="grl.neural_network.DiT1D.initialize_weights">
+<span class="sig-name descname"><span class="pre">initialize_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/neural_network/transformers/dit.html#DiT1D.initialize_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.neural_network.DiT1D.initialize_weights" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Overview:</dt><dd><p>Initialize the weights of the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="dit2d">
 <h2>DiT2D<a class="headerlink" href="#dit2d" title="Link to this heading"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="grl.neural_network.DiT2D">
+<span class="sig-prename descclassname"><span class="pre">grl.neural_network.</span></span><span class="sig-name descname"><span class="pre">DiT2D</span></span><a class="headerlink" href="#grl.neural_network.DiT2D" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#grl.neural_network.DiT" title="grl.neural_network.transformers.dit.DiT"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiT</span></code></a></p>
+</dd></dl>
+
 </section>
 <section id="dit3d">
 <h2>DiT3D<a class="headerlink" href="#dit3d" title="Link to this heading"></a></h2>

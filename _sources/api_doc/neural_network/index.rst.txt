@@ -37,7 +37,7 @@ DiT
 
 DiT1D
 ------
-.. autoclass:: DiT2D
+.. autoclass:: DiT1D
     :special-members: __init__
     :members:
 
