@@ -495,7 +495,7 @@ class ALLCONCATMLP(nn.Module):
         return result
 
 
-from .transformers.dit import DiT, DiT1D, DiT3D
+from .transformers.dit import DiT, DiT1D, DiT2D, DiT3D
 
 
 class Sequential(nn.Module):

@@ -38,4 +38,5 @@ def action_transform(action, return_as_torch_tensor: bool = False):
 
 from .base import BaseAgent
 from .qgpo import QGPOAgent
+from .srpo import SRPOAgent
 from .gm import GPAgent
