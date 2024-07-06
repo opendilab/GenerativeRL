@@ -1,58 +1,215 @@
+
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>grl.generative_models &mdash; GenerativeRL v0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+
+  <link rel="shortcut icon" href="../../_static/images/favicon.ico" />
+  
+  
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=2fea6348"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="grl.neural_network" href="../neural_network/index.html" />
-    <link rel="prev" title="grl.datasets" href="../datasets/index.html" /> 
+  
+  
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/style.css" type="text/css" />
+  <link rel="index" title="Index" href="../../genindex.html" />
+  <link rel="search" title="Search" href="../../search.html" />
+  <link rel="next" title="grl.neural_network" href="../neural_network/index.html" />
+  <link rel="prev" title="grl.datasets" href="../datasets/index.html" />
+    <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+  <script>
+    MathJax = {
+        chtml: {
+            scale: 1,
+            minScale: 1,
+        },
+        svg: {
+            scale: 1,
+            minScale: 1,
+        }
+    }
+</script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
 </head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+<div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/"
+        aria-label="OpenMMLab"></a>
+
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+          <li >
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a
+                class="resource-option with-down-arrow">
+                OpenDILab
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-engine" target="_blank">
+                  <span class="dropdown-title">DI-engine </span>
+                  <p>OpenDILab Decision AI Engine</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-star" target="_blank">
+                  <span class="dropdown-title">DI-star </span>
+                  <p>OpenDILab Decision AI in StarCraftII</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-drive" target="_blank">
+                  <span class="dropdown-title">DI-drive </span>
+                  <p>OpenDILab Auto-driving platform</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GoBigger" target="_blank">
+                  <span class="dropdown-title">GoBigger </span>
+                  <p>OpenDILab Multi-Agent Environment</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-smartcross" target="_blank">
+                  <span class="dropdown-title">DI-smartcross </span>
+                  <p>Decision Intelligence Platform for Traffic Crossing Signal Control</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-treetensor" target="_blank">
+                  <span class="dropdown-title">DI-treetensor </span>
+                  <p>Tree Nested PyTorch Tensor Lib</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-sheep" target="_blank">
+                  <span class="dropdown-title">DI-sheep </span>
+                  <p>Deep Reinforcement Learning + 3 Tiles Game</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-model-based-RL" target="_blank">
+                  <span class="dropdown-title">awesome-model-based-RL </span>
+                  <p>A curated list of awesome model based RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-decision-transformer" target="_blank">
+                  <span class="dropdown-title">awesome-decision-transformer </span>
+                  <p>A curated list of Decision Transformer resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-exploration-rl" target="_blank">
+                  <span class="dropdown-title">awesome-exploration-rl </span>
+                  <p>A curated list of awesome exploration RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-multi-modal-reinforcement-learning" target="_blank">
+                  <span class="dropdown-title">awesome-multi-modal-reinforcement-learning </span>
+                  <p>A curated list of Multi-Modal Reinforcement Learning resources (continually updated)</p>
+                </a>
+              </div>
+          </li>
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+<body class="pytorch-body">
+
+   
+
+  
+
+  <div class="table-of-contents-link-wrapper">
+    <span>Table of Contents</span>
+    <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+  </div>
+
+  <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+    <div class="pytorch-side-scroll">
+      <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <div class="pytorch-left-menu-search">
+          
 
           
           
-          <a href="../../index.html" class="icon icon-home">
-            GenerativeRL
-          </a>
-              <div class="version">
-                0.0.1
-              </div>
+          
+          <div class="version">
+            0.0.1
+          </div>
+          
+          
+
+          
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search Docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+
+          
+        </div>
+
+        
+        
+        
+        
+        
+        
+        <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/quick_start/index.html">Quick Start</a></li>
@@ -62,109 +219,86 @@
 <li class="toctree-l1"><a class="reference internal" href="../agents/index.html">grl.agents</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../algorithms/index.html">grl.algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/index.html">grl.datasets</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">grl.generative_models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#diffusionmodel">DiffusionModel</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.generative_models.DiffusionModel"><code class="docutils literal notranslate"><span class="pre">DiffusionModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.__init__"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.data_prediction_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.data_prediction_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.dpo_loss"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.dpo_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.flow_matching_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.forward_sample"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.forward_sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.noise_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.noise_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample_forward_process()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample_forward_process_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample_forward_process_with_fixed_x()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample_with_fixed_x()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.score_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.score_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.score_matching_loss"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.score_matching_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.DiffusionModel.velocity_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.velocity_function()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#energyconditionaldiffusionmodel">EnergyConditionalDiffusionModel</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.__init__"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.data_prediction_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.energy_guidance_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.flow_matching_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.noise_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.noise_function_with_energy_guidance()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_forward_process()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_with_fixed_x()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_without_energy_guidance()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.score_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.score_function_with_energy_guidance()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.score_matching_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.velocity_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.velocity_function()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#independentconditionalflowmodel">IndependentConditionalFlowModel</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.__init__"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.flow_matching_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.sample"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.sample_forward_process()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#optimaltransportconditionalflowmodel">OptimalTransportConditionalFlowModel</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.__init__"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.flow_matching_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.sample_forward_process()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">grl.generative_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_network/index.html">grl.neural_network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../numerical_methods/index.html">grl.numerical_methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rl_modules/index.html">grl.rl_modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils/index.html">grl.utils</a></li>
 </ul>
 
-        </div>
+        
+        
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">GenerativeRL</a>
-      </nav>
+  <div class="pytorch-container">
+    <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+      <div class="pytorch-breadcrumbs-wrapper">
+        
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">grl.generative_models</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api_doc/generative_models/index.rst.txt" rel="nofollow"> View page source</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        <a href="../../index.html">
+            Docs
+        </a> &gt;
       </li>
+
+        
+      <li>grl.generative_models</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api_doc/generative_models/index.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+          
+        
+      </li>
+    
   </ul>
-  <hr/>
+
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+      </div>
+
+      <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">
+        Shortcuts
+      </div>
+    </div>
+
+    <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+      <div class="pytorch-content-left">
+        
+          <div class="rst-content">
+            
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+                
   <section id="module-grl.generative_models">
-<span id="grl-generative-models"></span><h1>grl.generative_models<a class="headerlink" href="#module-grl.generative_models" title="Link to this heading"></a></h1>
+<span id="grl-generative-models"></span><h1>grl.generative_models<a class="headerlink" href="#module-grl.generative_models" title="Permalink to this heading">¶</a></h1>
 <section id="diffusionmodel">
-<h2>DiffusionModel<a class="headerlink" href="#diffusionmodel" title="Link to this heading"></a></h2>
+<h2>DiffusionModel<a class="headerlink" href="#diffusionmodel" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">DiffusionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">DiffusionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>General diffusion model class that supports various types of continuous-time diffusion paths, which supports sampling, computing score function and velocity function.
 It can be modeled via score function, noise function, velocity function, or data prediction function.
@@ -175,7 +309,7 @@ Both score matching loss and flow matching loss are supported.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialization of Diffusion Model.</p>
 </dd>
@@ -189,7 +323,7 @@ Both score matching loss and flow matching loss are supported.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.data_prediction_function">
-<span class="sig-name descname"><span class="pre">data_prediction_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.data_prediction_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.data_prediction_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">data_prediction_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.data_prediction_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.data_prediction_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return data prediction function of the model at time t given the initial state.</p>
 <div class="math notranslate nohighlight">
@@ -205,17 +339,17 @@ Both score matching loss and flow matching loss are supported.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.dpo_loss">
-<span class="sig-name descname"><span class="pre">dpo_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_dm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.dpo_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.dpo_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dpo_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_dm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.dpo_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.dpo_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 <dl class="simple">
@@ -227,7 +361,7 @@ This is an in-development feature and is not recommended for general use.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.flow_matching_loss">
-<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.flow_matching_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.flow_matching_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the flow matching loss function of the model given the initial state and the condition.</p>
 </dd>
@@ -241,14 +375,14 @@ This is an in-development feature and is not recommended for general use.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.forward_sample">
-<span class="sig-name descname"><span class="pre">forward_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.forward_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.forward_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.forward_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.forward_sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Use forward path of the diffusion model given the sampled x. Note that this is not the reverse process, and thus is not designed for sampling form the diffusion model.
 Rather, it is used for encode a sampled x to the latent space.</p>
@@ -269,7 +403,7 @@ Rather, it is used for encode a sampled x to the latent space.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.noise_function">
-<span class="sig-name descname"><span class="pre">noise_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.noise_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.noise_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">noise_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.noise_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.noise_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return noise function of the model at time t given the initial state.</p>
 <div class="math notranslate nohighlight">
@@ -285,14 +419,14 @@ Rather, it is used for encode a sampled x to the latent space.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model, return the final state.</p>
 </dd>
@@ -327,7 +461,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.sample_forward_process">
-<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample_forward_process" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample_forward_process" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model, return all intermediate states.</p>
 </dd>
@@ -362,7 +496,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.sample_forward_process_with_fixed_x">
-<span class="sig-name descname"><span class="pre">sample_forward_process_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample_forward_process_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample_forward_process_with_fixed_x" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_forward_process_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample_forward_process_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample_forward_process_with_fixed_x" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model with fixed x, return all intermediate states.</p>
 </dd>
@@ -401,7 +535,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.sample_with_fixed_x">
-<span class="sig-name descname"><span class="pre">sample_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample_with_fixed_x" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.sample_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.sample_with_fixed_x" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model with fixed x, return the final state.</p>
 </dd>
@@ -440,7 +574,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.score_function">
-<span class="sig-name descname"><span class="pre">score_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.score_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.score_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">score_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.score_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.score_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return score function of the model at time t given the initial state, which is the gradient of the log-likelihood.</p>
 <div class="math notranslate nohighlight">
@@ -456,14 +590,14 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.score_matching_loss">
-<span class="sig-name descname"><span class="pre">score_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighting_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.score_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.score_matching_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">score_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighting_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.score_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.score_matching_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The loss function for training unconditional diffusion model.</p>
 </dd>
@@ -495,14 +629,14 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.DiffusionModel.velocity_function">
-<span class="sig-name descname"><span class="pre">velocity_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.velocity_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.velocity_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">velocity_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/diffusion_model.html#DiffusionModel.velocity_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.DiffusionModel.velocity_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return velocity of the model at time t given the initial state.</p>
 <div class="math notranslate nohighlight">
@@ -518,7 +652,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -527,10 +661,10 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 </section>
 <section id="energyconditionaldiffusionmodel">
-<h2>EnergyConditionalDiffusionModel<a class="headerlink" href="#energyconditionaldiffusionmodel" title="Link to this heading"></a></h2>
+<h2>EnergyConditionalDiffusionModel<a class="headerlink" href="#energyconditionaldiffusionmodel" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">EnergyConditionalDiffusionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">EnergyConditionalDiffusionModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Energy Conditional Diffusion Model, which is a diffusion model conditioned on energy.</p>
 <div class="math notranslate nohighlight">
@@ -541,7 +675,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialization of Energy Conditional Diffusion Model.</p>
 </dd>
@@ -558,7 +692,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function">
-<span class="sig-name descname"><span class="pre">data_prediction_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.data_prediction_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">data_prediction_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.data_prediction_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return data prediction function of the model at time t given the initial state.</p>
 <div class="math notranslate nohighlight">
@@ -574,14 +708,14 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance">
-<span class="sig-name descname"><span class="pre">data_prediction_function_with_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">data_prediction_function_with_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The data prediction function for energy guidance.</p>
 </dd>
@@ -606,7 +740,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss">
-<span class="sig-name descname"><span class="pre">energy_guidance_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.energy_guidance_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">energy_guidance_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.energy_guidance_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The loss function for training Energy Guidance, CEP guidance method, as proposed in the paper             “Contrastive Energy Prediction for Exact Energy-Guided Diffusion Sampling in Offline Reinforcement Learning”</p>
 </dd>
@@ -623,7 +757,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss">
-<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the flow matching loss function of the model given the initial state and the condition.</p>
 </dd>
@@ -637,14 +771,14 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.noise_function">
-<span class="sig-name descname"><span class="pre">noise_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.noise_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">noise_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.noise_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return noise function of the model at time t given the initial state.</p>
 <div class="math notranslate nohighlight">
@@ -660,14 +794,14 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance">
-<span class="sig-name descname"><span class="pre">noise_function_with_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.noise_function_with_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">noise_function_with_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.noise_function_with_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The noise function for energy guidance.</p>
 </dd>
@@ -692,7 +826,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Sample from the energy conditioned diffusion model by using score function.</p>
 <div class="math notranslate nohighlight">
@@ -730,7 +864,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process">
-<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model.</p>
 </dd>
@@ -758,7 +892,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x">
-<span class="sig-name descname"><span class="pre">sample_forward_process_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_forward_process_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model with fixed x.</p>
 </dd>
@@ -798,7 +932,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x">
-<span class="sig-name descname"><span class="pre">sample_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_with_fixed_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_with_fixed_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model with fixed x.</p>
 </dd>
@@ -838,7 +972,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance">
-<span class="sig-name descname"><span class="pre">sample_with_fixed_x_without_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_with_fixed_x_without_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model with fixed x without energy guidance.</p>
 </dd>
@@ -877,7 +1011,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance">
-<span class="sig-name descname"><span class="pre">sample_without_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_without_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_without_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.sample_without_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model without energy guidance.</p>
 </dd>
@@ -912,7 +1046,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.score_function">
-<span class="sig-name descname"><span class="pre">score_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.score_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">score_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.score_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return score function of the model at time t given the initial state, which is the gradient of the log-likelihood.</p>
 <div class="math notranslate nohighlight">
@@ -928,14 +1062,14 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance">
-<span class="sig-name descname"><span class="pre">score_function_with_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.score_function_with_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">score_function_with_energy_guidance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.score_function_with_energy_guidance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The score function for energy guidance.</p>
 </dd>
@@ -960,7 +1094,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss">
-<span class="sig-name descname"><span class="pre">score_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighting_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.score_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">score_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weighting_scheme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.score_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The loss function for training unconditional diffusion model.</p>
 </dd>
@@ -993,14 +1127,14 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.EnergyConditionalDiffusionModel.velocity_function">
-<span class="sig-name descname"><span class="pre">velocity_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.velocity_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.velocity_function" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">velocity_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html#EnergyConditionalDiffusionModel.velocity_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.EnergyConditionalDiffusionModel.velocity_function" title="Permalink to this definition">¶</a></dt>
 <dd><dl>
 <dt>Overview:</dt><dd><p>Return velocity of the model at time t given the initial state.</p>
 <div class="math notranslate nohighlight">
@@ -1016,7 +1150,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span></p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TensorDict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1025,10 +1159,10 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 </section>
 <section id="independentconditionalflowmodel">
-<h2>IndependentConditionalFlowModel<a class="headerlink" href="#independentconditionalflowmodel" title="Link to this heading"></a></h2>
+<h2>IndependentConditionalFlowModel<a class="headerlink" href="#independentconditionalflowmodel" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.generative_models.IndependentConditionalFlowModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">IndependentConditionalFlowModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">IndependentConditionalFlowModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The independent conditional flow model, which is a flow model with independent conditional probability paths.</p>
 </dd>
@@ -1037,7 +1171,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.IndependentConditionalFlowModel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the model.</p>
 </dd>
@@ -1051,7 +1185,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.IndependentConditionalFlowModel.flow_matching_loss">
-<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.flow_matching_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.flow_matching_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the flow matching loss function of the model given the initial state and the condition.</p>
 </dd>
@@ -1066,14 +1200,14 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.IndependentConditionalFlowModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the model, return the final state.</p>
 </dd>
@@ -1108,7 +1242,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.IndependentConditionalFlowModel.sample_forward_process">
-<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.sample_forward_process" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html#IndependentConditionalFlowModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.IndependentConditionalFlowModel.sample_forward_process" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the diffusion model, return all intermediate states.</p>
 </dd>
@@ -1145,10 +1279,10 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 </section>
 <section id="optimaltransportconditionalflowmodel">
-<h2>OptimalTransportConditionalFlowModel<a class="headerlink" href="#optimaltransportconditionalflowmodel" title="Link to this heading"></a></h2>
+<h2>OptimalTransportConditionalFlowModel<a class="headerlink" href="#optimaltransportconditionalflowmodel" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.generative_models.OptimalTransportConditionalFlowModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">OptimalTransportConditionalFlowModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.generative_models.</span></span><span class="sig-name descname"><span class="pre">OptimalTransportConditionalFlowModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The optimal transport conditional flow model, which is based on an optimal transport plan between two distributions.</p>
 </dd>
@@ -1157,7 +1291,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.OptimalTransportConditionalFlowModel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the model.</p>
 </dd>
@@ -1171,7 +1305,7 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss">
-<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flow_matching_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.flow_matching_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the flow matching loss function of the model given the initial state and the condition, using the optimal transport plan to match samples from two distributions.</p>
 </dd>
@@ -1184,14 +1318,14 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan">
-<span class="sig-name descname"><span class="pre">flow_matching_loss_small_batch_OT_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">flow_matching_loss_small_batch_OT_plan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the flow matching loss function of the model given the initial state and the condition, using the optimal transport plan for small batch size to accelerate the computation.</p>
 </dd>
@@ -1204,14 +1338,14 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.OptimalTransportConditionalFlowModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the model, return the final state.</p>
 </dd>
@@ -1246,7 +1380,7 @@ x: <span class="math notranslate nohighlight">\((N, D)\)</span>, if extra batch 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process">
-<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample_forward_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html#OptimalTransportConditionalFlowModel.sample_forward_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Sample from the model, return all intermediate states.</p>
 </dd>
@@ -1285,34 +1419,201 @@ x: <span class="math notranslate nohighlight">\((T, N, D)\)</span>, if extra bat
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../datasets/index.html" class="btn btn-neutral float-left" title="grl.datasets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../neural_network/index.html" class="btn btn-neutral float-right" title="grl.neural_network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+              </article>
+              
+            </div>
+            <footer>
+  
+  <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+    
+    <a href="../neural_network/index.html" class="btn btn-neutral float-right" title="grl.neural_network" accesskey="n"
+      rel="next">Next <img src="../../_static/images/chevron-right-blue.svg"
+        class="next-page"></a>
+    
+    
+    <a href="../datasets/index.html" class="btn btn-neutral" title="grl.datasets" accesskey="p"
+      rel="prev"><img src="../../_static/images/chevron-right-blue.svg" class="previous-page"> Previous</a>
+    
+  </div>
+  
 
-  <hr/>
+  <hr>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
-  </div>
+    <p>
+      &copy; Copyright 2024, OpenDILab Contributors.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+    </p>
+  </div>
+  
+  <div>
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+      href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the
+      Docs</a>.
+  </div>
    
 
 </footer>
+          </div>
         </div>
-      </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              <ul>
+<li><a class="reference internal" href="#">grl.generative_models</a><ul>
+<li><a class="reference internal" href="#diffusionmodel">DiffusionModel</a><ul>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel"><code class="docutils literal notranslate"><span class="pre">DiffusionModel</span></code></a><ul>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.__init__"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.data_prediction_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.data_prediction_function()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.dpo_loss"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.dpo_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.flow_matching_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.forward_sample"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.forward_sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.noise_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.noise_function()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample_forward_process()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample_forward_process_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample_forward_process_with_fixed_x()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.sample_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.sample_with_fixed_x()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.score_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.score_function()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.score_matching_loss"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.score_matching_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.DiffusionModel.velocity_function"><code class="docutils literal notranslate"><span class="pre">DiffusionModel.velocity_function()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#energyconditionaldiffusionmodel">EnergyConditionalDiffusionModel</a><ul>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel</span></code></a><ul>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.__init__"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.data_prediction_function()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.energy_guidance_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.flow_matching_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.noise_function()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.noise_function_with_energy_guidance()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_forward_process()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_with_fixed_x()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.sample_without_energy_guidance()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.score_function()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.score_function_with_energy_guidance()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.score_matching_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.EnergyConditionalDiffusionModel.velocity_function"><code class="docutils literal notranslate"><span class="pre">EnergyConditionalDiffusionModel.velocity_function()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#independentconditionalflowmodel">IndependentConditionalFlowModel</a><ul>
+<li><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel</span></code></a><ul>
+<li><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.__init__"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.flow_matching_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.sample"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.IndependentConditionalFlowModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">IndependentConditionalFlowModel.sample_forward_process()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optimaltransportconditionalflowmodel">OptimalTransportConditionalFlowModel</a><ul>
+<li><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel</span></code></a><ul>
+<li><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.__init__"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.flow_matching_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process"><code class="docutils literal notranslate"><span class="pre">OptimalTransportConditionalFlowModel.sample_forward_process()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
     </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" id="documentation_options" data-url_root="../../"
+    src="../../_static/documentation_options.js"></script>
+  <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+  <script src="../../_static/doctools.js"></script>
+  <script src="../../_static/sphinx_highlight.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+  <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+
+  
+
+  <script type="text/javascript" src="../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+    jQuery(function () {
+      SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+  </div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/" aria-label="OpenMMLab"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function (e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
 </body>
+
 </html>

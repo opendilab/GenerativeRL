@@ -1,53 +1,212 @@
+
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../../">
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>grl.algorithms.srpo &mdash; GenerativeRL v0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+  
+
+  <link rel="shortcut icon" href="../../../_static/images/favicon.ico" />
+  
+  
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
   
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=2fea6348"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+  
+  
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/style.css" type="text/css" />
+  <link rel="index" title="Index" href="../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+  <script>
+    MathJax = {
+        chtml: {
+            scale: 1,
+            minScale: 1,
+        },
+        svg: {
+            scale: 1,
+            minScale: 1,
+        }
+    }
+</script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
 </head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+<div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/"
+        aria-label="OpenMMLab"></a>
+
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+          <li >
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a
+                class="resource-option with-down-arrow">
+                OpenDILab
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-engine" target="_blank">
+                  <span class="dropdown-title">DI-engine </span>
+                  <p>OpenDILab Decision AI Engine</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-star" target="_blank">
+                  <span class="dropdown-title">DI-star </span>
+                  <p>OpenDILab Decision AI in StarCraftII</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-drive" target="_blank">
+                  <span class="dropdown-title">DI-drive </span>
+                  <p>OpenDILab Auto-driving platform</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GoBigger" target="_blank">
+                  <span class="dropdown-title">GoBigger </span>
+                  <p>OpenDILab Multi-Agent Environment</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-smartcross" target="_blank">
+                  <span class="dropdown-title">DI-smartcross </span>
+                  <p>Decision Intelligence Platform for Traffic Crossing Signal Control</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-treetensor" target="_blank">
+                  <span class="dropdown-title">DI-treetensor </span>
+                  <p>Tree Nested PyTorch Tensor Lib</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-sheep" target="_blank">
+                  <span class="dropdown-title">DI-sheep </span>
+                  <p>Deep Reinforcement Learning + 3 Tiles Game</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-model-based-RL" target="_blank">
+                  <span class="dropdown-title">awesome-model-based-RL </span>
+                  <p>A curated list of awesome model based RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-decision-transformer" target="_blank">
+                  <span class="dropdown-title">awesome-decision-transformer </span>
+                  <p>A curated list of Decision Transformer resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-exploration-rl" target="_blank">
+                  <span class="dropdown-title">awesome-exploration-rl </span>
+                  <p>A curated list of awesome exploration RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-multi-modal-reinforcement-learning" target="_blank">
+                  <span class="dropdown-title">awesome-multi-modal-reinforcement-learning </span>
+                  <p>A curated list of Multi-Modal Reinforcement Learning resources (continually updated)</p>
+                </a>
+              </div>
+          </li>
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+<body class="pytorch-body">
+
+   
+
+  
+
+  <div class="table-of-contents-link-wrapper">
+    <span>Table of Contents</span>
+    <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+  </div>
+
+  <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+    <div class="pytorch-side-scroll">
+      <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <div class="pytorch-left-menu-search">
+          
 
           
           
-          <a href="../../../index.html" class="icon icon-home">
-            GenerativeRL
-          </a>
-              <div class="version">
-                0.0.1
-              </div>
+          
+          <div class="version">
+            0.0.1
+          </div>
+          
+          
+
+          
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search Docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+
+          
+        </div>
+
+        
+        
+        
+        
+        
+        
+        <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/quick_start/index.html">Quick Start</a></li>
@@ -64,30 +223,70 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api_doc/utils/index.html">grl.utils</a></li>
 </ul>
 
-        </div>
+        
+        
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">GenerativeRL</a>
-      </nav>
+  <div class="pytorch-container">
+    <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+      <div class="pytorch-breadcrumbs-wrapper">
+        
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">grl.algorithms.srpo</li>
-      <li class="wy-breadcrumbs-aside">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        <a href="../../../index.html">
+            Docs
+        </a> &gt;
       </li>
+
+        
+          <li><a href="../../index.html">Module code</a> &gt;</li>
+        
+      <li>grl.algorithms.srpo</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+      </li>
+    
   </ul>
-  <hr/>
+
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+      </div>
+
+      <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">
+        Shortcuts
+      </div>
+    </div>
+
+    <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+      <div class="pytorch-content-left">
+        
+          <div class="rst-content">
+            
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+                
   <h1>Source code for grl.algorithms.srpo</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -182,9 +381,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SRPOCritic">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic">[docs]</a>
-<span class="k">class</span> <span class="nc">SRPOCritic</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SRPOCritic"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic">[docs]</a><span class="k">class</span> <span class="nc">SRPOCritic</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        The critic network used in SRPO algorithm.</span>
@@ -192,9 +389,7 @@
 <span class="sd">        ``__init__``, ``v_loss``, ``q_loss</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SRPOCritic.__init__">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="SRPOCritic.__init__"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialize the critic network.</span>
@@ -206,10 +401,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">q0_target</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vf</span> <span class="o">=</span> <span class="n">ValueFunction</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">sdim</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="SRPOCritic.v_loss">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic.v_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">v_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
+<div class="viewcode-block" id="SRPOCritic.v_loss"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic.v_loss">[docs]</a>    <span class="k">def</span> <span class="nf">v_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">tau</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Calculate the value loss.</span>
@@ -231,10 +423,7 @@
         <span class="n">v_loss</span> <span class="o">=</span> <span class="n">asymmetric_l2_loss</span><span class="p">(</span><span class="n">adv</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v_loss</span><span class="p">,</span> <span class="n">next_v</span></div>
 
-
-<div class="viewcode-block" id="SRPOCritic.q_loss">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic.q_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">q_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">next_v</span><span class="p">,</span> <span class="n">discount</span><span class="p">):</span>
+<div class="viewcode-block" id="SRPOCritic.q_loss"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOCritic.q_loss">[docs]</a>    <span class="k">def</span> <span class="nf">q_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">next_v</span><span class="p">,</span> <span class="n">discount</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Calculate the Q loss.</span>
@@ -251,14 +440,10 @@
         <span class="n">targets</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">d</span><span class="o">.</span><span class="n">float</span><span class="p">())</span> <span class="o">*</span> <span class="n">discount</span> <span class="o">*</span> <span class="n">next_v</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
         <span class="n">qs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">compute_double_q</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
         <span class="n">q_loss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">q_loss</span></div>
-</div>
+        <span class="k">return</span> <span class="n">q_loss</span></div></div>
 
 
-
-<div class="viewcode-block" id="SRPOPolicy">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy">[docs]</a>
-<span class="k">class</span> <span class="nc">SRPOPolicy</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SRPOPolicy"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy">[docs]</a><span class="k">class</span> <span class="nc">SRPOPolicy</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        The SRPO policy network.</span>
@@ -266,9 +451,7 @@
 <span class="sd">        ``__init__``, ``forward``, ``behaviour_policy_loss``, ``v_loss``, ``q_loss``, ``srpo_actor_loss``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SRPOPolicy.__init__">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
+<div class="viewcode-block" id="SRPOPolicy.__init__"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialize the SRPO policy network.</span>
@@ -287,10 +470,7 @@
             <span class="n">distribution_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deter_policy</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="SRPOPolicy.forward">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="SRPOPolicy.forward"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -303,10 +483,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deter_policy</span><span class="o">.</span><span class="n">select_actions</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="SRPOPolicy.behaviour_policy_loss">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.behaviour_policy_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">behaviour_policy_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="SRPOPolicy.behaviour_policy_loss"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.behaviour_policy_loss">[docs]</a>    <span class="k">def</span> <span class="nf">behaviour_policy_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
@@ -321,10 +498,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sro</span><span class="o">.</span><span class="n">score_matching_loss</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="SRPOPolicy.v_loss">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.v_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">v_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="SRPOPolicy.v_loss"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.v_loss">[docs]</a>    <span class="k">def</span> <span class="nf">v_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">tau</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">,</span>
@@ -343,10 +517,7 @@
         <span class="n">v_loss</span><span class="p">,</span> <span class="n">next_v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">critic</span><span class="o">.</span><span class="n">v_loss</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v_loss</span><span class="p">,</span> <span class="n">next_v</span></div>
 
-
-<div class="viewcode-block" id="SRPOPolicy.q_loss">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.q_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">q_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="SRPOPolicy.q_loss"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.q_loss">[docs]</a>    <span class="k">def</span> <span class="nf">q_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">next_v</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
@@ -368,10 +539,7 @@
         <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">critic</span><span class="o">.</span><span class="n">q_loss</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">next_v</span><span class="p">,</span> <span class="n">discount_factor</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loss</span></div>
 
-
-<div class="viewcode-block" id="SRPOPolicy.srpo_actor_loss">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.srpo_actor_loss">[docs]</a>
-    <span class="k">def</span> <span class="nf">srpo_actor_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="SRPOPolicy.srpo_actor_loss"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOPolicy.srpo_actor_loss">[docs]</a>    <span class="k">def</span> <span class="nf">srpo_actor_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
@@ -389,18 +557,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">]</span>
         <span class="n">loss</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sro</span><span class="o">.</span><span class="n">srpo_loss</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">q</span></div>
-</div>
+        <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">q</span></div></div>
 
 
+<div class="viewcode-block" id="SRPOAlgorithm"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm">[docs]</a><span class="k">class</span> <span class="nc">SRPOAlgorithm</span><span class="p">:</span>
 
-<div class="viewcode-block" id="SRPOAlgorithm">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm">[docs]</a>
-<span class="k">class</span> <span class="nc">SRPOAlgorithm</span><span class="p">:</span>
-
-<div class="viewcode-block" id="SRPOAlgorithm.__init__">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="SRPOAlgorithm.__init__"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">simulator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -430,14 +592,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span> <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span></div>
 
-
         <span class="c1"># ---------------------------------------</span>
         <span class="c1"># Customized model initialization code ↑</span>
         <span class="c1"># ---------------------------------------</span>
 
-<div class="viewcode-block" id="SRPOAlgorithm.train">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm.train">[docs]</a>
-    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SRPOAlgorithm.train"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Train the model using the given configuration. \</span>
@@ -731,10 +890,7 @@
 
         <span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span></div>
 
-
-<div class="viewcode-block" id="SRPOAlgorithm.deploy">
-<a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm.deploy">[docs]</a>
-    <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SRPOAgent</span><span class="p">:</span>
+<div class="viewcode-block" id="SRPOAlgorithm.deploy"><a class="viewcode-back" href="../../../api_doc/algorithms/index.html#grl.algorithms.SRPOAlgorithm.deploy">[docs]</a>    <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SRPOAgent</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Deploy the model using the given configuration.</span>
@@ -754,36 +910,122 @@
                     <span class="s2">&quot;SRPOPolicy&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deter_policy</span><span class="o">.</span><span class="n">select_actions</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">),</span>
-        <span class="p">)</span></div>
-</div>
-
+        <span class="p">)</span></div></div>
 </pre></div>
 
-           </div>
-          </div>
-          <footer>
+              </article>
+              
+            </div>
+            <footer>
+  
 
-  <hr/>
+  <hr>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
-  </div>
+    <p>
+      &copy; Copyright 2024, OpenDILab Contributors.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+    </p>
+  </div>
+  
+  <div>
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+      href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the
+      Docs</a>.
+  </div>
    
 
 </footer>
+          </div>
         </div>
-      </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              
+            </div>
+          </div>
+        </div>
     </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" id="documentation_options" data-url_root="../../../"
+    src="../../../_static/documentation_options.js"></script>
+  <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+  <script src="../../../_static/doctools.js"></script>
+  <script src="../../../_static/sphinx_highlight.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+    jQuery(function () {
+      SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+  </div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/" aria-label="OpenMMLab"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../../../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function (e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
 </body>
+
 </html>

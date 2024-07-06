@@ -1,56 +1,215 @@
+
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>grl.algorithms &mdash; GenerativeRL v0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+
+  <link rel="shortcut icon" href="../../_static/images/favicon.ico" />
+  
+  
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
   
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=2fea6348"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="grl.datasets" href="../datasets/index.html" />
-    <link rel="prev" title="grl.agents" href="../agents/index.html" /> 
+  
+  
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/style.css" type="text/css" />
+  <link rel="index" title="Index" href="../../genindex.html" />
+  <link rel="search" title="Search" href="../../search.html" />
+  <link rel="next" title="grl.datasets" href="../datasets/index.html" />
+  <link rel="prev" title="grl.agents" href="../agents/index.html" />
+    <link href="../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+  <script>
+    MathJax = {
+        chtml: {
+            scale: 1,
+            minScale: 1,
+        },
+        svg: {
+            scale: 1,
+            minScale: 1,
+        }
+    }
+</script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
 </head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+<div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/"
+        aria-label="OpenMMLab"></a>
+
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+          <li >
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a
+                class="resource-option with-down-arrow">
+                OpenDILab
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-engine" target="_blank">
+                  <span class="dropdown-title">DI-engine </span>
+                  <p>OpenDILab Decision AI Engine</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-star" target="_blank">
+                  <span class="dropdown-title">DI-star </span>
+                  <p>OpenDILab Decision AI in StarCraftII</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-drive" target="_blank">
+                  <span class="dropdown-title">DI-drive </span>
+                  <p>OpenDILab Auto-driving platform</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GoBigger" target="_blank">
+                  <span class="dropdown-title">GoBigger </span>
+                  <p>OpenDILab Multi-Agent Environment</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-smartcross" target="_blank">
+                  <span class="dropdown-title">DI-smartcross </span>
+                  <p>Decision Intelligence Platform for Traffic Crossing Signal Control</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-treetensor" target="_blank">
+                  <span class="dropdown-title">DI-treetensor </span>
+                  <p>Tree Nested PyTorch Tensor Lib</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-sheep" target="_blank">
+                  <span class="dropdown-title">DI-sheep </span>
+                  <p>Deep Reinforcement Learning + 3 Tiles Game</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-model-based-RL" target="_blank">
+                  <span class="dropdown-title">awesome-model-based-RL </span>
+                  <p>A curated list of awesome model based RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-decision-transformer" target="_blank">
+                  <span class="dropdown-title">awesome-decision-transformer </span>
+                  <p>A curated list of Decision Transformer resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-exploration-rl" target="_blank">
+                  <span class="dropdown-title">awesome-exploration-rl </span>
+                  <p>A curated list of awesome exploration RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-multi-modal-reinforcement-learning" target="_blank">
+                  <span class="dropdown-title">awesome-multi-modal-reinforcement-learning </span>
+                  <p>A curated list of Multi-Modal Reinforcement Learning resources (continually updated)</p>
+                </a>
+              </div>
+          </li>
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+<body class="pytorch-body">
+
+   
+
+  
+
+  <div class="table-of-contents-link-wrapper">
+    <span>Table of Contents</span>
+    <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+  </div>
+
+  <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+    <div class="pytorch-side-scroll">
+      <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <div class="pytorch-left-menu-search">
+          
 
           
           
-          <a href="../../index.html" class="icon icon-home">
-            GenerativeRL
-          </a>
-              <div class="version">
-                0.0.1
-              </div>
+          
+          <div class="version">
+            0.0.1
+          </div>
+          
+          
+
+          
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="text" name="q" placeholder="Search Docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+
+          
+        </div>
+
+        
+        
+        
+        
+        
+        
+        <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/installation/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/quick_start/index.html">Quick Start</a></li>
@@ -58,133 +217,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../agents/index.html">grl.agents</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">grl.algorithms</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#qgpocritic">QGPOCritic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.QGPOCritic"><code class="docutils literal notranslate"><span class="pre">QGPOCritic</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOCritic.__init__"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOCritic.compute_double_q"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.compute_double_q()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOCritic.forward"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOCritic.q_loss"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.q_loss()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#qgpopolicy">QGPOPolicy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.QGPOPolicy"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.behaviour_policy_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.behaviour_policy_sample"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.behaviour_policy_sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.compute_q"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.compute_q()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.energy_guidance_loss"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.energy_guidance_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.forward"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.q_loss"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.q_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOPolicy.sample"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.sample()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#qgpoalgorithm">QGPOAlgorithm</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm.deploy"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm.deploy()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm.train()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#srpocritic">SRPOCritic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.SRPOCritic"><code class="docutils literal notranslate"><span class="pre">SRPOCritic</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOCritic.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOCritic.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOCritic.q_loss"><code class="docutils literal notranslate"><span class="pre">SRPOCritic.q_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOCritic.v_loss"><code class="docutils literal notranslate"><span class="pre">SRPOCritic.v_loss()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#srpopolicy">SRPOPolicy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.SRPOPolicy"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.behaviour_policy_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOPolicy.forward"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOPolicy.q_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.q_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOPolicy.srpo_actor_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.srpo_actor_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOPolicy.v_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.v_loss()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#srpoalgorithm">SRPOAlgorithm</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm.deploy"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm.deploy()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm.train()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gmpocritic">GMPOCritic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.GMPOCritic"><code class="docutils literal notranslate"><span class="pre">GMPOCritic</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOCritic.__init__"><code class="docutils literal notranslate"><span class="pre">GMPOCritic.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOCritic.compute_double_q"><code class="docutils literal notranslate"><span class="pre">GMPOCritic.compute_double_q()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOCritic.forward"><code class="docutils literal notranslate"><span class="pre">GMPOCritic.forward()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gmpopolicy">GMPOPolicy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.GMPOPolicy"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.behaviour_policy_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.behaviour_policy_sample"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.behaviour_policy_sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.compute_q"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.compute_q()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.forward"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOPolicy.sample"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.sample()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gmpoalgorithm">GMPOAlgorithm</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.GMPOAlgorithm"><code class="docutils literal notranslate"><span class="pre">GMPOAlgorithm</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">GMPOAlgorithm.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPOAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">GMPOAlgorithm.train()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gmpgcritic">GMPGCritic</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.GMPGCritic"><code class="docutils literal notranslate"><span class="pre">GMPGCritic</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGCritic.__init__"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGCritic.compute_double_q"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.compute_double_q()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGCritic.forward"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGCritic.in_support_ql_loss"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.in_support_ql_loss()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gmpgpolicy">GMPGPolicy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.GMPGPolicy"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.behaviour_policy_loss()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGPolicy.behaviour_policy_sample"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.behaviour_policy_sample()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGPolicy.compute_q"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.compute_q()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGPolicy.forward"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.forward()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGPolicy.sample"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.sample()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#gmpgalgorithm">GMPGAlgorithm</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#grl.algorithms.GMPGAlgorithm"><code class="docutils literal notranslate"><span class="pre">GMPGAlgorithm</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">GMPGAlgorithm.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#grl.algorithms.GMPGAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">GMPGAlgorithm.train()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">grl.algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../datasets/index.html">grl.datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../generative_models/index.html">grl.generative_models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_network/index.html">grl.neural_network</a></li>
@@ -193,37 +226,79 @@
 <li class="toctree-l1"><a class="reference internal" href="../utils/index.html">grl.utils</a></li>
 </ul>
 
-        </div>
+        
+        
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">GenerativeRL</a>
-      </nav>
+  <div class="pytorch-container">
+    <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+      <div class="pytorch-breadcrumbs-wrapper">
+        
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">grl.algorithms</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api_doc/algorithms/index.rst.txt" rel="nofollow"> View page source</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        <a href="../../index.html">
+            Docs
+        </a> &gt;
       </li>
+
+        
+      <li>grl.algorithms</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api_doc/algorithms/index.rst.txt" rel="nofollow"><img src="../../_static/images/view-page-source-icon.svg"></a>
+          
+        
+      </li>
+    
   </ul>
-  <hr/>
+
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+      </div>
+
+      <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">
+        Shortcuts
+      </div>
+    </div>
+
+    <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+      <div class="pytorch-content-left">
+        
+          <div class="rst-content">
+            
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+                
   <section id="module-grl.algorithms">
-<span id="grl-algorithms"></span><h1>grl.algorithms<a class="headerlink" href="#module-grl.algorithms" title="Link to this heading"></a></h1>
+<span id="grl-algorithms"></span><h1>grl.algorithms<a class="headerlink" href="#module-grl.algorithms" title="Permalink to this heading">¶</a></h1>
 <section id="qgpocritic">
-<h2>QGPOCritic<a class="headerlink" href="#qgpocritic" title="Link to this heading"></a></h2>
+<h2>QGPOCritic<a class="headerlink" href="#qgpocritic" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOCritic">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">QGPOCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">QGPOCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Critic network for QGPO algorithm.</p>
 </dd>
@@ -232,7 +307,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOCritic.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialization of QGPO critic network.</p>
 </dd>
@@ -246,7 +321,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOCritic.compute_double_q">
-<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.compute_double_q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.compute_double_q" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of two Q networks.</p>
 </dd>
@@ -270,7 +345,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOCritic.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of QGPO critic.</p>
 </dd>
@@ -283,14 +358,14 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOCritic.q_loss">
-<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.q_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOCritic.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOCritic.q_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -308,7 +383,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -317,10 +392,10 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="qgpopolicy">
-<h2>QGPOPolicy<a class="headerlink" href="#qgpopolicy" title="Link to this heading"></a></h2>
+<h2>QGPOPolicy<a class="headerlink" href="#qgpopolicy" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">QGPOPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">QGPOPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>QGPO policy network.</p>
 </dd>
@@ -329,13 +404,13 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.behaviour_policy_loss">
-<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.behaviour_policy_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.behaviour_policy_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the behaviour policy loss.</p>
 </dd>
@@ -352,7 +427,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.behaviour_policy_sample">
-<span class="sig-name descname"><span class="pre">behaviour_policy_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.behaviour_policy_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.behaviour_policy_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.behaviour_policy_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.behaviour_policy_sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of behaviour policy, which is the action conditioned on the state.</p>
 </dd>
@@ -376,7 +451,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.compute_q">
-<span class="sig-name descname"><span class="pre">compute_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.compute_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.compute_q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.compute_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.compute_q" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q value.</p>
 </dd>
@@ -399,7 +474,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.energy_guidance_loss">
-<span class="sig-name descname"><span class="pre">energy_guidance_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.energy_guidance_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.energy_guidance_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">energy_guidance_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.energy_guidance_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.energy_guidance_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the energy guidance loss of QGPO.</p>
 </dd>
@@ -412,14 +487,14 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of QGPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -439,7 +514,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.q_loss">
-<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.q_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.q_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -457,14 +532,14 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOPolicy.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tensor(1.)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guidance_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tensor(1.)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOPolicy.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOPolicy.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of QGPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -491,10 +566,10 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="qgpoalgorithm">
-<h2>QGPOAlgorithm<a class="headerlink" href="#qgpoalgorithm" title="Link to this heading"></a></h2>
+<h2>QGPOAlgorithm<a class="headerlink" href="#qgpoalgorithm" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOAlgorithm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">QGPOAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">QGPOAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Q-guided policy optimization (QGPO) algorithm, which is an offline reinforcement learning algorithm that uses energy-based diffusion model for policy modeling.</p>
 </dd>
@@ -503,7 +578,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOAlgorithm.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the QGPO algorithm.</p>
 </dd>
@@ -528,7 +603,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOAlgorithm.deploy">
-<span class="sig-name descname"><span class="pre">deploy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm.deploy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm.deploy" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deploy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm.deploy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm.deploy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Deploy the model using the given configuration.</p>
 </dd>
@@ -538,14 +613,14 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 <dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The deployment configuration.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../agents/index.html#grl.agents.QGPOAgent" title="grl.agents.qgpo.QGPOAgent"><code class="xref py py-class docutils literal notranslate"><span class="pre">QGPOAgent</span></code></a></span></p>
+<dd class="field-even"><p><a class="reference internal" href="../agents/index.html#grl.agents.QGPOAgent" title="grl.agents.qgpo.QGPOAgent"><code class="xref py py-class docutils literal notranslate"><span class="pre">QGPOAgent</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.QGPOAlgorithm.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm.train" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/qgpo.html#QGPOAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.QGPOAlgorithm.train" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Train the model using the given configuration.             A weight-and-bias run will be created automatically when this function is called.</p>
 </dd>
@@ -561,10 +636,10 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 </section>
 <section id="srpocritic">
-<h2>SRPOCritic<a class="headerlink" href="#srpocritic" title="Link to this heading"></a></h2>
+<h2>SRPOCritic<a class="headerlink" href="#srpocritic" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOCritic">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">SRPOCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">SRPOCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The critic network used in SRPO algorithm.</p>
 </dd>
@@ -573,7 +648,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOCritic.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the critic network.</p>
 </dd>
@@ -587,7 +662,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOCritic.q_loss">
-<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic.q_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic.q_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -605,7 +680,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOCritic.v_loss">
-<span class="sig-name descname"><span class="pre">v_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic.v_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic.v_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOCritic.v_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOCritic.v_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the value loss.</p>
 </dd>
@@ -624,10 +699,10 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 </section>
 <section id="srpopolicy">
-<h2>SRPOPolicy<a class="headerlink" href="#srpopolicy" title="Link to this heading"></a></h2>
+<h2>SRPOPolicy<a class="headerlink" href="#srpopolicy" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">SRPOPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">SRPOPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The SRPO policy network.</p>
 </dd>
@@ -636,7 +711,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the SRPO policy network.</p>
 </dd>
@@ -650,7 +725,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy.behaviour_policy_loss">
-<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.behaviour_policy_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.behaviour_policy_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the behaviour policy loss.</p>
 </dd>
@@ -667,7 +742,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of QGPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -687,7 +762,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy.q_loss">
-<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.q_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.q_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.q_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -705,14 +780,14 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy.srpo_actor_loss">
-<span class="sig-name descname"><span class="pre">srpo_actor_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.srpo_actor_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.srpo_actor_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">srpo_actor_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.srpo_actor_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.srpo_actor_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -730,14 +805,14 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOPolicy.v_loss">
-<span class="sig-name descname"><span class="pre">v_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.v_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.v_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">v_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOPolicy.v_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOPolicy.v_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -754,7 +829,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -763,13 +838,13 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 </section>
 <section id="srpoalgorithm">
-<h2>SRPOAlgorithm<a class="headerlink" href="#srpoalgorithm" title="Link to this heading"></a></h2>
+<h2>SRPOAlgorithm<a class="headerlink" href="#srpoalgorithm" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOAlgorithm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">SRPOAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">SRPOAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOAlgorithm.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the QGPO algorithm.</p>
 </dd>
@@ -794,7 +869,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOAlgorithm.deploy">
-<span class="sig-name descname"><span class="pre">deploy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm.deploy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm.deploy" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deploy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm.deploy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm.deploy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Deploy the model using the given configuration.</p>
 </dd>
@@ -804,14 +879,14 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 <dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">EasyDict</span></code>) – The deployment configuration.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../agents/index.html#grl.agents.SRPOAgent" title="grl.agents.srpo.SRPOAgent"><code class="xref py py-class docutils literal notranslate"><span class="pre">SRPOAgent</span></code></a></span></p>
+<dd class="field-even"><p><a class="reference internal" href="../agents/index.html#grl.agents.SRPOAgent" title="grl.agents.srpo.SRPOAgent"><code class="xref py py-class docutils literal notranslate"><span class="pre">SRPOAgent</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.SRPOAlgorithm.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm.train" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/srpo.html#SRPOAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.SRPOAlgorithm.train" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Train the model using the given configuration.             A weight-and-bias run will be created automatically when this function is called.</p>
 </dd>
@@ -827,10 +902,10 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 </section>
 <section id="gmpocritic">
-<h2>GMPOCritic<a class="headerlink" href="#gmpocritic" title="Link to this heading"></a></h2>
+<h2>GMPOCritic<a class="headerlink" href="#gmpocritic" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOCritic">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPOCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPOCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Critic network for GMPO algorithm.</p>
 </dd>
@@ -839,7 +914,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOCritic.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialization of GMPO critic network.</p>
 </dd>
@@ -853,7 +928,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOCritic.compute_double_q">
-<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic.compute_double_q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic.compute_double_q" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of two Q networks.</p>
 </dd>
@@ -877,7 +952,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOCritic.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOCritic.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOCritic.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of GMPO critic.</p>
 </dd>
@@ -890,7 +965,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -899,10 +974,10 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="gmpopolicy">
-<h2>GMPOPolicy<a class="headerlink" href="#gmpopolicy" title="Link to this heading"></a></h2>
+<h2>GMPOPolicy<a class="headerlink" href="#gmpopolicy" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPOPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPOPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>GMPO policy network for GMPO algorithm, which includes the base model (optinal), the guided model and the critic.</p>
 </dd>
@@ -911,7 +986,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the GMPO policy network.</p>
 </dd>
@@ -925,7 +1000,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.behaviour_policy_loss">
-<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.behaviour_policy_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.behaviour_policy_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the behaviour policy loss.</p>
 </dd>
@@ -942,7 +1017,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.behaviour_policy_sample">
-<span class="sig-name descname"><span class="pre">behaviour_policy_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.behaviour_policy_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.behaviour_policy_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.behaviour_policy_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.behaviour_policy_sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of behaviour policy, which is the action conditioned on the state.</p>
 </dd>
@@ -968,7 +1043,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.compute_q">
-<span class="sig-name descname"><span class="pre">compute_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.compute_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.compute_q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.compute_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.compute_q" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q value.</p>
 </dd>
@@ -991,7 +1066,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of GMPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -1011,7 +1086,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression">
-<span class="sig-name descname"><span class="pre">policy_optimization_loss_by_advantage_weighted_regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_clamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">policy_optimization_loss_by_advantage_weighted_regression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_clamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the behaviour policy loss.</p>
 </dd>
@@ -1028,7 +1103,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax">
-<span class="sig-name descname"><span class="pre">policy_optimization_loss_by_advantage_weighted_regression_softmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">policy_optimization_loss_by_advantage_weighted_regression_softmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the behaviour policy loss.</p>
 </dd>
@@ -1045,7 +1120,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOPolicy.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOPolicy.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOPolicy.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of GMPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -1072,10 +1147,10 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="gmpoalgorithm">
-<h2>GMPOAlgorithm<a class="headerlink" href="#gmpoalgorithm" title="Link to this heading"></a></h2>
+<h2>GMPOAlgorithm<a class="headerlink" href="#gmpoalgorithm" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOAlgorithm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPOAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOAlgorithm" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPOAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOAlgorithm" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The Generative Model Policy Optimization(GMPO) algorithm.</p>
 </dd>
@@ -1084,7 +1159,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOAlgorithm.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOAlgorithm.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOAlgorithm.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize the GMPO &amp;&amp; GPG algorithm.</p>
 </dd>
@@ -1109,7 +1184,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPOAlgorithm.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOAlgorithm.train" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpo.html#GMPOAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPOAlgorithm.train" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Train the model using the given configuration.             A weight-and-bias run will be created automatically when this function is called.</p>
 </dd>
@@ -1128,10 +1203,10 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 </section>
 <section id="gmpgcritic">
-<h2>GMPGCritic<a class="headerlink" href="#gmpgcritic" title="Link to this heading"></a></h2>
+<h2>GMPGCritic<a class="headerlink" href="#gmpgcritic" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGCritic">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPGCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPGCritic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Critic network.</p>
 </dd>
@@ -1140,7 +1215,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGCritic.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialization of GPO critic network.</p>
 </dd>
@@ -1154,7 +1229,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGCritic.compute_double_q">
-<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.compute_double_q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_double_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.compute_double_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.compute_double_q" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of two Q networks.</p>
 </dd>
@@ -1178,7 +1253,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGCritic.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of GPO critic.</p>
 </dd>
@@ -1191,14 +1266,14 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGCritic.in_support_ql_loss">
-<span class="sig-name descname"><span class="pre">in_support_ql_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.in_support_ql_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.in_support_ql_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">in_support_ql_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reward</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_next_action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discount_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGCritic.in_support_ql_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGCritic.in_support_ql_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q loss.</p>
 </dd>
@@ -1216,7 +1291,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1225,19 +1300,19 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="gmpgpolicy">
-<h2>GMPGPolicy<a class="headerlink" href="#gmpgpolicy" title="Link to this heading"></a></h2>
+<h2>GMPGPolicy<a class="headerlink" href="#gmpgpolicy" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPGPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPGPolicy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy.behaviour_policy_loss">
-<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.behaviour_policy_loss" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.behaviour_policy_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.behaviour_policy_loss" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the behaviour policy loss.</p>
 </dd>
@@ -1254,7 +1329,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy.behaviour_policy_sample">
-<span class="sig-name descname"><span class="pre">behaviour_policy_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.behaviour_policy_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.behaviour_policy_sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">behaviour_policy_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.behaviour_policy_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.behaviour_policy_sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of behaviour policy, which is the action conditioned on the state.</p>
 </dd>
@@ -1280,7 +1355,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy.compute_q">
-<span class="sig-name descname"><span class="pre">compute_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.compute_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.compute_q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.compute_q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.compute_q" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Calculate the Q value.</p>
 </dd>
@@ -1303,7 +1378,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.forward" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of GPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -1323,7 +1398,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGPolicy.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.sample" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGPolicy.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGPolicy.sample" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Return the output of GPO policy, which is the action conditioned on the state.</p>
 </dd>
@@ -1350,10 +1425,10 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 
 </section>
 <section id="gmpgalgorithm">
-<h2>GMPGAlgorithm<a class="headerlink" href="#gmpgalgorithm" title="Link to this heading"></a></h2>
+<h2>GMPGAlgorithm<a class="headerlink" href="#gmpgalgorithm" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGAlgorithm">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPGAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGAlgorithm" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">grl.algorithms.</span></span><span class="sig-name descname"><span class="pre">GMPGAlgorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGAlgorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGAlgorithm" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>The Generative Model Policy Gradient(GMPG) algorithm.</p>
 </dd>
@@ -1362,7 +1437,7 @@ q2 (<code class="xref py py-obj docutils literal notranslate"><span class="pre">
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGAlgorithm.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGAlgorithm.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGAlgorithm.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGAlgorithm.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Initialize algorithm.</p>
 </dd>
@@ -1387,7 +1462,7 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="grl.algorithms.GMPGAlgorithm.train">
-<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGAlgorithm.train" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/algorithms/gmpg.html#GMPGAlgorithm.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.algorithms.GMPGAlgorithm.train" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Overview:</dt><dd><p>Train the model using the given configuration.             A weight-and-bias run will be created automatically when this function is called.</p>
 </dd>
@@ -1408,34 +1483,260 @@ deploy (<code class="xref py py-obj docutils literal notranslate"><span class="p
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../agents/index.html" class="btn btn-neutral float-left" title="grl.agents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../datasets/index.html" class="btn btn-neutral float-right" title="grl.datasets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+              </article>
+              
+            </div>
+            <footer>
+  
+  <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+    
+    <a href="../datasets/index.html" class="btn btn-neutral float-right" title="grl.datasets" accesskey="n"
+      rel="next">Next <img src="../../_static/images/chevron-right-blue.svg"
+        class="next-page"></a>
+    
+    
+    <a href="../agents/index.html" class="btn btn-neutral" title="grl.agents" accesskey="p"
+      rel="prev"><img src="../../_static/images/chevron-right-blue.svg" class="previous-page"> Previous</a>
+    
+  </div>
+  
 
-  <hr/>
+  <hr>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, OpenDILab Contributors.</p>
-  </div>
+    <p>
+      &copy; Copyright 2024, OpenDILab Contributors.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+    </p>
+  </div>
+  
+  <div>
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+      href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the
+      Docs</a>.
+  </div>
    
 
 </footer>
+          </div>
         </div>
-      </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              <ul>
+<li><a class="reference internal" href="#">grl.algorithms</a><ul>
+<li><a class="reference internal" href="#qgpocritic">QGPOCritic</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.QGPOCritic"><code class="docutils literal notranslate"><span class="pre">QGPOCritic</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.QGPOCritic.__init__"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOCritic.compute_double_q"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.compute_double_q()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOCritic.forward"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.forward()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOCritic.q_loss"><code class="docutils literal notranslate"><span class="pre">QGPOCritic.q_loss()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qgpopolicy">QGPOPolicy</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.behaviour_policy_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.behaviour_policy_sample"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.behaviour_policy_sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.compute_q"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.compute_q()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.energy_guidance_loss"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.energy_guidance_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.forward"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.forward()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.q_loss"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.q_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOPolicy.sample"><code class="docutils literal notranslate"><span class="pre">QGPOPolicy.sample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qgpoalgorithm">QGPOAlgorithm</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm.deploy"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm.deploy()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.QGPOAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">QGPOAlgorithm.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#srpocritic">SRPOCritic</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.SRPOCritic"><code class="docutils literal notranslate"><span class="pre">SRPOCritic</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.SRPOCritic.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOCritic.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOCritic.q_loss"><code class="docutils literal notranslate"><span class="pre">SRPOCritic.q_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOCritic.v_loss"><code class="docutils literal notranslate"><span class="pre">SRPOCritic.v_loss()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#srpopolicy">SRPOPolicy</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.behaviour_policy_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy.forward"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.forward()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy.q_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.q_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy.srpo_actor_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.srpo_actor_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOPolicy.v_loss"><code class="docutils literal notranslate"><span class="pre">SRPOPolicy.v_loss()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#srpoalgorithm">SRPOAlgorithm</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm.deploy"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm.deploy()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.SRPOAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">SRPOAlgorithm.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmpocritic">GMPOCritic</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPOCritic"><code class="docutils literal notranslate"><span class="pre">GMPOCritic</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPOCritic.__init__"><code class="docutils literal notranslate"><span class="pre">GMPOCritic.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOCritic.compute_double_q"><code class="docutils literal notranslate"><span class="pre">GMPOCritic.compute_double_q()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOCritic.forward"><code class="docutils literal notranslate"><span class="pre">GMPOCritic.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmpopolicy">GMPOPolicy</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.behaviour_policy_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.behaviour_policy_sample"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.behaviour_policy_sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.compute_q"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.compute_q()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.forward"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.forward()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.policy_optimization_loss_by_advantage_weighted_regression_softmax()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOPolicy.sample"><code class="docutils literal notranslate"><span class="pre">GMPOPolicy.sample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmpoalgorithm">GMPOAlgorithm</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPOAlgorithm"><code class="docutils literal notranslate"><span class="pre">GMPOAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPOAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">GMPOAlgorithm.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPOAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">GMPOAlgorithm.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmpgcritic">GMPGCritic</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPGCritic"><code class="docutils literal notranslate"><span class="pre">GMPGCritic</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPGCritic.__init__"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGCritic.compute_double_q"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.compute_double_q()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGCritic.forward"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.forward()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGCritic.in_support_ql_loss"><code class="docutils literal notranslate"><span class="pre">GMPGCritic.in_support_ql_loss()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmpgpolicy">GMPGPolicy</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy.__init__"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy.behaviour_policy_loss"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.behaviour_policy_loss()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy.behaviour_policy_sample"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.behaviour_policy_sample()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy.compute_q"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.compute_q()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy.forward"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.forward()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGPolicy.sample"><code class="docutils literal notranslate"><span class="pre">GMPGPolicy.sample()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gmpgalgorithm">GMPGAlgorithm</a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPGAlgorithm"><code class="docutils literal notranslate"><span class="pre">GMPGAlgorithm</span></code></a><ul>
+<li><a class="reference internal" href="#grl.algorithms.GMPGAlgorithm.__init__"><code class="docutils literal notranslate"><span class="pre">GMPGAlgorithm.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#grl.algorithms.GMPGAlgorithm.train"><code class="docutils literal notranslate"><span class="pre">GMPGAlgorithm.train()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
     </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" id="documentation_options" data-url_root="../../"
+    src="../../_static/documentation_options.js"></script>
+  <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+  <script src="../../_static/doctools.js"></script>
+  <script src="../../_static/sphinx_highlight.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  <script type="text/javascript" src="../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+    jQuery(function () {
+      SphinxRtdTheme.Navigation.enable(true);
       });
   </script> 
 
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+  </div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/" aria-label="OpenMMLab"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function (e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
 </body>
+
 </html>
