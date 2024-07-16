@@ -5,10 +5,6 @@ import treetensor
 from tensordict import TensorDict
 from torch.distributions import Independent, Normal
 
-from grl.generative_models.diffusion_model import (
-    DiffusionModel,
-    EnergyConditionalDiffusionModel,
-)
 from grl.numerical_methods.numerical_solvers.ode_solver import (
     ODESolver,
 )
@@ -16,7 +12,7 @@ from grl.utils import find_parameters
 
 
 def compute_likelihood(
-    model: Union[DiffusionModel, EnergyConditionalDiffusionModel],
+    model,
     x: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
     t: torch.Tensor = None,
     condition: Union[torch.Tensor, TensorDict] = None,
@@ -49,7 +45,7 @@ def compute_likelihood(
         "IndependentConditionalFlowModel",
         "OptimalTransportConditionalFlowModel",
     ]:
-        model_drift = lambda t, x: model.model(t, x, condition)
+        model_drift = lambda t, x: - model.model(1 - t, x, condition)
         model_params = find_parameters(model.model)
     elif model.get_type() == "FlowModel":
         model_drift = lambda t, x: model.model(t, x, condition)
