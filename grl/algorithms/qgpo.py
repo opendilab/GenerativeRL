@@ -460,6 +460,9 @@ class QGPOAlgorithm:
                     batch_size=config.parameter.behaviour_policy.batch_size,
                     shuffle=True,
                     collate_fn=None,
+                    pin_memory=True,
+                    drop_last=True,
+                    num_workers=8,
                 )
             )
 
@@ -475,7 +478,7 @@ class QGPOAlgorithm:
                 data = next(data_generator)
                 behaviour_model_training_loss = self.model[
                     "QGPOPolicy"
-                ].behaviour_policy_loss(data["a"], data["s"])
+                ].behaviour_policy_loss(data["a"].to(config.model.QGPOPolicy.device), data["s"].to(config.model.QGPOPolicy.device))
                 behaviour_model_optimizer.zero_grad()
                 behaviour_model_training_loss.backward()
                 behaviour_model_optimizer.step()
@@ -501,14 +504,14 @@ class QGPOAlgorithm:
 
             self.dataset.fake_actions = generate_fake_action(
                 self.model["QGPOPolicy"],
-                self.dataset.states[:],
+                self.dataset.states[:].to(config.model.QGPOPolicy.device),
                 config.parameter.sample_per_state,
-            )
+            ).to("cpu")
             self.dataset.fake_next_actions = generate_fake_action(
                 self.model["QGPOPolicy"],
-                self.dataset.next_states[:],
+                self.dataset.next_states[:].to(config.model.QGPOPolicy.device),
                 config.parameter.sample_per_state,
-            )
+            ).to("cpu")
 
             # TODO add notation
             data_generator = get_train_data(
@@ -517,6 +520,9 @@ class QGPOAlgorithm:
                     batch_size=config.parameter.energy_guided_policy.batch_size,
                     shuffle=True,
                     collate_fn=None,
+                    pin_memory=True,
+                    drop_last=True,
+                    num_workers=8,
                 )
             )
 
@@ -544,12 +550,12 @@ class QGPOAlgorithm:
                     data = next(data_generator)
                     if train_iter < config.parameter.critic.stop_training_iterations:
                         q_loss = self.model["QGPOPolicy"].q_loss(
-                            data["a"],
-                            data["s"],
-                            data["r"],
-                            data["s_"],
-                            data["d"],
-                            data["fake_a_"],
+                            data["a"].to(config.model.QGPOPolicy.device),
+                            data["s"].to(config.model.QGPOPolicy.device),
+                            data["r"].to(config.model.QGPOPolicy.device),
+                            data["s_"].to(config.model.QGPOPolicy.device),
+                            data["d"].to(config.model.QGPOPolicy.device),
+                            data["fake_a_"].to(config.model.QGPOPolicy.device),
                             discount_factor=config.parameter.critic.discount_factor,
                         )
 
@@ -573,7 +579,7 @@ class QGPOAlgorithm:
 
                     energy_guidance_loss = self.model[
                         "QGPOPolicy"
-                    ].energy_guidance_loss(data["s"], data["fake_a"])
+                    ].energy_guidance_loss(data["s"].to(config.model.QGPOPolicy.device), data["fake_a"].to(config.model.QGPOPolicy.device))
                     energy_guidance_optimizer.zero_grad()
                     energy_guidance_loss.backward()
                     energy_guidance_optimizer.step()

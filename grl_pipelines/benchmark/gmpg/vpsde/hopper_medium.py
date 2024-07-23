@@ -69,7 +69,6 @@ config = EasyDict(
             type="GPD4RLDataset",
             args=dict(
                 env_id=env_id,
-                device=device,
             ),
         ),
         model=dict(

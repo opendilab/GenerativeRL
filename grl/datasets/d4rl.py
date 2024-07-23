@@ -90,29 +90,26 @@ class D4RLDataset(D4RLDataset):
     def __init__(
         self,
         env_id: str,
-        device: str = None,
     ):
         """
         Overview:
             Initialization method of D4RLDataset class
         Arguments:
             env_id (:obj:`str`): The environment id
-            device (:obj:`str`): The device to store the dataset
         """
 
         super().__init__()
         import d4rl
 
-        device = "cpu" if device is None else device
         data = d4rl.qlearning_dataset(gym.make(env_id))
-        self.states = torch.from_numpy(data["observations"]).float().to(device)
-        self.actions = torch.from_numpy(data["actions"]).float().to(device)
+        self.states = torch.from_numpy(data["observations"]).float()
+        self.actions = torch.from_numpy(data["actions"]).float()
         self.next_states = (
-            torch.from_numpy(data["next_observations"]).float().to(device)
+            torch.from_numpy(data["next_observations"]).float()
         )
-        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float().to(device)
+        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float()
         self.is_finished = (
-            torch.from_numpy(data["terminals"]).view(-1, 1).float().to(device)
+            torch.from_numpy(data["terminals"]).view(-1, 1).float()
         )
 
         reward_tune = "iql_antmaze" if "antmaze" in env_id else "iql_locomotion"

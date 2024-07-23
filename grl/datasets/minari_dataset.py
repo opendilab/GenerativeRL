@@ -20,21 +20,18 @@ class MinariDataset(torch.utils.data.Dataset):
     def __init__(
         self,
         env_id: str,
-        device: str = None,
     ):
         """
         Overview:
             Initialization method of MinariDataset class
         Arguments:
             env_id (:obj:`str`): The environment id
-            device (:obj:`str`): The device to store the dataset
         """
 
         super().__init__()
         import minari
         import d4rl
 
-        device = "cpu" if device is None else device
         dataset = minari.load_dataset(env_id)
         # merge the episodes
         tmp_dataset = {
@@ -61,15 +58,11 @@ class MinariDataset(torch.utils.data.Dataset):
         env = dataset.recover_environment()
         data = d4rl.qlearning_dataset(env, tmp_dataset)
 
-        self.states = torch.from_numpy(data["observations"]).float().to(device)
-        self.actions = torch.from_numpy(data["actions"]).float().to(device)
-        self.next_states = (
-            torch.from_numpy(data["next_observations"]).float().to(device)
-        )
-        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float().to(device)
-        self.is_finished = (
-            torch.from_numpy(data["terminals"]).view(-1, 1).float().to(device)
-        )
+        self.states = torch.from_numpy(data["observations"]).float()
+        self.actions = torch.from_numpy(data["actions"]).float()
+        self.next_states = torch.from_numpy(data["next_observations"]).float()
+        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float()
+        self.is_finished = torch.from_numpy(data["terminals"]).view(-1, 1).float()
 
         reward_tune = "iql_antmaze" if "antmaze" in env_id else "iql_locomotion"
         if reward_tune == "normalize":

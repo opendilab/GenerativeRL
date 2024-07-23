@@ -878,8 +878,9 @@ class GMPGAlgorithm:
                     batch_size=config.parameter.behaviour_policy.batch_size,
                     shuffle=False,
                     sampler=sampler,
-                    pin_memory=False,
+                    pin_memory=True,
                     drop_last=True,
+                    num_workers=8,
                 )
 
                 counter = 1
@@ -889,8 +890,8 @@ class GMPGAlgorithm:
                     behaviour_policy_loss = self.model[
                         "GPPolicy"
                     ].behaviour_policy_loss(
-                        action=data["a"],
-                        state=data["s"],
+                        action=data["a"].to(config.model.GPPolicy.device),
+                        state=data["s"].to(config.model.GPPolicy.device),
                         maximum_likelihood=(
                             config.parameter.behaviour_policy.maximum_likelihood
                             if hasattr(
@@ -960,8 +961,9 @@ class GMPGAlgorithm:
                     batch_size=config.parameter.critic.batch_size,
                     shuffle=False,
                     sampler=sampler,
-                    pin_memory=False,
+                    pin_memory=True,
                     drop_last=True,
+                    num_workers=8,
                 )
 
                 counter = 1
@@ -974,19 +976,19 @@ class GMPGAlgorithm:
                 for data in data_loader:
 
                     v_loss, next_v = self.model["GPPolicy"].critic.v_loss(
-                        state=data["s"],
-                        action=data["a"],
-                        next_state=data["s_"],
+                        state=data["s"].to(config.model.GPPolicy.device),
+                        action=data["a"].to(config.model.GPPolicy.device),
+                        next_state=data["s_"].to(config.model.GPPolicy.device),
                         tau=config.parameter.critic.tau,
                     )
                     v_optimizer.zero_grad(set_to_none=True)
                     v_loss.backward()
                     v_optimizer.step()
                     q_loss, q, q_target = self.model["GPPolicy"].critic.iql_q_loss(
-                        state=data["s"],
-                        action=data["a"],
-                        reward=data["r"],
-                        done=data["d"],
+                        state=data["s"].to(config.model.GPPolicy.device),
+                        action=data["a"].to(config.model.GPPolicy.device),
+                        reward=data["r"].to(config.model.GPPolicy.device),
+                        done=data["d"].to(config.model.GPPolicy.device),
                         next_v=next_v,
                         discount=config.parameter.critic.discount_factor,
                     )
@@ -1078,8 +1080,9 @@ class GMPGAlgorithm:
                     batch_size=config.parameter.guided_policy.batch_size,
                     shuffle=False,
                     sampler=sampler,
-                    pin_memory=False,
+                    pin_memory=True,
                     drop_last=True,
+                    num_workers=8,
                 )
 
                 counter = 1
@@ -1092,7 +1095,7 @@ class GMPGAlgorithm:
                             log_p_loss,
                             log_u_loss,
                         ) = self.model["GPPolicy"].policy_gradient_loss(
-                            data["s"],
+                            data["s"].to(config.model.GPPolicy.device),
                             gradtime_step=config.parameter.guided_policy.gradtime_step,
                             beta=beta,
                             repeats=(
@@ -1108,7 +1111,7 @@ class GMPGAlgorithm:
                             log_p_loss,
                             log_u_loss,
                         ) = self.model["GPPolicy"].policy_gradient_loss_by_REINFORCE(
-                            data["s"],
+                            data["s"].to(config.model.GPPolicy.device),
                             gradtime_step=config.parameter.guided_policy.gradtime_step,
                             beta=beta,
                             repeats=(
@@ -1133,7 +1136,7 @@ class GMPGAlgorithm:
                         ) = self.model[
                             "GPPolicy"
                         ].policy_gradient_loss_by_REINFORCE_softmax(
-                            data["s"],
+                            data["s"].to(config.model.GPPolicy.device),
                             gradtime_step=config.parameter.guided_policy.gradtime_step,
                             beta=beta,
                             repeats=(
@@ -1146,8 +1149,8 @@ class GMPGAlgorithm:
                         guided_policy_loss = self.model[
                             "GPPolicy"
                         ].policy_gradient_loss_add_matching_loss(
-                            data["a"],
-                            data["s"],
+                            data["a"].to(config.model.GPPolicy.device),
+                            data["s"].to(config.model.GPPolicy.device),
                             maximum_likelihood=(
                                 config.parameter.guided_policy.maximum_likelihood
                                 if hasattr(
