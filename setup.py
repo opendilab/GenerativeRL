@@ -14,6 +14,7 @@ setup(
         'torch>=2.2.0',
         'opencv-python',
         'tensordict',
+        'torchrl',
         'di-treetensor',
         'matplotlib',
         'wandb',

@@ -12,6 +12,8 @@ from easydict import EasyDict
 from rich.progress import Progress, track
 from tensordict import TensorDict
 from torch.utils.data import DataLoader
+from torchrl.data import TensorDictReplayBuffer
+from torchrl.data.replay_buffers.samplers import SamplerWithoutReplacement
 
 import wandb
 from grl.agents.qgpo import QGPOAgent
@@ -387,7 +389,7 @@ class QGPOAlgorithm:
                 while True:
                     yield from dataloader
 
-            def generate_fake_action(model, states, sample_per_state):
+            def generate_fake_action(model, states, action_augment_num):
                 # model.eval()
                 fake_actions_sampled = []
                 for states in track(
@@ -396,7 +398,7 @@ class QGPOAlgorithm:
                 ):
                     # TODO: mkae it batchsize
                     fake_actions_per_state = []
-                    for _ in range(sample_per_state):
+                    for _ in range(action_augment_num):
                         fake_actions_per_state.append(
                             model.sample(
                                 state=states,
@@ -454,16 +456,12 @@ class QGPOAlgorithm:
 
                 return evaluation_results
 
-            data_generator = get_train_data(
-                DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.behaviour_policy.batch_size,
-                    shuffle=True,
-                    collate_fn=None,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
+
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.behaviour_policy.batch_size,
+                prefetch=10,
+                pin_memory=True,
             )
 
             behaviour_model_optimizer = torch.optim.Adam(
@@ -475,7 +473,7 @@ class QGPOAlgorithm:
                 range(config.parameter.behaviour_policy.iterations),
                 description="Behaviour policy training",
             ):
-                data = next(data_generator)
+                data = replay_buffer.sample()
                 behaviour_model_training_loss = self.model[
                     "QGPOPolicy"
                 ].behaviour_policy_loss(data["a"].to(config.model.QGPOPolicy.device), data["s"].to(config.model.QGPOPolicy.device))
@@ -502,28 +500,28 @@ class QGPOAlgorithm:
                     commit=True,
                 )
 
-            self.dataset.fake_actions = generate_fake_action(
+            fake_actions = generate_fake_action(
                 self.model["QGPOPolicy"],
                 self.dataset.states[:].to(config.model.QGPOPolicy.device),
-                config.parameter.sample_per_state,
+                config.parameter.action_augment_num,
             ).to("cpu")
-            self.dataset.fake_next_actions = generate_fake_action(
+            fake_next_actions = generate_fake_action(
                 self.model["QGPOPolicy"],
                 self.dataset.next_states[:].to(config.model.QGPOPolicy.device),
-                config.parameter.sample_per_state,
+                config.parameter.action_augment_num,
             ).to("cpu")
 
-            # TODO add notation
-            data_generator = get_train_data(
-                DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.energy_guided_policy.batch_size,
-                    shuffle=True,
-                    collate_fn=None,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
+            self.dataset.load_fake_actions(
+                    fake_actions=fake_actions,
+                    fake_next_actions=fake_next_actions,
                 )
+
+            # TODO add notation
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.energy_guided_policy.batch_size,
+                prefetch=10,
+                pin_memory=True,
             )
 
             q_optimizer = torch.optim.Adam(
@@ -547,7 +545,7 @@ class QGPOAlgorithm:
                 )
 
                 for train_iter in range(config.parameter.energy_guidance.iterations):
-                    data = next(data_generator)
+                    data = replay_buffer.sample()
                     if train_iter < config.parameter.critic.stop_training_iterations:
                         q_loss = self.model["QGPOPolicy"].q_loss(
                             data["a"].to(config.model.QGPOPolicy.device),

@@ -8,12 +8,14 @@ import torch.nn as nn
 from easydict import EasyDict
 from rich.progress import track
 from tensordict import TensorDict
+from torchrl.data import TensorDictReplayBuffer
+from torchrl.data.replay_buffers.samplers import SamplerWithoutReplacement
 
 import wandb
 from grl.agents.gm import GPAgent
 
 from grl.datasets import create_dataset
-from grl.datasets.gp import GPDataset, GPD4RLDataset
+from grl.datasets.gp import GPDataset, GPD4RLDataset, GPD4RLTensorDictDataset
 from grl.generative_models.diffusion_model import DiffusionModel
 from grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model import (
     OptimalTransportConditionalFlowModel,
@@ -670,7 +672,7 @@ class GMPOAlgorithm:
                     else:
                         raise NotImplementedError
 
-            def generate_fake_action(model, states, sample_per_state):
+            def generate_fake_action(model, states, action_augment_num):
 
                 fake_actions_sampled = []
                 for states in track(
@@ -680,7 +682,7 @@ class GMPOAlgorithm:
 
                     fake_actions_ = model.behaviour_policy_sample(
                         state=states,
-                        batch_size=sample_per_state,
+                        batch_size=action_augment_num,
                         t_span=(
                             torch.linspace(0.0, 1.0, config.parameter.t_span).to(
                                 states.device
@@ -739,7 +741,7 @@ class GMPOAlgorithm:
                 evaluation_results[f"evaluation/return_max"] = return_max
                 evaluation_results[f"evaluation/return_min"] = return_min
 
-                if isinstance(self.dataset, GPD4RLDataset):
+                if isinstance(self.dataset, GPD4RLDataset) or isinstance(self.dataset, GPD4RLTensorDictDataset):
                     import d4rl
                     env_id = config.dataset.args.env_id
                     evaluation_results[f"evaluation/return_mean_normalized"] = (
@@ -773,6 +775,14 @@ class GMPOAlgorithm:
                 lr=config.parameter.behaviour_policy.learning_rate,
             )
 
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.behaviour_policy.batch_size,
+                sampler=SamplerWithoutReplacement(),
+                prefetch=10,
+                pin_memory=True,
+            )
+
             behaviour_policy_train_iter = 0
             for epoch in track(
                 range(config.parameter.behaviour_policy.epochs),
@@ -781,22 +791,9 @@ class GMPOAlgorithm:
                 if self.behaviour_policy_train_epoch >= epoch:
                     continue
 
-                sampler = torch.utils.data.RandomSampler(
-                    self.dataset, replacement=False
-                )
-                data_loader = torch.utils.data.DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.behaviour_policy.batch_size,
-                    shuffle=False,
-                    sampler=sampler,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
-
                 counter = 1
                 behaviour_policy_loss_sum = 0
-                for data in data_loader:
+                for index, data in enumerate(replay_buffer):
 
                     behaviour_policy_loss = self.model[
                         "GPPolicy"
@@ -859,16 +856,18 @@ class GMPOAlgorithm:
                 fake_actions = generate_fake_action(
                     self.model["GPPolicy"],
                     self.dataset.states[:].to(config.model.GPPolicy.device),
-                    config.parameter.sample_per_state,
+                    config.parameter.action_augment_num,
                 )
                 fake_next_actions = generate_fake_action(
                     self.model["GPPolicy"],
                     self.dataset.next_states[:].to(config.model.GPPolicy.device),
-                    config.parameter.sample_per_state,
+                    config.parameter.action_augment_num,
                 )
 
-                self.dataset.fake_actions = fake_actions.to("cpu")
-                self.dataset.fake_next_actions = fake_next_actions.to("cpu")
+                self.dataset.load_fake_actions(
+                    fake_actions=fake_actions.to("cpu"),
+                    fake_next_actions=fake_next_actions.to("cpu"),
+                )
 
             # ---------------------------------------
             # make fake action ↑
@@ -887,25 +886,20 @@ class GMPOAlgorithm:
                 lr=config.parameter.critic.learning_rate,
             )
 
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.critic.batch_size,
+                sampler=SamplerWithoutReplacement(),
+                prefetch=10,
+                pin_memory=True,
+            )
+
             critic_train_iter = 0
             for epoch in track(
                 range(config.parameter.critic.epochs), description="Critic training"
             ):
                 if self.critic_train_epoch >= epoch:
                     continue
-
-                sampler = torch.utils.data.RandomSampler(
-                    self.dataset, replacement=False
-                )
-                data_loader = torch.utils.data.DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.critic.batch_size,
-                    shuffle=False,
-                    sampler=sampler,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
 
                 counter = 1
 
@@ -914,7 +908,7 @@ class GMPOAlgorithm:
                 q_loss_sum = 0.0
                 q_sum = 0.0
                 q_target_sum = 0.0
-                for data in data_loader:
+                for index, data in enumerate(replay_buffer):
 
                     v_loss, next_v = self.model["GPPolicy"].critic.v_loss(
                         state=data["s"].to(config.model.GPPolicy.device),
@@ -1008,6 +1002,15 @@ class GMPOAlgorithm:
             )
             guided_policy_train_iter = 0
             beta = config.parameter.guided_policy.beta
+            
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.guided_policy.batch_size,
+                sampler=SamplerWithoutReplacement(),
+                prefetch=10,
+                pin_memory=True,
+            )
+            
             for epoch in track(
                 range(config.parameter.guided_policy.epochs),
                 description="Guided policy training",
@@ -1015,19 +1018,6 @@ class GMPOAlgorithm:
 
                 if self.guided_policy_train_epoch >= epoch:
                     continue
-
-                sampler = torch.utils.data.RandomSampler(
-                    self.dataset, replacement=False
-                )
-                data_loader = torch.utils.data.DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.guided_policy.batch_size,
-                    shuffle=False,
-                    sampler=sampler,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
 
                 counter = 1
                 guided_policy_loss_sum = 0.0
@@ -1042,7 +1032,8 @@ class GMPOAlgorithm:
                     energy_sum = 0.0
                     relative_energy_sum = 0.0
                     matching_loss_sum = 0.0
-                for data in data_loader:
+
+                for index, data in enumerate(replay_buffer):
                     if config.parameter.algorithm_type == "GMPO":
                         (
                             guided_policy_loss,
@@ -1107,7 +1098,7 @@ class GMPOAlgorithm:
                                 and config.parameter.t_span is not None
                                 else None
                             ),
-                            batch_size=config.parameter.sample_per_state,
+                            batch_size=config.parameter.action_augment_num,
                         )
                         fake_actions_ = torch.einsum("nbd->bnd", fake_actions_)
                         (
