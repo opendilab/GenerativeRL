@@ -13,6 +13,7 @@ t_encoder = dict(
     ),
 )
 solver_type = "DPMSolver"
+action_augment_num = 16
 config = EasyDict(
     train=dict(
         project="d4rl-walker2d-v2-qgpo",
@@ -23,9 +24,10 @@ config = EasyDict(
             ),
         ),
         dataset=dict(
-            type="QGPOD4RLDataset",
+            type="QGPOCustomizedTensorDictDataset",
             args=dict(
                 env_id="walker2d-medium-expert-v2",
+                action_augment_num=action_augment_num,
             ),
         ),
         model=dict(
@@ -126,7 +128,7 @@ config = EasyDict(
                 learning_rate=1e-4,
                 iterations=600000,
             ),
-            sample_per_state=16,
+            action_augment_num=action_augment_num,
             fake_data_t_span=None if solver_type == "DPMSolver" else 32,
             energy_guided_policy=dict(
                 batch_size=256,

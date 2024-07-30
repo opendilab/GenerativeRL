@@ -13,7 +13,7 @@ def qgpo_pipeline(config):
     qgpo = QGPOAlgorithm(
         config,
         dataset=QGPOCustomizedDataset(
-            numpy_data_path="./data.npz",
+            numpy_data_path="./data.npz"
         ),
     )
 

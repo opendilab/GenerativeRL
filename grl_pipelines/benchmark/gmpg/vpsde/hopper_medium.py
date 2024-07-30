@@ -66,7 +66,7 @@ config = EasyDict(
             ),
         ),
         dataset=dict(
-            type="GPD4RLDataset",
+            type="GPD4RLTensorDictDataset",
             args=dict(
                 env_id=env_id,
             ),

@@ -1,14 +1,18 @@
 import torch
 from easydict import EasyDict
 
-env_id = "hopper-medium-v2"
-action_size = 3
-state_size = 11
-algorithm_type = "GMPO"
+env_id = "antmaze-medium-diverse-v0"
+action_size = 8
+state_size = 29
+algorithm_type = "GMPG"
 solver_type = "ODESolver"
 model_type = "DiffusionModel"
-generative_model_type = "GVP"
-path = dict(type="gvp")
+generative_model_type = "VPSDE"
+path = dict(
+    type="linear_vp_sde",
+    beta_0=0.1,
+    beta_1=20.0,
+)
 model_loss_type = "flow_matching"
 project_name = f"d4rl-{env_id}-{algorithm_type}-{generative_model_type}"
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
@@ -26,7 +30,7 @@ model = dict(
     solver=dict(
         type="ODESolver",
         args=dict(
-            library="torchdiffeq",
+            library="torchdiffeq_adjoint",
         ),
     ),
     path=path,
@@ -62,9 +66,10 @@ config = EasyDict(
             ),
         ),
         dataset=dict(
-            type="GPD4RLTensorDictDataset",
+            type="GPOD4RLDataset",
             args=dict(
                 env_id=env_id,
+                device=device,
             ),
         ),
         model=dict(
@@ -108,32 +113,33 @@ config = EasyDict(
             behaviour_policy=dict(
                 batch_size=4096,
                 learning_rate=1e-4,
-                epochs=0,
+                epochs=4000,
             ),
             t_span=32,
             critic=dict(
                 batch_size=4096,
-                epochs=5000,
-                learning_rate=3e-4,
+                epochs=4000,
+                learning_rate=1e-4,
                 discount_factor=0.99,
                 update_momentum=0.005,
-                tau=0.7,
+                tau=0.9,
                 method="iql",
             ),
             guided_policy=dict(
-                batch_size=4096,
-                epochs=10000,
-                learning_rate=1e-4,
-                beta=16.0,
-                weight_clamp=1000,
+                batch_size=40960,
+                epochs=100,
+                learning_rate=5e-6,
+                copy_from_basemodel=True,
+                gradtime_step=1000,
+                eta=0.5,
             ),
             evaluation=dict(
                 eval=True,
-                repeat=5,
-                interval=100,
+                repeat=10,
+                interval=5,
             ),
             checkpoint_path=f"./{project_name}/checkpoint",
-            checkpoint_freq=10,
+            checkpoint_freq=5,
         ),
     ),
     deploy=dict(
@@ -153,12 +159,12 @@ if __name__ == "__main__":
     import d4rl
     import numpy as np
 
-    from grl.algorithms.gmpo import GMPOAlgorithm
+    from grl.algorithms.gmpg import GPAlgorithm
     from grl.utils.log import log
 
     def gp_pipeline(config):
 
-        gp = GMPOAlgorithm(config)
+        gp = GPAlgorithm(config)
 
         # ---------------------------------------
         # Customized train code ↓
