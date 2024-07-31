@@ -434,7 +434,7 @@ The type slightly impacts the performance. We recommend to use ‘dpm_solver’ 
 <dt class="sig sig-object py" id="grl.numerical_methods.ODESolver.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ode_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euler'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'torchdyn'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/grl/numerical_methods/numerical_solvers/ode_solver.html#ODESolver.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#grl.numerical_methods.ODESolver.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
-<dt>Overview:</dt><dd><p>Initialize the ODE solver using torchode or torchdyn library.</p>
+<dt>Overview:</dt><dd><p>Initialize the ODE solver using torchdiffeq or torchdyn library.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -444,7 +444,7 @@ The type slightly impacts the performance. We recommend to use ‘dpm_solver’ 
 <li><p><strong>dt</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The time step.</p></li>
 <li><p><strong>atol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The absolute tolerance.</p></li>
 <li><p><strong>rtol</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – The relative tolerance.</p></li>
-<li><p><strong>library</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The library to use for the ODE solver. Currently, it supports ‘torchdiffeq’, ‘torchdyn’ and ‘torchode’.</p></li>
+<li><p><strong>library</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – The library to use for the ODE solver. Currently, it supports ‘torchdiffeq’ and ‘torchdyn’.</p></li>
 <li><p><strong>**kwargs</strong> – Additional arguments for the ODE solver.</p></li>
 </ul>
 </dd>

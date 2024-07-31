@@ -302,7 +302,6 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">torchode</span>
 <span class="kn">import</span> <span class="nn">treetensor</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
@@ -332,13 +331,13 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
-<span class="sd">            Initialize the ODE solver using torchode or torchdyn library.</span>
+<span class="sd">            Initialize the ODE solver using torchdiffeq or torchdyn library.</span>
 <span class="sd">        Arguments:</span>
 <span class="sd">            ode_solver (:obj:`str`): The ODE solver to use.</span>
 <span class="sd">            dt (:obj:`float`): The time step.</span>
 <span class="sd">            atol (:obj:`float`): The absolute tolerance.</span>
 <span class="sd">            rtol (:obj:`float`): The relative tolerance.</span>
-<span class="sd">            library (:obj:`str`): The library to use for the ODE solver. Currently, it supports &#39;torchdiffeq&#39;, &#39;torchdyn&#39; and &#39;torchode&#39;.</span>
+<span class="sd">            library (:obj:`str`): The library to use for the ODE solver. Currently, it supports &#39;torchdiffeq&#39; and &#39;torchdyn&#39;.</span>
 <span class="sd">            **kwargs: Additional arguments for the ODE solver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ode_solver</span> <span class="o">=</span> <span class="n">ode_solver</span>
@@ -376,8 +375,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">odeint_by_torchdyn</span><span class="p">(</span><span class="n">drift</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;torchdyn_NeuralODE&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">odeint_by_torchdyn_NeuralODE</span><span class="p">(</span><span class="n">drift</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;torchode&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">odeint_by_torchode</span><span class="p">(</span><span class="n">drift</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;library </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="si">}</span><span class="s2"> is not supported&quot;</span><span class="p">)</span></div>
 
@@ -508,10 +505,7 @@
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">trajectory</span> <span class="o">=</span> <span class="n">neural_ode</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">trajectory</span>
-
-    <span class="k">def</span> <span class="nf">odeint_by_torchode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+        <span class="k">return</span> <span class="n">trajectory</span></div>
 
 
 <span class="k">class</span> <span class="nc">DictTensorConverter</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -644,13 +638,13 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
-<span class="sd">            Initialize the ODE solver using torchode or torchdyn library.</span>
+<span class="sd">            Initialize the ODE solver using torchdiffeq or torchdyn library.</span>
 <span class="sd">        Arguments:</span>
 <span class="sd">            ode_solver (:obj:`str`): The ODE solver to use.</span>
 <span class="sd">            dt (:obj:`float`): The time step.</span>
 <span class="sd">            atol (:obj:`float`): The absolute tolerance.</span>
 <span class="sd">            rtol (:obj:`float`): The relative tolerance.</span>
-<span class="sd">            library (:obj:`str`): The library to use for the ODE solver. Currently, it supports &#39;torchdyn&#39; and &#39;torchode&#39;.</span>
+<span class="sd">            library (:obj:`str`): The library to use for the ODE solver. Currently, it supports &#39;torchdyn&#39; and &#39;torchdiffeq&#39;.</span>
 <span class="sd">            **kwargs: Additional arguments for the ODE solver.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ode_solver</span> <span class="o">=</span> <span class="n">ode_solver</span>
@@ -700,8 +694,6 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">odeint_by_torchdyn_NeuralODE</span><span class="p">(</span>
                 <span class="n">drift</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">x_size</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;torchode&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">odeint_by_torchode</span><span class="p">(</span><span class="n">drift</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">x_size</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;library </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="si">}</span><span class="s2"> is not supported&quot;</span><span class="p">)</span>
 
@@ -817,9 +809,6 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">trajectory</span>
-
-    <span class="k">def</span> <span class="nf">odeint_by_torchode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">x_size</span><span class="p">):</span>
-        <span class="k">pass</span>
 </pre></div>
 
               </article>
