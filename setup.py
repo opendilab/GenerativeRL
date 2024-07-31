@@ -22,7 +22,6 @@ setup(
         'easydict',
         'tqdm',
         'torchdyn',
-        'torchode',
         'torchsde',
         'scipy',
         'POT',
