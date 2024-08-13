@@ -64,3 +64,247 @@ pip install -e .
 pip install lockfile
 pip install "Cython<3.0"
 ```
+
+## 新数据集的基准实验
+
+GenerativeRL 支持对新数据集或自定义数据集进行基准测试。
+您可以按照以下步骤使用 GMPO 和 GMPG 算法对您的数据集进行实验。
+
+### 步骤 1: 准备数据集
+
+首先，您需要准备数据集。数据集应该是一个 Numpy 文件，使用类似于如下的格式保存：
+
+```python
+import torch
+import numpy as np
+
+# 获取数据集
+obs = torch.tensor([...])
+action = torch.tensor([...])
+next_obs = torch.tensor([...])
+reward = torch.tensor([...])
+done = torch.tensor([...])
+
+# 将数据集转换为 Numpy 格式
+obs_np = obs.numpy()
+action_np = action.numpy()
+next_obs_np = next_obs.numpy()
+reward_np = reward.numpy()
+done_np = done.numpy()
+
+# 存储数据集为 Numpy 文件
+np.savez('data.npz', obs=obs_np, action=action_np, next_obs=next_obs_np, reward=reward_np, done=done_np)
+```
+
+一个可用的 LunarLanderContinuous-v2 数据集可以从 [这里](https://drive.google.com/file/d/1YnT-Oeu9LPKuS_ZqNc5kol_pMlJ1DwyG/view?usp=drive_link) 下载。
+
+### 步骤 2: 运行实验
+
+运行以下命令以开展实验：
+
+
+```python
+import torch
+from easydict import EasyDict
+
+env_id = "LunarLanderContinuous-v2" #TODO: 指定环境 ID
+action_size = 2 #TODO: 指定动作空间大小
+state_size = 8 #TODO: 指定状态空间大小
+algorithm_type = "GMPO" #TODO: 指定算法类型
+solver_type = "ODESolver" #TODO: 指定求解器类型
+model_type = "DiffusionModel" #TODO: 指定模型类型
+generative_model_type = "GVP" #TODO: 指定生成式模型类型
+path = dict(type="gvp") #TODO: 指定模型生成路径
+model_loss_type = "flow_matching" #TODO: 指定模型损失类型
+data_path = "./data.npz" #TODO: 指定数据集路径
+project_name = f"{env_id}-{algorithm_type}-{generative_model_type}"
+device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
+t_embedding_dim = 32
+t_encoder = dict(
+    type="GaussianFourierProjectionTimeEncoder",
+    args=dict(
+        embed_dim=t_embedding_dim,
+        scale=30.0,
+    ),
+)
+model = dict(
+    device=device,
+    x_size=action_size,
+    solver=dict(
+        type="ODESolver",
+        args=dict(
+            library="torchdiffeq",
+        ),
+    ),
+    path=path,
+    reverse_path=path,
+    model=dict(
+        type="velocity_function",
+        args=dict(
+            t_encoder=t_encoder,
+            backbone=dict(
+                type="TemporalSpatialResidualNet",
+                args=dict(
+                    hidden_sizes=[512, 256, 128],
+                    output_dim=action_size,
+                    t_dim=t_embedding_dim,
+                    condition_dim=state_size,
+                    condition_hidden_dim=32,
+                    t_condition_hidden_dim=128,
+                ),
+            ),
+        ),
+    ),
+)
+
+config = EasyDict(
+    train=dict(
+        project=project_name,
+        device=device,
+        wandb=dict(project=f"IQL-{env_id}-{algorithm_type}-{generative_model_type}"),
+        simulator=dict(
+            type="GymEnvSimulator",
+            args=dict(
+                env_id=env_id,
+            ),
+        ),
+        dataset=dict(
+            type="GPCustomizedDataset",
+            args=dict(
+                env_id=env_id,
+                numpy_data_path=data_path,
+            ),
+        ),
+        model=dict(
+            GPPolicy=dict(
+                device=device,
+                model_type=model_type,
+                model_loss_type=model_loss_type,
+                model=model,
+                critic=dict(
+                    device=device,
+                    q_alpha=1.0,
+                    DoubleQNetwork=dict(
+                        backbone=dict(
+                            type="ConcatenateMLP",
+                            args=dict(
+                                hidden_sizes=[action_size + state_size, 256, 256],
+                                output_size=1,
+                                activation="relu",
+                            ),
+                        ),
+                    ),
+                    VNetwork=dict(
+                        backbone=dict(
+                            type="MultiLayerPerceptron",
+                            args=dict(
+                                hidden_sizes=[state_size, 256, 256],
+                                output_size=1,
+                                activation="relu",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            GuidedPolicy=dict(
+                model_type=model_type,
+                model=model,
+            ),
+        ),
+        parameter=dict(
+            algorithm_type=algorithm_type,
+            behaviour_policy=dict(
+                batch_size=4096,
+                learning_rate=1e-4,
+                epochs=0,
+            ),
+            t_span=32,
+            critic=dict(
+                batch_size=4096,
+                epochs=2000,
+                learning_rate=3e-4,
+                discount_factor=0.99,
+                update_momentum=0.005,
+                tau=0.7,
+                method="iql",
+            ),
+            guided_policy=dict(
+                batch_size=4096,
+                epochs=10000,
+                learning_rate=1e-4,
+                beta=1.0,
+                weight_clamp=100,
+            ),
+            evaluation=dict(
+                eval=True,
+                repeat=5,
+                interval=100,
+            ),
+            checkpoint_path=f"./{project_name}/checkpoint",
+            checkpoint_freq=10,
+        ),
+    ),
+    deploy=dict(
+        device=device,
+        env=dict(
+            env_id=env_id,
+            seed=0,
+        ),
+        t_span=32,
+    ),
+)
+
+if __name__ == "__main__":
+
+    import gym
+    import d4rl
+    import numpy as np
+
+    from grl.algorithms.gmpg import GMPGAlgorithm
+    from grl.utils.log import log
+
+    def gp_pipeline(config):
+
+        gp = GMPGAlgorithm(config)
+
+        # ---------------------------------------
+        # Customized train code ↓
+        # ---------------------------------------
+        gp.train()
+        # ---------------------------------------
+        # Customized train code ↑
+        # ---------------------------------------
+
+        # ---------------------------------------
+        # Customized deploy code ↓
+        # ---------------------------------------
+
+        agent = gp.deploy()
+        env = gym.make(config.deploy.env.env_id)
+        total_reward_list = []
+        for i in range(100):
+            observation = env.reset()
+            total_reward = 0
+            while True:
+                # env.render()
+                observation, reward, done, _ = env.step(agent.act(observation))
+                total_reward += reward
+                if done:
+                    observation = env.reset()
+                    print(f"Episode {i}, total_reward: {total_reward}")
+                    total_reward_list.append(total_reward)
+                    break
+
+        print(
+            f"Average total reward: {np.mean(total_reward_list)}, std: {np.std(total_reward_list)}"
+        )
+
+        # ---------------------------------------
+        # Customized deploy code ↑
+        # ---------------------------------------
+
+    log.info("config: \n{}".format(config))
+    gp_pipeline(config)
+```
+
+为了进行性能测评，你需要将新数据集对应的环境注册到 Gym 中。你可以参考 [这里](https://www.gymlibrary.dev/) 来获得更多信息。

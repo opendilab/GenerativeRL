@@ -21,6 +21,8 @@ English | [简体中文(Simplified Chinese)](https://github.com/opendilab/Genera
 - [Integrated Algorithms](#integrated-algorithms)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Tutorials](#tutorials)
+- [Benchmark experiments](#benchmark-experiments)
 
 ## Features
 
