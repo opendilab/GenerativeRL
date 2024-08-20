@@ -3,9 +3,11 @@ from dataclasses import dataclass
 
 import numpy as np
 import torch
-from torch import Tensor
+from torch import Tensor, as_tensor
 import torch.nn as nn
 import torch.nn.functional as F
+
+from .edm_utils import SIGMA_T, SIGMA_T_INV
 
 class PreConditioner(nn.Module):
     
@@ -25,8 +27,9 @@ class PreConditioner(nn.Module):
             self.beta_min = precond_config_kwargs.get("beta_min", 0.1)
             self.M = precond_config_kwargs.get("M", 1000)
             self.epsilon_t = precond_config_kwargs.get("epsilon_t", 1e-5)
-            self.sigma_min = float(self.sigma_for_vp_edm(self.epsilon_t))
-            self.sigma_max = float(self.sigma_for_vp_edm(1))
+            
+            self.sigma_min = SIGMA_T["VP_edm"](self.epsilon_t, self.beta_d, self.beta_min)
+            self.sigma_max = SIGMA_T["VP_edm"](1, self.beta_d, self.beta_min)
             
         elif self.precondition_type == "VE_edm":
             self.sigma_min = precond_config_kwargs.get("sigma_min", 0.02)
@@ -44,22 +47,14 @@ class PreConditioner(nn.Module):
             self.sigma_max = float(u[0])
             
         elif self.precondition_type == "EDM":
-            self.sigma_min = precond_config_kwargs.get("sigma_min", 0.)
-            self.sigma_max = precond_config_kwargs.get("sigma_max", float("inf"))
+            self.sigma_min = precond_config_kwargs.get("sigma_min", 0.002)
+            self.sigma_max = precond_config_kwargs.get("sigma_max", 80)
             self.sigma_data = precond_config_kwargs.get("sigma_data", 0.5)
         
         else:
             raise ValueError(f"Please check your precond type {self.precondition_type} is in ['VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM']")
             
-    # For VP_edm
-    def sigma_for_vp_edm(self, t):
-        t = torch.as_tensor(t)
-        return ((0.5 * self.beta_d * (t ** 2) + self.beta_min * t).exp() - 1).sqrt()
-    # For VP_edm
-    def sigma_inv_for_vp_edm(self, sigma):
-        sigma = torch.as_tensor(sigma)
-        return ((self.beta_min ** 2 + 2 * self.beta_d * (1 + sigma ** 2).log()).sqrt() - self.beta_min) / self.beta_d        
-    
+
     # For iDDPM_edm
     def alpha_bar(self, j):
         assert self.precondition_type == "iDDPM_edm", f"Only iDDPM_edm supports the alpha bar function, but your precond type is {self.precondition_type}"
@@ -83,7 +78,7 @@ class PreConditioner(nn.Module):
             c_skip = 1
             c_out = -sigma
             c_in = 1 / (sigma ** 2 + 1).sqrt()
-            c_noise = (self.M - 1) * self.sigma_inv_for_vp_edm(sigma)
+            c_noise = (self.M - 1) * SIGMA_T_INV["VP_edm"](sigma, self.beta_d, self.beta_min)
         elif self.precondition_type == "VE_edm":
             c_skip = 1
             c_out = sigma

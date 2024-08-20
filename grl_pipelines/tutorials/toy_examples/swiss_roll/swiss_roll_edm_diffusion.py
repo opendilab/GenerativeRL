@@ -71,11 +71,12 @@ config = EasyDict(
                 params=dict(
                     num_steps=18,
                     alpha=1, 
-                    S_churn=0, 
-                    S_min=0, 
+                    S_churn=0., 
+                    S_min=0., 
                     S_max=float("inf"),
-                    S_noise=1,
+                    S_noise=1.,
                     rho=7, #* EDM needs rho 
+                    epsilon_s=1e-3 #* VP needs epsilon_s
                 )
             ),
             model=dict(
@@ -217,4 +218,24 @@ if __name__ == "__main__":
     history_iteration = [-1]
     batch_data = next(data_generator)
     batch_data = batch_data.to(config.device)
+    
+    for i in range(10):
+        edm_diffusion_model.train()
+        loss = edm_diffusion_model(batch_data).mean()
+        optimizer.zero_grad()
+        loss.backward()
+        gradien_norm = torch.nn.utils.clip_grad_norm_(
+            edm_diffusion_model.parameters(), config.parameter.clip_grad_norm
+        )
+        optimizer.step()
+        gradient_sum += gradien_norm.item()
+        loss_sum += loss.item()
+        counter += 1
+        iteration += 1
+        log.info(f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}")
+        
+    edm_diffusion_model.eval()
+    latents = torch.randn((2048, 2))
+    sampled = edm_diffusion_model.sample(None, None, latents=latents)
+    log.info(f"Sampled size: {sampled.shape}")
     
