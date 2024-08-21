@@ -1,12 +1,14 @@
 from typing import Optional, Tuple, Literal
 from dataclasses import dataclass
 
+from torch import Tensor, as_tensor
+from easydict import EasyDict
 import numpy as np
 import torch
-from torch import Tensor, as_tensor
 import torch.nn as nn
 import torch.nn.functional as F
 
+from grl.utils.log import log
 from .edm_utils import SIGMA_T, SIGMA_T_INV
 
 class PreConditioner(nn.Module):
@@ -15,30 +17,32 @@ class PreConditioner(nn.Module):
                  precondition_type: Literal["VP_edm", "VE_edm", "iDDPM_edm", "EDM"] = "EDM",
                  base_denoise_model: nn.Module = None, 
                  use_mixes_precision: bool = False, 
-                 **precond_config_kwargs) -> None:
+                 **precond_params) -> None:
         
         super().__init__()
+        log.info(f"Precond_params: {precond_params}")
+        precond_params = EasyDict(precond_params)
         self.precondition_type = precondition_type
         self.base_denoise_model = base_denoise_model
         self.use_mixes_precision = use_mixes_precision
         
         if self.precondition_type == "VP_edm":
-            self.beta_d = precond_config_kwargs.get("beta_d", 19.9)
-            self.beta_min = precond_config_kwargs.get("beta_min", 0.1)
-            self.M = precond_config_kwargs.get("M", 1000)
-            self.epsilon_t = precond_config_kwargs.get("epsilon_t", 1e-5)
+            self.beta_d = precond_params.beta_d
+            self.beta_min = precond_params.beta_min
+            self.M = precond_params.M
+            self.epsilon_t = precond_params.epsilon_t
             
             self.sigma_min = SIGMA_T["VP_edm"](self.epsilon_t, self.beta_d, self.beta_min)
             self.sigma_max = SIGMA_T["VP_edm"](1, self.beta_d, self.beta_min)
             
         elif self.precondition_type == "VE_edm":
-            self.sigma_min = precond_config_kwargs.get("sigma_min", 0.02)
-            self.sigma_max = precond_config_kwargs.get("sigma_max", 100)
+            self.sigma_min = precond_params.sigma_min
+            self.sigma_max = precond_params.sigma_max
             
         elif self.precondition_type == "iDDPM_edm":
-            self.C_1 = precond_config_kwargs.get("C_1", 0.001)
-            self.C_2 = precond_config_kwargs.get("C_2", 0.008)
-            self.M = precond_config_kwargs.get("M", 1000)
+            self.C_1 = precond_params.C_1
+            self.C_2 = precond_params.C_2
+            self.M = precond_params.M
             
             # For iDDPM_edm
             def alpha_bar(j):
@@ -54,9 +58,9 @@ class PreConditioner(nn.Module):
             self.sigma_max = float(u[0])
             
         elif self.precondition_type == "EDM":
-            self.sigma_min = precond_config_kwargs.get("sigma_min", 0.002)
-            self.sigma_max = precond_config_kwargs.get("sigma_max", 80)
-            self.sigma_data = precond_config_kwargs.get("sigma_data", 0.5)
+            self.sigma_min = precond_params.sigma_min
+            self.sigma_max = precond_params.sigma_max
+            self.sigma_data = precond_params.sigma_data
         
         else:
             raise ValueError(f"Please check your precond type {self.precondition_type} is in ['VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM']")

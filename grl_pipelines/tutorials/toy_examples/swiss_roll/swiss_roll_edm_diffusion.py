@@ -56,8 +56,8 @@ config = EasyDict(
                     sigma_min=0.002,
                     sigma_max=80,
                     sigma_data=0.5,
-                    P_mean=-1.2,
-                    P_std=1.2,
+                    P_mean=-1.21,
+                    P_std=1.21,
                 )
             ),
 

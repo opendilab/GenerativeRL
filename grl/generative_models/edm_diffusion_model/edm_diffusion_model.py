@@ -64,7 +64,7 @@ class EDMModel(nn.Module):
         self.base_denoise_network = Simple()
 
         #* 2. Precond setup
-        self.params = DEFAULT_PARAM[self.edm_type]
+        self.params = EasyDict(DEFAULT_PARAM[self.edm_type])
         self.params.update(config.edm_model.path.params)
         log.info(f"Using edm type: {self.edm_type}\nParam is {self.params}")
         self.preconditioner = PreConditioner(
@@ -79,7 +79,7 @@ class EDMModel(nn.Module):
         assert self.solver_type in ['euler', 'heun'], \
             f"Your solver type should in ['euler', 'heun'], but got {self.solver_type}"
         
-        self.solver_params = DEFAULT_SOLVER_PARAM
+        self.solver_params = EasyDict(DEFAULT_SOLVER_PARAM)
         self.solver_params.update(config.edm_model.solver.params)
         log.info(f"Using solver type: {self.solver_type}\nSolver param is {self.solver_params}")
         # Initialize sigma_min and sigma_max if not provided
@@ -92,7 +92,6 @@ class EDMModel(nn.Module):
     def get_type(self) -> str:
         return "EDMModel"
 
-    # For VP_edm
     def _sample_sigma_weight_train(self, x: Tensor, **params) -> Tuple[Tensor, Tensor]:
         """
         Overview:
@@ -106,11 +105,12 @@ class EDMModel(nn.Module):
             weight (:obj:`torch.Tensor`): Loss weight obtained from sampled sigma.
         """
         # assert the first dim of x is batch size
+        params = EasyDict(params)
         rand_shape = [x.shape[0]] + [1] * (x.ndim - 1) 
         if self.edm_type == "VP_edm":
-            epsilon_t = params.get("epsilon_t", 1e-5)
-            beta_d = params.get("beta_d", 19.9)
-            beta_min = params.get("beta_min", 0.1)
+            epsilon_t = params.epsilon_t
+            beta_d = params.beta_d
+            beta_min = params.beta_min
             
             rand_uniform = torch.rand(*rand_shape, device=self.device)
             sigma = SIGMA_T["VP_edm"](1 + rand_uniform * (epsilon_t - 1), beta_d, beta_min)
@@ -120,9 +120,9 @@ class EDMModel(nn.Module):
             sigma = self.sigma_min * ((self.sigma_max / self.sigma_min) ** rand_uniform)
             weight = 1 / sigma ** 2
         elif self.edm_type == "EDM":
-            P_mean = params.get("P_mean", -1.2)
-            P_std = params.get("P_mean", 1.2)
-            sigma_data = params.get("sigma_data", 0.5)
+            P_mean = params.P_mean
+            P_std = params.P_std
+            sigma_data = params.sigma_data
             
             rand_normal = torch.randn(*rand_shape, device=self.device)
             sigma = (rand_normal * P_std + P_mean).exp()
