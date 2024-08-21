@@ -39,9 +39,16 @@ class PreConditioner(nn.Module):
             self.C_1 = precond_config_kwargs.get("C_1", 0.001)
             self.C_2 = precond_config_kwargs.get("C_2", 0.008)
             self.M = precond_config_kwargs.get("M", 1000)
+            
+            # For iDDPM_edm
+            def alpha_bar(j):
+                assert self.precondition_type == "iDDPM_edm", f"Only iDDPM_edm supports the alpha bar function, but your precond type is {self.precondition_type}"
+                j = torch.as_tensor(j)
+                return (0.5 * np.pi * j / self.M / (self.C_2 + 1)).sin() ** 2
+            
             u = torch.zeros(self.M + 1)
             for j in range(self.M, 0, -1): # M, ..., 1
-                u[j - 1] = ((u[j] ** 2 + 1) / (self.alpha_bar(j - 1) / self.alpha_bar(j)).clip(min=self.C_1) - 1).sqrt()
+                u[j - 1] = ((u[j] ** 2 + 1) / (alpha_bar(j - 1) / alpha_bar(j)).clip(min=self.C_1) - 1).sqrt()
             self.register_buffer('u', u)
             self.sigma_min = float(u[self.M - 1])
             self.sigma_max = float(u[0])
@@ -54,21 +61,15 @@ class PreConditioner(nn.Module):
         else:
             raise ValueError(f"Please check your precond type {self.precondition_type} is in ['VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM']")
             
-
-    # For iDDPM_edm
-    def alpha_bar(self, j):
-        assert self.precondition_type == "iDDPM_edm", f"Only iDDPM_edm supports the alpha bar function, but your precond type is {self.precondition_type}"
-        j = torch.as_tensor(j)
-        return (0.5 * np.pi * j / self.M / (self.C_2 + 1)).sin() ** 2
             
 
     def round_sigma(self, sigma, return_index=False):
         
         if self.precondition_type == "iDDPM_edm":
             sigma = torch.as_tensor(sigma)
-            index = torch.cdist(sigma.to(self.u.device).to(torch.float32).reshape(1, -1, 1), self.u.reshape(1, -1, 1)).argmin(2)
+            index = torch.cdist(sigma.to(torch.float32).reshape(1, -1, 1), self.u.reshape(1, -1, 1)).argmin(2)
             result = index if return_index else self.u[index.flatten()].to(sigma.dtype)
-            return result.reshape(sigma.shape).to(sigma.device)
+            return result.reshape(sigma.shape)
         else:
             return torch.as_tensor(sigma)
         

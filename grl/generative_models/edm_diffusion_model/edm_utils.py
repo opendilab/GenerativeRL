@@ -4,8 +4,7 @@ from easydict import EasyDict
 
 ############# Sampling Section #############
 
-# Scheduling in Table 1
-    
+# Scheduling in Table 1 in paper https://arxiv.org/abs/2206.00364
 SIGMA_T = {
     "VP_edm": lambda t, beta_d=19.9, beta_min=0.1: ((0.5 * beta_d * (t ** 2) + beta_min * t).exp() - 1) ** 0.5,
     "VE_edm": lambda t, **kwargs: t.sqrt(),

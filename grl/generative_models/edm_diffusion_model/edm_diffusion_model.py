@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Literal
+from typing import Optional, Tuple, Union
 from dataclasses import dataclass
 
 import numpy as np
@@ -10,12 +10,15 @@ import torch.optim as optim
 from easydict import EasyDict
 from functools import partial
 
-from .edm_preconditioner import PreConditioner
-from .edm_utils import SIGMA_T, SIGMA_T_DERIV, SIGMA_T_INV, SCALE_T, SCALE_T_DERIV, INITIAL_SIGMA_MAX, INITIAL_SIGMA_MIN
-from .edm_utils import DEFAULT_SOLVER_PARAM
 from grl.generative_models.intrinsic_model import IntrinsicModel
+from grl.utils import find_parameters
 from grl.utils import set_seed
 from grl.utils.log import log
+
+from .edm_preconditioner import PreConditioner
+from .edm_utils import SIGMA_T, SIGMA_T_DERIV, SIGMA_T_INV
+from .edm_utils import SCALE_T, SCALE_T_DERIV
+from .edm_utils import INITIAL_SIGMA_MAX, INITIAL_SIGMA_MIN, DEFAULT_SOLVER_PARAM
 
 class Simple(nn.Module):
     def __init__(self):
@@ -31,16 +34,28 @@ class Simple(nn.Module):
         return self.model(x)
 
 class EDMModel(nn.Module):
-    
+    """
+    Overview:
+        An implementation of EDM, which eludicates diffusion based generative model through preconditioning, training, sampling.
+        This implementation supports 4 types: `VP_edm`(DDPM-SDE), `VE_edm` (SGM-SDE), `iDDPM_edm`, `EDM`. More details see Table 1 in paper
+        EDM class utilizes different params and executes different scheules during precondition, training and sample process. 
+        Sampling supports 1st order Euler step and 2nd order Heun step as Algorithm 1 in paper.
+        For EDM type itself, stochastic sampler as Algorithm 2 in paper is also supported.    
+    Interface:
+        ``__init__``, ``forward``, ``sample``
+    Reference:
+        EDM original paper: https://arxiv.org/abs/2206.00364
+        Code reference: https://github.com/NVlabs/edm
+    """
     def __init__(self, config: Optional[EasyDict]=None) -> None:
         
         super().__init__()
-        self.config= config
+        self.config = config
         # self.x_size = config.x_size
         self.device = config.device
         
         # EDM Type ["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
-        self.edm_type: str = config.edm_model.path.edm_type
+        self.edm_type = config.edm_model.path.edm_type
         assert self.edm_type in ["VP_edm", "VE_edm", "iDDPM_edm", "EDM"], \
             f"Your edm type should in 'VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM'], but got {self.edm_type}"
         
@@ -58,7 +73,8 @@ class EDMModel(nn.Module):
         
         #* 3. Solver setup
         self.solver_type = config.edm_model.solver.solver_type
-        assert self.solver_type in ['euler', 'heun']
+        assert self.solver_type in ['euler', 'heun'], \
+            f"Your solver type should in ['euler', 'heun'], but got {self.solver_type}"
         
         self.solver_params = DEFAULT_SOLVER_PARAM
         self.solver_params.update(config.edm_model.solver.params)
@@ -70,7 +86,7 @@ class EDMModel(nn.Module):
         self.sigma_max = INITIAL_SIGMA_MAX[self.edm_type] if "sigma_max" not in self.params else self.params.sigma_max          
 
             
-    def get_type(self):
+    def get_type(self) -> str:
         return "EDMModel"
 
     # For VP_edm
@@ -102,7 +118,7 @@ class EDMModel(nn.Module):
     
     def forward(self, 
                 x: Tensor, 
-                class_labels=None) -> Tensor:
+                class_labels: Tensor=None) -> Tensor:
         x = x.to(self.device)
         sigma, weight = self._sample_sigma_weight_train(x, **self.params)
         n = torch.randn_like(x) * sigma
@@ -111,7 +127,7 @@ class EDMModel(nn.Module):
         return loss
     
     
-    def _get_sigma_steps_t_steps(self, num_steps=18, epsilon_s=1e-3, rho=7):
+    def _get_sigma_steps_t_steps(self, num_steps: int=18, epsilon_s: float=1e-3, rho: Union[int, float]=7):
         """
         Overview:
             Get the schedule of sigma according to differernt t schedules.
@@ -204,7 +220,7 @@ class EDMModel(nn.Module):
         if not use_stochastic:
             # Main sampling loop
             t_next = t_steps[0]
-            x_next = latents.to(torch.float64) * (sigma(t_next) * scale(t_next))
+            x_next = latents * (sigma(t_next) * scale(t_next))
             for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])): # 0, ..., N-1
                 x_cur = x_next
 
@@ -215,7 +231,7 @@ class EDMModel(nn.Module):
 
                 # Euler step.
                 h = t_next - t_hat
-                denoised = self.preconditioner(x_hat / scale(t_hat), sigma(t_hat), class_labels).to(torch.float64)
+                denoised = self.preconditioner(x_hat / scale(t_hat), sigma(t_hat), class_labels)
                 d_cur = (sigma_deriv(t_hat) / sigma(t_hat) + scale_deriv(t_hat) / scale(t_hat)) * x_hat - sigma_deriv(t_hat) * scale(t_hat) / sigma(t_hat) * denoised
                 x_prime = x_hat + alpha * h * d_cur
                 t_prime = t_hat + alpha * h
@@ -225,13 +241,13 @@ class EDMModel(nn.Module):
                     x_next = x_hat + h * d_cur
                 else:
                     assert self.solver_type == 'heun'
-                    denoised = self.preconditioner(x_prime / scale(t_prime), sigma(t_prime), class_labels).to(torch.float64)
+                    denoised = self.preconditioner(x_prime / scale(t_prime), sigma(t_prime), class_labels)
                     d_prime = (sigma_deriv(t_prime) / sigma(t_prime) + scale_deriv(t_prime) / scale(t_prime)) * x_prime - sigma_deriv(t_prime) * scale(t_prime) / sigma(t_prime) * denoised
                     x_next = x_hat + h * ((1 - 1 / (2 * alpha)) * d_cur + 1 / (2 * alpha) * d_prime)
         
         else:
             assert self.edm_type == "EDM", f"Stochastic can only use in EDM, but your precond type is {self.edm_type}"
-            x_next = latents.to(torch.float64) * t_steps[0]
+            x_next = latents * t_steps[0]
             for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])): # 0, ..., N-1
                 x_cur = x_next
 
@@ -241,13 +257,13 @@ class EDMModel(nn.Module):
                 x_hat = x_cur + (t_hat ** 2 - t_cur ** 2).sqrt() * S_noise * torch.randn_like(x_cur)
 
                 # Euler step.
-                denoised = self.preconditioner(x_hat, t_hat, class_labels).to(torch.float64)
+                denoised = self.preconditioner(x_hat, t_hat, class_labels)
                 d_cur = (x_hat - denoised) / t_hat
                 x_next = x_hat + (t_next - t_hat) * d_cur
 
                 # Apply 2nd order correction.
                 if i < num_steps - 1:
-                    denoised = self.preconditioner(x_next, t_next, class_labels).to(torch.float64)
+                    denoised = self.preconditioner(x_next, t_next, class_labels)
                     d_prime = (x_next - denoised) / t_next
                     x_next = x_hat + (t_next - t_hat) * (0.5 * d_cur + 0.5 * d_prime)
 
