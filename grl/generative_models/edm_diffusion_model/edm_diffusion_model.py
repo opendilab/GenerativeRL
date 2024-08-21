@@ -119,6 +119,11 @@ class EDMModel(nn.Module):
             rand_uniform = torch.rand(*rand_shape, device=self.device)
             sigma = self.sigma_min * ((self.sigma_max / self.sigma_min) ** rand_uniform)
             weight = 1 / sigma ** 2
+        elif self.edm_type == "iDDPM_edm":
+            u = self.preconditioner.u
+            sigma_index = torch.randint(0, self.params.M - 1, rand_shape, device=self.device)
+            sigma = u[sigma_index]
+            weight = 1 / sigma ** 2
         elif self.edm_type == "EDM":
             P_mean = params.P_mean
             P_std = params.P_std

@@ -37,14 +37,14 @@ config = EasyDict(
         device=device,  
         edm_model=dict(  
             path=dict(
-                edm_type="EDM", # *["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
+                edm_type="iDDPM_edm", # *["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
                 params=dict(
                     #^ 1: VP_edm
                     # beta_d=19.9, 
                     # beta_min=0.1, 
                     # M=1000, 
                     # epsilon_t=1e-5,
-                    # epsilon_s=1e-3,
+                    # epsilon_s=1e-4,
                     #^ 2: VE_edm
                     # sigma_min=0.02,
                     # sigma_max=100,
@@ -53,11 +53,11 @@ config = EasyDict(
                     # C_2=0.008,
                     # M=1000,
                     #^ 4: EDM
-                    sigma_min=0.002,
-                    sigma_max=80,
-                    sigma_data=0.5,
-                    P_mean=-1.21,
-                    P_std=1.21,
+                    # sigma_min=0.002,
+                    # sigma_max=80,
+                    # sigma_data=0.5,
+                    # P_mean=-1.21,
+                    # P_std=1.21,
                 )
             ),
 
@@ -217,7 +217,7 @@ if __name__ == "__main__":
     
     for i in range(10):
         edm_diffusion_model.train()
-        loss = edm_diffusion_model(batch_data).mean()
+        loss = edm_diffusion_model(batch_data)
         optimizer.zero_grad()
         loss.backward()
         gradien_norm = torch.nn.utils.clip_grad_norm_(

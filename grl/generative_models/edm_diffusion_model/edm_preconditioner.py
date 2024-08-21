@@ -32,8 +32,8 @@ class PreConditioner(nn.Module):
             self.M = precond_params.M
             self.epsilon_t = precond_params.epsilon_t
             
-            self.sigma_min = SIGMA_T["VP_edm"](self.epsilon_t, self.beta_d, self.beta_min)
-            self.sigma_max = SIGMA_T["VP_edm"](1, self.beta_d, self.beta_min)
+            self.sigma_min = float(SIGMA_T["VP_edm"](torch.tensor(self.epsilon_t), self.beta_d, self.beta_min))
+            self.sigma_max = float(SIGMA_T["VP_edm"](torch.tensor(1), self.beta_d, self.beta_min))
             
         elif self.precondition_type == "VE_edm":
             self.sigma_min = precond_params.sigma_min
