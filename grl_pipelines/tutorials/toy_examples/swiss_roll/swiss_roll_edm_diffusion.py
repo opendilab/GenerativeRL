@@ -37,7 +37,7 @@ config = EasyDict(
         device=device,  
         edm_model=dict(  
             path=dict(
-                edm_type="iDDPM_edm", # *["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
+                edm_type="EDM", # *["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
                 params=dict(
                     #^ 1: VP_edm
                     # beta_d=19.9, 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     seed_value = set_seed()
     log.info(f"start exp with seed value {seed_value}.")
     edm_diffusion_model = EDMModel(config=config).to(config.device)
-    edm_diffusion_model = torch.compile(edm_diffusion_model)
+    # edm_diffusion_model = torch.compile(edm_diffusion_model)
     # get data
     data = make_swiss_roll(n_samples=config.parameter.data_num, noise=0.01)[0].astype(
         np.float32

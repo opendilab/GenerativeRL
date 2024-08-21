@@ -101,16 +101,18 @@ class PreConditioner(nn.Module):
             c_noise = sigma.log() / 4
         return c_skip, c_out, c_in, c_noise
     
-    def forward(self, x: Tensor, sigma: Tensor, class_labels=None, **model_kwargs):
+    def forward(self, sigma: Tensor, x: Tensor, condition: Tensor=None, **model_kwargs):
         # Suppose the first dim of x is batch size
         x = x.to(torch.float32)
         sigma_shape = [x.shape[0]] + [1] * (x.ndim - 1)
+        
+        
         if sigma.numel() == 1:
             sigma = sigma.view(-1).expand(*sigma_shape)
         
         dtype = torch.float16 if (self.use_mixes_precision and x.device.type == 'cuda') else torch.float32
         c_skip, c_out, c_in, c_noise = self.get_precondition_c(sigma)
-        F_x = self.base_denoise_model((c_in * x).to(dtype), c_noise.flatten(), class_labels=class_labels, **model_kwargs)
+        F_x = self.base_denoise_model(c_noise.flatten(), (c_in * x).to(dtype), condition=condition, **model_kwargs)
         assert F_x.dtype == dtype
         D_x = c_skip * x + c_out * F_x.to(torch.float32)
         return D_x

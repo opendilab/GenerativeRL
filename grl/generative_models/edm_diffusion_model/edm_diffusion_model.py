@@ -31,7 +31,7 @@ class Simple(nn.Module):
             nn.ReLU(),
             nn.Linear(32, 2)
         )
-    def forward(self, x, noise, class_labels=None):
+    def forward(self, x, noise, condition=None):
         return self.model(x)
 
 class EDMModel(nn.Module):
@@ -61,7 +61,7 @@ class EDMModel(nn.Module):
             f"Your edm type should in 'VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM'], but got {self.edm_type}"
         
         #* 1. Construct basic Unet architecture through params in config
-        self.base_denoise_network = Simple()
+        self.base_denoise_network = IntrinsicModel(config.edm_model.model.args)
 
         #* 2. Precond setup
         self.params = EasyDict(DEFAULT_PARAM[self.edm_type])
@@ -134,11 +134,11 @@ class EDMModel(nn.Module):
             weight = (sigma ** 2 + sigma_data ** 2) / (sigma * sigma_data) ** 2
         return sigma, weight
     
-    def forward(self, x: Tensor, class_labels: Tensor=None) -> Tensor:
+    def forward(self, x: Tensor, condition: Tensor=None) -> Tensor:
         x = x.to(self.device)
         sigma, weight = self._sample_sigma_weight_train(x, **self.params)
         n = torch.randn_like(x) * sigma
-        D_xn = self.preconditioner(x+n, sigma, class_labels=class_labels)
+        D_xn = self.preconditioner(sigma, x+n, condition=condition)
         loss = weight * ((D_xn - x) ** 2)
         return loss.mean()
     
@@ -165,7 +165,7 @@ class EDMModel(nn.Module):
         self.sigma_max = min(self.sigma_max, self.preconditioner.sigma_max)
     
         # Define time steps in terms of noise level
-        step_indices = torch.arange(num_steps, dtype=torch.float64, device=self.device)
+        step_indices = torch.arange(num_steps, dtype=torch.float32, device=self.device)
         sigma_steps = None
         if self.edm_type == "VP_edm":
             vp_beta_d = 2 * (np.log(self.sigma_min ** 2 + 1) / epsilon_s - np.log(self.sigma_max ** 2 + 1)) / (epsilon_s - 1)
@@ -181,7 +181,7 @@ class EDMModel(nn.Module):
         elif self.edm_type == "iDDPM_edm":
             M, C_1, C_2 = self.params.M, self.params.C_1, self.params.C_2
             
-            u = torch.zeros(M + 1, dtype=torch.float64, device=self.device)
+            u = torch.zeros(M + 1, dtype=torch.float, device=self.device)
             alpha_bar = lambda j: (0.5 * np.pi * j / M / (C_2 + 1)).sin() ** 2
             for j in torch.arange(self.params.M, 0, -1, device=self.device): # M, ..., 1
                 u[j - 1] = ((u[j] ** 2 + 1) / (alpha_bar(j - 1) / alpha_bar(j)).clip(min=C_1) - 1).sqrt()
@@ -231,7 +231,7 @@ class EDMModel(nn.Module):
                t_span, 
                batch_size,
                latents: Tensor, 
-               class_labels: Tensor=None, 
+               condition: Tensor=None, 
                use_stochastic: bool=False, 
                **solver_kwargs
         ) -> Tensor:
@@ -267,7 +267,7 @@ class EDMModel(nn.Module):
 
                 # Euler step.
                 h = t_next - t_hat
-                denoised = self.preconditioner(x_hat / scale(t_hat), sigma(t_hat), class_labels)
+                denoised = self.preconditioner(sigma(t_hat), x_hat / scale(t_hat), condition)
                 d_cur = (sigma_deriv(t_hat) / sigma(t_hat) + scale_deriv(t_hat) / scale(t_hat)) * x_hat - sigma_deriv(t_hat) * scale(t_hat) / sigma(t_hat) * denoised
                 x_prime = x_hat + alpha * h * d_cur
                 t_prime = t_hat + alpha * h
@@ -277,7 +277,7 @@ class EDMModel(nn.Module):
                     x_next = x_hat + h * d_cur
                 else:
                     assert self.solver_type == 'heun'
-                    denoised = self.preconditioner(x_prime / scale(t_prime), sigma(t_prime), class_labels)
+                    denoised = self.preconditioner(sigma(t_prime), x_prime / scale(t_prime), condition)
                     d_prime = (sigma_deriv(t_prime) / sigma(t_prime) + scale_deriv(t_prime) / scale(t_prime)) * x_prime - sigma_deriv(t_prime) * scale(t_prime) / sigma(t_prime) * denoised
                     x_next = x_hat + h * ((1 - 1 / (2 * alpha)) * d_cur + 1 / (2 * alpha) * d_prime)
         
@@ -293,13 +293,13 @@ class EDMModel(nn.Module):
                 x_hat = x_cur + (t_hat ** 2 - t_cur ** 2).sqrt() * S_noise * torch.randn_like(x_cur)
 
                 # Euler step.
-                denoised = self.preconditioner(x_hat, t_hat, class_labels)
+                denoised = self.preconditioner(t_hat, x_hat, condition)
                 d_cur = (x_hat - denoised) / t_hat
                 x_next = x_hat + (t_next - t_hat) * d_cur
 
                 # Apply 2nd order correction.
                 if i < num_steps - 1:
-                    denoised = self.preconditioner(x_next, t_next, class_labels)
+                    denoised = self.preconditioner(t_next, x_next, condition)
                     d_prime = (x_next - denoised) / t_next
                     x_next = x_hat + (t_next - t_hat) * (0.5 * d_cur + 0.5 * d_prime)
 
