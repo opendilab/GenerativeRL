@@ -21,18 +21,6 @@ from .edm_utils import SCALE_T, SCALE_T_DERIV
 from .edm_utils import INITIAL_SIGMA_MAX, INITIAL_SIGMA_MIN
 from .edm_utils import DEFAULT_PARAM, DEFAULT_SOLVER_PARAM
 
-class Simple(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.model = nn.Sequential(
-            nn.Linear(2, 32),
-            nn.ReLU(),
-            nn.Linear(32, 32), 
-            nn.ReLU(),
-            nn.Linear(32, 2)
-        )
-    def forward(self, x, noise, condition=None):
-        return self.model(x)
 
 class EDMModel(nn.Module):
     """
