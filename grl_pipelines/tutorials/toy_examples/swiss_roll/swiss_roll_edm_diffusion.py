@@ -64,10 +64,6 @@ config = EasyDict(
             solver=dict(
                 solver_type="heun", 
                 # *['euler', 'heun']
-                schedule="Linear", 
-                #* ['VP', 'VE', 'Linear']  Give "Linear" when edm type in ["iDDPM_edm", "EDM"]
-                scaling="none", 
-                #* ["VP", "none"]  Give "none" when edm type in ["VE_edm", "iDDPM_edm", "EDM"]
                 params=dict(
                     num_steps=18,
                     alpha=1, 
