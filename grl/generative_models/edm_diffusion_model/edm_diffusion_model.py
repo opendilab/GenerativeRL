@@ -42,14 +42,22 @@ class EDMModel(nn.Module):
         EDM class utilizes different params and executes different scheules during precondition, training and sample process. 
         Sampling supports 1st order Euler step and 2nd order Heun step as Algorithm 1 in paper.
         For EDM type itself, stochastic sampler as Algorithm 2 in paper is also supported.    
+    
     Interface:
         ``__init__``, ``forward``, ``sample``
+    
     Reference:
-        EDM original paper: https://arxiv.org/abs/2206.00364
+        EDM original paper link: https://arxiv.org/abs/2206.00364
         Code reference: https://github.com/NVlabs/edm
     """
     def __init__(self, config: Optional[EasyDict]=None) -> None:
-        
+        """
+        Overview:
+            Initialization of EDMModel.
+
+        Arguments:
+            config (:obj:`EasyDict`): The configuration.
+        """
         super().__init__()
         self.config = config
         self.x_size = config.x_size
@@ -100,13 +108,17 @@ class EDMModel(nn.Module):
         """
         Overview:
             Sample sigma from given distribution for training according to edm type.
+            More details refer to Training section in the Table 1 of EDM paper.
+            
+            ..math:
+                \sigma\sim p_{\mathrm{train}}, \lambda(\sigma)
             
         Arguments:
             x (:obj:`torch.Tensor`): The sample which needs to add noise.
             
         Returns:
             sigma (:obj:`torch.Tensor`): Sampled sigma from the distribution.
-            weight (:obj:`torch.Tensor`): Loss weight obtained from sampled sigma.
+            weight (:obj:`torch.Tensor`): Loss weight lambda(sigma) obtained from sampled sigma.
         """
         # assert the first dim of x is batch size
 
@@ -138,20 +150,25 @@ class EDMModel(nn.Module):
             weight = (sigma ** 2 + sigma_data ** 2) / (sigma * sigma_data) ** 2
         return sigma, weight
     
-    def forward(self, x, condition=None):
+    def forward(self, x: Tensor, condition: Optional[Tensor]=None):
         return self.sample(x, condition)
     
     def L2_denoising_matching_loss(
             self,
             x: Tensor,
             condition: Optional[Tensor]=None
-        ): 
+        ) -> Tensor: 
         """
         Overview:
-            Calculate the L2 denoising matching loss.
+            Calculate the L2 denoising matching loss. The denoise matching loss is given in Equation 2, 3 in EDM paper.
+            
+            ..math:
+                \mathbb{E}_{\sigma\sim p_{\mathrm{train}}}\mathbb{E}_{y\sim p_\mathrm{data}}\mathbb{E}_{n\sim \mathcal{N}(0, \sigma^2 \mathbf{I})} \left[\lambda(\sigma) \| \mathbf{D}(y+n) - y \|_2^2\right]
+            
         Arguments:
             x (:obj:`torch.Tensor`): The sample which needs to add noise.
-            condition (:obj:`torch.Tensor`): The condition for the sample. Default setting: None.
+            condition (:obj:`Optional[torch.Tensor]`): The condition for the sample.
+            
         Returns:
             loss (:obj:`torch.Tensor`): The L2 denoising matching loss.
         """
@@ -164,11 +181,15 @@ class EDMModel(nn.Module):
 
     def _get_sigma_steps_t_steps(self, 
                                  num_steps: int=18, 
-                                 epsilon_s: float=1e-3, rho: Union[int, float]=7
-                            ):
+                                 epsilon_s: float=1e-3, 
+                                 rho: Union[int, float]=7
+                            ) -> Tuple[Tensor, Tensor]:
         """
         Overview:
-            Get the schedule of sigma according to differernt t schedules.
+            Get the schedule of sigma steps and t steps according to differernt t schedules (or sigma schedules).
+            
+            ..math:
+                \sigma_{i<N}, t_{i<N}, t_N=0, 
             
         Arguments:
             num_steps (:obj:`int`): The number of timesteps during denoise sampling. Default setting: 18.
@@ -177,7 +198,7 @@ class EDMModel(nn.Module):
         
         Returns:
             sigma_steps (:obj:`torch.Tensor`): The scheduled sigma.
-            t_steps (:obj:`torch.Tensor`): The scheduled t.
+            t_steps (:obj:`torch.Tensor`): The scheduled t (concat with the last timestep t_N which is 0).
         
         """
         # Define time steps in terms of noise level
@@ -213,7 +234,7 @@ class EDMModel(nn.Module):
         else:
             raise NotImplementedError(f"Please check your edm_type: {self.edm_type}, which is not in ['VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM']")
         
-        t_steps = torch.cat([orig_t_steps, torch.zeros_like(orig_t_steps[:1])]) # t_N = 0E
+        t_steps = torch.cat([orig_t_steps, torch.zeros_like(orig_t_steps[:1])]) # t_N = 0
         
         return sigma_steps, t_steps  
     
@@ -222,7 +243,11 @@ class EDMModel(nn.Module):
                                 -> Tuple[Callable, Callable, Callable, Callable, Callable]:
         """
         Overview:
-            Get sigma(t) for different solver schedules.
+            Get sigma(t) and scale(t) for different solver schedules.
+            More details in sampling section of Table 1 in EDM paper.
+            
+            ..math:
+                \sigma(t), \sigma^\prime(t), \sigma^{-1}(\sigma), s(t), s^\prime(t)
             
         Returns:
             sigma: (:obj:`Callable`): sigma(t)
@@ -244,14 +269,27 @@ class EDMModel(nn.Module):
 
     def sample(
             self, 
-            t_span: torch.Tensor = None,
+            t_span: Tensor = None,
             batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
-            x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
-            condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+            x_0: Union[Tensor, TensorDict, treetensor.torch.Tensor] = None,
+            condition: Union[Tensor, TensorDict, treetensor.torch.Tensor] = None,
             with_grad: bool = False,
             solver_config: EasyDict = None,
-        ):
+        ) -> Tensor:
+        """
+        Overview:
+            Use forward path of the diffusion model given the sampled x. Note that this is not the reverse process, and thus is not designed for sampling form the diffusion model.
+            Rather, it is used for encode a sampled x to the latent space.
 
+        Arguments:
+            t_span (:obj:`torch.Tensor`): The time span.
+            batch_size: (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): The batch size of sampling.
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+        
+        """
         return self.sample_forward_process(
             t_span=t_span,
             batch_size=batch_size,

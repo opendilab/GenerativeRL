@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Literal
+from typing import Union, Optional, Tuple, Literal
 from dataclasses import dataclass
 
 from torch import Tensor, as_tensor
@@ -21,10 +21,23 @@ class PreConditioner(nn.Module):
     """
     def __init__(self, 
                  precondition_type: Literal["VP_edm", "VE_edm", "iDDPM_edm", "EDM"] = "EDM",
-                 denoise_model: nn.Module = None, 
+                 denoise_model: Optional[nn.Module] = None, 
                  use_mixes_precision: bool = False, 
                  **precond_params) -> None:
+        """
+        Overview:
+            Initialize preconditioner for Network preconditioning in EDM.
+            More details in Network and Preconditioning in Section 5 of EDM paper.
+            
+        Arguments:
+            precondition_type (:obj:`Literal["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]`): The precond type.
+            denoise_model (:obj:`Optional[nn.Module]`): The basic denoise network.
+            use_mixes_precision (:obj:`bool`): If mixes precision is used.
         
+        Reference:
+            EDM original paper link: https://arxiv.org/abs/2206.00364
+            Code reference: https://github.com/NVlabs/edm
+        """
         super().__init__()
         log.info(f"Precond_params: {precond_params}")
         precond_params = EasyDict(precond_params)
@@ -70,11 +83,20 @@ class PreConditioner(nn.Module):
         
         else:
             raise ValueError(f"Please check your precond type {self.precondition_type} is in ['VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM']")
-            
-            
+                    
 
-    def round_sigma(self, sigma: Tensor, return_index: bool=False) -> Tensor:
+    def round_sigma(self, sigma: Union[Tensor, float], return_index: bool=False) -> Tensor:
+        """
+        Overview:
+            return sigma as tensor. When in iDDPM_edm mode, we need index as sigma.
         
+        Arguments:
+            sigma (:obj:`Union[torch.Tensor, float]`): Input sigma.
+            return_index (:obj:`bool`): whether index is returned. Only iDDPM_edm type needs it.
+            
+        Returns:
+            sigma (:obj:`torch.Tensor`): Output sigma in Tensor format.
+        """
         if self.precondition_type == "iDDPM_edm":
             sigma = torch.as_tensor(sigma)
             index = torch.cdist(sigma.to(torch.float32).reshape(1, -1, 1), self.u.reshape(1, -1, 1)).argmin(2)
@@ -84,7 +106,23 @@ class PreConditioner(nn.Module):
             return torch.as_tensor(sigma)
         
     def get_precondition_c(self, sigma: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+        """
+        Overview:
+            Obtain precondition c according to sigma including c_skip, c_out, c_in, c_noise 
+            Accordig to section Network and preconditioning Table 1, 4 precondition functions are shown as follows:
+                
+            .. math::
+                \mathbf{c}_{\mathrm{skip}}(\sigma), \mathbf{c}_{\mathrm{out}}(\sigma), \mathbf{c}_{\mathrm{in}}(\sigma), \mathbf{c}_{\mathrm{noise}}(\sigma)
         
+        Arguments:
+            sigma (:obj:`torch.Tensor`): Input sigma.
+        
+        Returns:
+            c_skip (:obj:`torch.Tensor`): Output c_skip(sigma).
+            c_out (:obj:`torch.Tensor`): Output c_out(sigma). 
+            c_in (:obj:`torch.Tensor`): Output c_in(sigma).
+            c_noise (:obj:`torch.Tensor`): Output c_noise(sigma).
+        """
         if self.precondition_type == "VP_edm":
             c_skip = 1
             c_out = -sigma
@@ -107,7 +145,22 @@ class PreConditioner(nn.Module):
             c_noise = sigma.log() / 4
         return c_skip, c_out, c_in, c_noise
     
-    def forward(self, sigma: Tensor, x: Tensor, condition: Tensor=None, **model_kwargs):
+    def forward(self, sigma: Tensor, x: Tensor, condition: Optional[Tensor]=None, **model_kwargs):
+        """
+        Overview:
+            Obtain denoiser from basic denoise network and precondition scaling functions, which is given as follows:
+            
+            .. math:
+                \mathbf{D}_{\theta} (\mathbf{x}; \sigma; c) = \mathbf{c}_{\mathrm{skip}}(\sigma) \mathbf{x} + \mathbf{c}_{\mathrm{out}}(\sigma) \mathbf{F}_{\theta}(\mathbf{c}_{\mathrm{in}}(\sigma)\mathbf{x}; \mathbf{c}_{\mathrm{noise}}(\sigma); c)
+        
+        Arguments:
+            sigma (:obj:`torch.Tensor`): Input sigma.
+            x (:obj:`torch.Tensor`): Input x.
+            condition: (:obj:`Optional[torch.Tensor]`): Input condition.
+            
+        Returns:
+            D_x (:obj:`torch.Tensor`): Output denoiser.
+        """
         # Suppose the first dim of x is batch size
         x = x.to(torch.float32)
         sigma_shape = [x.shape[0]] + [1] * (x.ndim - 1)
