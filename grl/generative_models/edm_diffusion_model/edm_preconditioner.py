@@ -12,10 +12,16 @@ from grl.utils.log import log
 from .edm_utils import SIGMA_T, SIGMA_T_INV
 
 class PreConditioner(nn.Module):
-    
+    """
+    Overview:
+        Precondition step in EDM.
+        
+    Interface:
+        ``__init__``, ``round_sigma``, ``get_precondition_c``, ``forward``
+    """
     def __init__(self, 
                  precondition_type: Literal["VP_edm", "VE_edm", "iDDPM_edm", "EDM"] = "EDM",
-                 base_denoise_model: nn.Module = None, 
+                 denoise_model: nn.Module = None, 
                  use_mixes_precision: bool = False, 
                  **precond_params) -> None:
         
@@ -23,7 +29,7 @@ class PreConditioner(nn.Module):
         log.info(f"Precond_params: {precond_params}")
         precond_params = EasyDict(precond_params)
         self.precondition_type = precondition_type
-        self.base_denoise_model = base_denoise_model
+        self.denoise_model = denoise_model
         self.use_mixes_precision = use_mixes_precision
         
         if self.precondition_type == "VP_edm":
@@ -67,7 +73,7 @@ class PreConditioner(nn.Module):
             
             
 
-    def round_sigma(self, sigma, return_index=False):
+    def round_sigma(self, sigma: Tensor, return_index: bool=False) -> Tensor:
         
         if self.precondition_type == "iDDPM_edm":
             sigma = torch.as_tensor(sigma)
@@ -109,10 +115,11 @@ class PreConditioner(nn.Module):
         
         if sigma.numel() == 1:
             sigma = sigma.view(-1).expand(*sigma_shape)
-        
+        else:
+            sigma = sigma.view(*sigma_shape)
         dtype = torch.float16 if (self.use_mixes_precision and x.device.type == 'cuda') else torch.float32
         c_skip, c_out, c_in, c_noise = self.get_precondition_c(sigma)
-        F_x = self.base_denoise_model(c_noise.flatten(), (c_in * x).to(dtype), condition=condition, **model_kwargs)
+        F_x = self.denoise_model(c_noise.flatten(), (c_in * x).to(dtype), condition=condition, **model_kwargs)
         assert F_x.dtype == dtype
         D_x = c_skip * x + c_out * F_x.to(torch.float32)
         return D_x

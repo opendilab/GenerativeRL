@@ -43,14 +43,14 @@ SCALE_T_DERIV = {
 
 
 INITIAL_SIGMA_MIN = {
-    "VP_edm": SIGMA_T["VP_edm"](torch.tensor(1e-3), 19.9, 0.1), 
+    "VP_edm": float(SIGMA_T["VP_edm"](torch.tensor(1e-3), 19.9, 0.1)), 
     "VE_edm": 0.02, 
     "iDDPM_edm": 0.002, 
     "EDM": 0.002
 }
 
 INITIAL_SIGMA_MAX = {
-    "VP_edm": SIGMA_T["VP_edm"](torch.tensor(1.), 19.9, 0.1), 
+    "VP_edm": float(SIGMA_T["VP_edm"](torch.tensor(1.), 19.9, 0.1)), 
     "VE_edm": 100, 
     "iDDPM_edm": 81, 
     "EDM": 80

@@ -1,16 +1,28 @@
-from typing import Optional, Tuple, Union, Callable
+from typing import Any, Callable, Dict, List, Tuple, Union, Optional
 from dataclasses import dataclass
 
 import numpy as np
-import torch
 from torch import Tensor
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import treetensor
+from tensordict import TensorDict
+
 import torch.optim as optim
 from easydict import EasyDict
 from functools import partial
 
 from grl.generative_models.intrinsic_model import IntrinsicModel
+from grl.generative_models.random_generator import gaussian_random_variable
+from grl.numerical_methods.numerical_solvers import get_solver
+from grl.numerical_methods.numerical_solvers.dpm_solver import DPMSolver
+from grl.numerical_methods.numerical_solvers.ode_solver import (
+    DictTensorODESolver,
+    ODESolver,
+)
+from grl.numerical_methods.numerical_solvers.sde_solver import SDESolver
+
 from grl.utils import find_parameters
 from grl.utils import set_seed
 from grl.utils.log import log
@@ -40,38 +52,42 @@ class EDMModel(nn.Module):
         
         super().__init__()
         self.config = config
-        # self.x_size = config.x_size
+        self.x_size = config.x_size
         self.device = config.device
         
+
+        self.gaussian_generator = gaussian_random_variable(
+            config.x_size,
+            config.device,
+            config.use_tree_tensor if hasattr(config, "use_tree_tensor") else False,
+        )
+
+        if hasattr(config, "solver"):
+            self.solver = get_solver(config.solver.type)(**config.solver.args)
+
         # EDM Type ["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
-        self.edm_type = config.edm_model.path.edm_type
+        self.edm_type = config.path.edm_type
         assert self.edm_type in ["VP_edm", "VE_edm", "iDDPM_edm", "EDM"], \
             f"Your edm type should in 'VP_edm', 'VE_edm', 'iDDPM_edm', 'EDM'], but got {self.edm_type}"
         
         #* 1. Construct basic Unet architecture through params in config
-        self.base_denoise_network = IntrinsicModel(config.edm_model.model.args)
+        self.model = IntrinsicModel(config.model.args)
 
         #* 2. Precond setup
         self.params = EasyDict(DEFAULT_PARAM[self.edm_type])
-        self.params.update(config.edm_model.path.params)
+        self.params.update(config.path.params)
         log.info(f"Using edm type: {self.edm_type}\nParam is {self.params}")
         self.preconditioner = PreConditioner(
             self.edm_type, 
-            base_denoise_model=self.base_denoise_network, 
+            denoise_model=self.model, 
             use_mixes_precision=False,
             **self.params
         )
-        
-        #* 3. Solver setup
-        self.solver_type = config.edm_model.solver.solver_type
-        assert self.solver_type in ['euler', 'heun'], \
-            f"Your solver type should in ['euler', 'heun'], but got {self.solver_type}"
-        
+       
         self.solver_params = EasyDict(DEFAULT_SOLVER_PARAM)
-        self.solver_params.update(config.edm_model.solver.params)
-        log.info(f"Using solver type: {self.solver_type}\nSolver param is {self.solver_params}")
+        self.solver_params.update(config.sample_params)
+
         # Initialize sigma_min and sigma_max if not provided
-        
         
         self.sigma_min = INITIAL_SIGMA_MIN[self.edm_type] if "sigma_min" not in self.params else self.params.sigma_min          
         self.sigma_max = INITIAL_SIGMA_MAX[self.edm_type] if "sigma_max" not in self.params else self.params.sigma_max          
@@ -80,7 +96,7 @@ class EDMModel(nn.Module):
     def get_type(self) -> str:
         return "EDMModel"
 
-    def _sample_sigma_weight_train(self, x: Tensor, **params) -> Tuple[Tensor, Tensor]:
+    def _sample_sigma_weight_train(self, x: Tensor) -> Tuple[Tensor, Tensor]:
         """
         Overview:
             Sample sigma from given distribution for training according to edm type.
@@ -93,12 +109,12 @@ class EDMModel(nn.Module):
             weight (:obj:`torch.Tensor`): Loss weight obtained from sampled sigma.
         """
         # assert the first dim of x is batch size
-        params = EasyDict(params)
+
         rand_shape = [x.shape[0]] + [1] * (x.ndim - 1) 
         if self.edm_type == "VP_edm":
-            epsilon_t = params.epsilon_t
-            beta_d = params.beta_d
-            beta_min = params.beta_min
+            epsilon_t = self.params.epsilon_t
+            beta_d = self.params.beta_d
+            beta_min = self.params.beta_min
             
             rand_uniform = torch.rand(*rand_shape, device=self.device)
             sigma = SIGMA_T["VP_edm"](1 + rand_uniform * (epsilon_t - 1), beta_d, beta_min)
@@ -113,28 +129,43 @@ class EDMModel(nn.Module):
             sigma = u[sigma_index]
             weight = 1 / sigma ** 2
         elif self.edm_type == "EDM":
-            P_mean = params.P_mean
-            P_std = params.P_std
-            sigma_data = params.sigma_data
+            P_mean = self.params.P_mean
+            P_std = self.params.P_std
+            sigma_data = self.params.sigma_data
             
             rand_normal = torch.randn(*rand_shape, device=self.device)
             sigma = (rand_normal * P_std + P_mean).exp()
             weight = (sigma ** 2 + sigma_data ** 2) / (sigma * sigma_data) ** 2
         return sigma, weight
     
-    def forward(self, x: Tensor, condition: Tensor=None) -> Tensor:
-        x = x.to(self.device)
-        sigma, weight = self._sample_sigma_weight_train(x, **self.params)
+    def forward(self, x, condition=None):
+        return self.sample(x, condition)
+    
+    def L2_denoising_matching_loss(
+            self,
+            x: Tensor,
+            condition: Optional[Tensor]=None
+        ): 
+        """
+        Overview:
+            Calculate the L2 denoising matching loss.
+        Arguments:
+            x (:obj:`torch.Tensor`): The sample which needs to add noise.
+            condition (:obj:`torch.Tensor`): The condition for the sample. Default setting: None.
+        Returns:
+            loss (:obj:`torch.Tensor`): The L2 denoising matching loss.
+        """
+
+        sigma, weight = self._sample_sigma_weight_train(x)
         n = torch.randn_like(x) * sigma
         D_xn = self.preconditioner(sigma, x+n, condition=condition)
         loss = weight * ((D_xn - x) ** 2)
         return loss.mean()
-    
-    
+
     def _get_sigma_steps_t_steps(self, 
                                  num_steps: int=18, 
                                  epsilon_s: float=1e-3, rho: Union[int, float]=7
-                            )-> Tuple[Tensor, Tensor]:
+                            ):
         """
         Overview:
             Get the schedule of sigma according to differernt t schedules.
@@ -149,9 +180,6 @@ class EDMModel(nn.Module):
             t_steps (:obj:`torch.Tensor`): The scheduled t.
         
         """
-        self.sigma_min = max(self.sigma_min, self.preconditioner.sigma_min)
-        self.sigma_max = min(self.sigma_max, self.preconditioner.sigma_max)
-    
         # Define time steps in terms of noise level
         step_indices = torch.arange(num_steps, dtype=torch.float32, device=self.device)
         sigma_steps = None
@@ -213,25 +241,106 @@ class EDMModel(nn.Module):
         scale_deriv = partial(SCALE_T_DERIV[self.edm_type], beta_d=vp_beta_d, beta_min=vp_beta_min)
 
         return sigma, sigma_deriv, sigma_inv, scale, scale_deriv
-  
-    
-    def sample(self, 
-               t_span, 
-               batch_size,
-               latents: Tensor, 
-               condition: Tensor=None, 
-               use_stochastic: bool=False, 
-               **solver_kwargs
-        ) -> Tensor:
+
+    def sample(
+            self, 
+            t_span: torch.Tensor = None,
+            batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
+            x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+            condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+            with_grad: bool = False,
+            solver_config: EasyDict = None,
+        ):
+
+        return self.sample_forward_process(
+            t_span=t_span,
+            batch_size=batch_size,
+            x_0=x_0,
+            condition=condition,
+            with_grad=with_grad,
+            solver_config=solver_config,
+        )[-1]
+
+    def sample_forward_process(
+            self, 
+            t_span: torch.Tensor = None,
+            batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
+            x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+            condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+            with_grad: bool = False,
+            solver_config: EasyDict = None,
+        ):
         
-        # Get sigmas, scales, and timesteps
-        log.info(f"Start sampling!")
-        num_steps = self.solver_params.num_steps
-        epsilon_s = self.solver_params.epsilon_s
-        rho = self.solver_params.rho
+        if t_span is not None:
+            t_span = t_span.to(self.device)
+
+        if batch_size is None:
+            extra_batch_size = torch.tensor((1,), device=self.device)
+        elif isinstance(batch_size, int):
+            extra_batch_size = torch.tensor((batch_size,), device=self.device)
+        else:
+            if (
+                isinstance(batch_size, torch.Size)
+                or isinstance(batch_size, Tuple)
+                or isinstance(batch_size, List)
+            ):
+                extra_batch_size = torch.tensor(batch_size, device=self.device)
+            else:
+                assert False, "Invalid batch size"
+
+        if x_0 is not None and condition is not None:
+            assert (
+                x_0.shape[0] == condition.shape[0]
+            ), "The batch size of x_0 and condition must be the same"
+            data_batch_size = x_0.shape[0]
+        elif x_0 is not None:
+            data_batch_size = x_0.shape[0]
+        elif condition is not None:
+            data_batch_size = condition.shape[0]
+        else:
+            data_batch_size = 1
+
+        if solver_config is not None:
+            solver = get_solver(solver_config.type)(**solver_config.args)
+        else:
+            assert hasattr(
+                self, "solver"
+            ), "solver must be specified in config or solver_config"
+            solver = self.solver
+
+        if x_0 is None:
+            x = self.gaussian_generator(
+                batch_size=torch.prod(extra_batch_size) * data_batch_size
+            )
+            # x.shape = (B*N, D)
+        else:
+            if isinstance(self.x_size, int):
+                assert (
+                    torch.Size([self.x_size]) == x_0[0].shape
+                ), "The shape of x_0 must be the same as the x_size that is specified in the config"
+            elif (
+                isinstance(self.x_size, Tuple)
+                or isinstance(self.x_size, List)
+                or isinstance(self.x_size, torch.Size)
+            ):
+                assert (
+                    torch.Size(self.x_size) == x_0[0].shape
+                ), "The shape of x_0 must be the same as the x_size that is specified in the config"
+            else:
+                assert False, "Invalid x_size"
+
+            x = torch.repeat_interleave(x_0, torch.prod(extra_batch_size), dim=0)
+            # x.shape = (B*N, D)
+
+        if condition is not None:
+            condition = torch.repeat_interleave(
+                condition, torch.prod(extra_batch_size), dim=0
+            )
+            # condition.shape = (B*N, D)
+
         
-        latents = latents.to(self.device)
-        sigma_steps, t_steps = self._get_sigma_steps_t_steps(num_steps=num_steps, epsilon_s=epsilon_s, rho=rho)
+        sigma_steps, t_steps = self._get_sigma_steps_t_steps(num_steps=self.solver_params.num_steps, epsilon_s=self.solver_params.epsilon_s, rho=self.solver_params.rho)
+
         sigma, sigma_deriv, sigma_inv, scale, scale_deriv = self._get_sigma_deriv_inv_scale_deriv()
                 
         S_churn = self.solver_params.S_churn
@@ -240,56 +349,145 @@ class EDMModel(nn.Module):
         S_noise = self.solver_params.S_noise
         alpha = self.solver_params.alpha
         
-        
-        if not use_stochastic:
-            # Main sampling loop
-            t_next = t_steps[0]
-            x_next = latents * (sigma(t_next) * scale(t_next))
-            for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])): # 0, ..., N-1
-                x_cur = x_next
+        # # Main sampling loop
+        # t_next = t_steps[0]
+        # x_next = x_0 * (sigma(t_next) * scale(t_next))
+        # for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])): # 0, ..., N-1
+        #     x_cur = x_next
 
-                # Increase noise temporarily.
-                gamma = min(S_churn / num_steps, np.sqrt(2) - 1) if S_min <= sigma(t_cur) <= S_max else 0
-                t_hat = sigma_inv(self.preconditioner.round_sigma(sigma(t_cur) + gamma * sigma(t_cur)))
-                x_hat = scale(t_hat) / scale(t_cur) * x_cur + (sigma(t_hat) ** 2 - sigma(t_cur) ** 2).clip(min=0).sqrt() * scale(t_hat) * S_noise * torch.randn_like(x_cur)
+        #     # Euler step.
+        #     h = t_next - t_cur
+        #     denoised = self.preconditioner(sigma(t_cur), x_cur / scale(t_cur), condition)
+        #     d_cur = (sigma_deriv(t_cur) / sigma(t_cur) + scale_deriv(t_cur) / scale(t_cur)) * x_cur - sigma_deriv(t_cur) * scale(t_cur) / sigma(t_cur) * denoised
+            
+        #     x_next = x_cur + h * d_cur
 
-                # Euler step.
-                h = t_next - t_hat
-                denoised = self.preconditioner(sigma(t_hat), x_hat / scale(t_hat), condition)
-                d_cur = (sigma_deriv(t_hat) / sigma(t_hat) + scale_deriv(t_hat) / scale(t_hat)) * x_hat - sigma_deriv(t_hat) * scale(t_hat) / sigma(t_hat) * denoised
-                x_prime = x_hat + alpha * h * d_cur
-                t_prime = t_hat + alpha * h
+        def drift(t, x):
+            t_shape = [x.shape[0]] + [1] * (x.ndim - 1)
+            t = t.view(*t_shape)
+            denoised = self.preconditioner(sigma(t), x / scale(t), condition)
+            f=(sigma_deriv(t) / sigma(t) + scale_deriv(t) / scale(t)) * x - sigma_deriv(t) * scale(t) / sigma(t) * denoised
+            return f
 
-                # Apply 2nd order correction.
-                if self.solver_type == 'euler' or i == num_steps - 1:
-                    x_next = x_hat + h * d_cur
+        t_span = torch.tensor(t_steps, device=self.device)
+        if isinstance(solver, ODESolver):
+            # TODO: make it compatible with TensorDict
+            if with_grad:
+                data = solver.integrate(
+                    drift=drift,
+                    x0=x,
+                    t_span=t_span,
+                    adjoint_params=find_parameters(self.model),
+                )
+            else:
+                with torch.no_grad():
+                    data = solver.integrate(
+                        drift=drift,
+                        x0=x,
+                        t_span=t_span,
+                        adjoint_params=find_parameters(self.model),
+                    )
+
+
+        if isinstance(data, torch.Tensor):
+            # data.shape = (T, B*N, D)
+            if len(extra_batch_size.shape) == 0:
+                if isinstance(self.x_size, int):
+                    data = data.reshape(
+                        -1, extra_batch_size, data_batch_size, self.x_size
+                    )
+                elif (
+                    isinstance(self.x_size, Tuple)
+                    or isinstance(self.x_size, List)
+                    or isinstance(self.x_size, torch.Size)
+                ):
+                    data = data.reshape(
+                        -1, extra_batch_size, data_batch_size, *self.x_size
+                    )
                 else:
-                    assert self.solver_type == 'heun'
-                    denoised = self.preconditioner(sigma(t_prime), x_prime / scale(t_prime), condition)
-                    d_prime = (sigma_deriv(t_prime) / sigma(t_prime) + scale_deriv(t_prime) / scale(t_prime)) * x_prime - sigma_deriv(t_prime) * scale(t_prime) / sigma(t_prime) * denoised
-                    x_next = x_hat + h * ((1 - 1 / (2 * alpha)) * d_cur + 1 / (2 * alpha) * d_prime)
-        
+                    assert False, "Invalid x_size"
+            else:
+                if isinstance(self.x_size, int):
+                    data = data.reshape(
+                        -1, *extra_batch_size, data_batch_size, self.x_size
+                    )
+                elif (
+                    isinstance(self.x_size, Tuple)
+                    or isinstance(self.x_size, List)
+                    or isinstance(self.x_size, torch.Size)
+                ):
+                    data = data.reshape(
+                        -1, *extra_batch_size, data_batch_size, *self.x_size
+                    )
+                else:
+                    assert False, "Invalid x_size"
+            # data.shape = (T, B, N, D)
+
+            if batch_size is None:
+                if x_0 is None and condition is None:
+                    data = data.squeeze(1).squeeze(1)
+                    # data.shape = (T, D)
+                else:
+                    data = data.squeeze(1)
+                    # data.shape = (T, N, D)
+            else:
+                if x_0 is None and condition is None:
+                    data = data.squeeze(1 + len(extra_batch_size.shape))
+                    # data.shape = (T, B, D)
+                else:
+                    # data.shape = (T, B, N, D)
+                    pass
+        elif isinstance(data, TensorDict):
+            raise NotImplementedError("Not implemented")
+        elif isinstance(data, treetensor.torch.Tensor):
+            for key in data.keys():
+                if len(extra_batch_size.shape) == 0:
+                    if isinstance(self.x_size[key], int):
+                        data[key] = data[key].reshape(
+                            -1, extra_batch_size, data_batch_size, self.x_size[key]
+                        )
+                    elif (
+                        isinstance(self.x_size[key], Tuple)
+                        or isinstance(self.x_size[key], List)
+                        or isinstance(self.x_size[key], torch.Size)
+                    ):
+                        data[key] = data[key].reshape(
+                            -1, extra_batch_size, data_batch_size, *self.x_size[key]
+                        )
+                    else:
+                        assert False, "Invalid x_size"
+                else:
+                    if isinstance(self.x_size[key], int):
+                        data[key] = data[key].reshape(
+                            -1, *extra_batch_size, data_batch_size, self.x_size[key]
+                        )
+                    elif (
+                        isinstance(self.x_size[key], Tuple)
+                        or isinstance(self.x_size[key], List)
+                        or isinstance(self.x_size[key], torch.Size)
+                    ):
+                        data[key] = data[key].reshape(
+                            -1, *extra_batch_size, data_batch_size, *self.x_size[key]
+                        )
+                    else:
+                        assert False, "Invalid x_size"
+                # data.shape = (T, B, N, D)
+
+                if batch_size is None:
+                    if x_0 is None and condition is None:
+                        data[key] = data[key].squeeze(1).squeeze(1)
+                        # data.shape = (T, D)
+                    else:
+                        data[key] = data[key].squeeze(1)
+                        # data.shape = (T, N, D)
+                else:
+                    if x_0 is None and condition is None:
+                        data[key] = data[key].squeeze(1 + len(extra_batch_size.shape))
+                        # data.shape = (T, B, D)
+                    else:
+                        # data.shape = (T, B, N, D)
+                        pass
         else:
-            assert self.edm_type == "EDM", f"Stochastic can only use in EDM, but your precond type is {self.edm_type}"
-            x_next = latents * t_steps[0]
-            for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])): # 0, ..., N-1
-                x_cur = x_next
+            raise NotImplementedError("Not implemented")
 
-                # Increase noise temporarily.
-                gamma = min(S_churn / num_steps, np.sqrt(2) - 1) if S_min <= t_cur <= S_max else 0
-                t_hat = self.preconditioner.round_sigma(t_cur + gamma * t_cur)
-                x_hat = x_cur + (t_hat ** 2 - t_cur ** 2).sqrt() * S_noise * torch.randn_like(x_cur)
-
-                # Euler step.
-                denoised = self.preconditioner(t_hat, x_hat, condition)
-                d_cur = (x_hat - denoised) / t_hat
-                x_next = x_hat + (t_next - t_hat) * d_cur
-
-                # Apply 2nd order correction.
-                if i < num_steps - 1:
-                    denoised = self.preconditioner(t_next, x_next, condition)
-                    d_prime = (x_next - denoised) / t_next
-                    x_next = x_hat + (t_next - t_hat) * (0.5 * d_cur + 0.5 * d_prime)
-
-
-        return x_next
+        return data

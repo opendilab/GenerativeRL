@@ -34,47 +34,68 @@ t_encoder = dict(
 )
 config = EasyDict(
     dict(
-        device=device,  
-        edm_model=dict(  
+        device=device,
+        
+        edm_model=dict(
+            device=device,
+            x_size=[2],
+            sample_params=dict(
+                num_steps=18,
+                alpha=1,
+                S_churn=0.0,
+                S_min=0.0,
+                S_max=float("inf"),
+                S_noise=1.0,
+                rho=7,  # * EDM needs rho
+                epsilon_s=1e-3,  # * VP needs epsilon_s
+            ),
+            solver=dict(
+                type="ODESolver",
+                args=dict(
+                    library="torchdyn",
+                    ode_solver="euler",
+                ),
+            ),
             path=dict(
-                edm_type="EDM", # *["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
+                edm_type="EDM",  # *["VP_edm", "VE_edm", "iDDPM_edm", "EDM"]
+                # solver=dict(
+                #     solver_type="heun",
+                #     # *['euler', 'heun']
+                #     params=dict(
+                #         num_steps=18,
+                #         alpha=1,
+                #         S_churn=0.0,
+                #         S_min=0.0,
+                #         S_max=float("inf"),
+                #         S_noise=1.0,
+                #         rho=7,  # * EDM needs rho
+                #         epsilon_s=1e-3,  # * VP needs epsilon_s
+                #     ),
+                # ),
                 params=dict(
-                    #^ 1: VP_edm
-                    # beta_d=19.9, 
-                    # beta_min=0.1, 
-                    # M=1000, 
+                    # ^ 1: VP_edm
+                    # beta_d=19.9,
+                    # beta_min=0.1,
+                    # M=1000,
                     # epsilon_t=1e-5,
                     # epsilon_s=1e-4,
-                    #^ 2: VE_edm
+                    # ^ 2: VE_edm
                     # sigma_min=0.02,
                     # sigma_max=100,
-                    #^ 3: iDDPM_edm
+                    # ^ 3: iDDPM_edm
                     # C_1=0.001,
                     # C_2=0.008,
                     # M=1000,
-                    #^ 4: EDM
+                    # ^ 4: EDM
                     # sigma_min=0.002,
                     # sigma_max=80,
                     # sigma_data=0.5,
                     # P_mean=-1.21,
                     # P_std=1.21,
-                )
+                ),
             ),
+            
 
-            solver=dict(
-                solver_type="heun", 
-                # *['euler', 'heun']
-                params=dict(
-                    num_steps=18,
-                    alpha=1, 
-                    S_churn=0., 
-                    S_min=0., 
-                    S_max=float("inf"),
-                    S_noise=1.,
-                    rho=7, #* EDM needs rho 
-                    epsilon_s=1e-3 #* VP needs epsilon_s
-                )
-            ),
             model=dict(
                 type="noise_function",
                 args=dict(
@@ -108,7 +129,7 @@ config = EasyDict(
 if __name__ == "__main__":
     seed_value = set_seed()
     log.info(f"start exp with seed value {seed_value}.")
-    edm_diffusion_model = EDMModel(config=config).to(config.device)
+    edm_diffusion_model = EDMModel(config=config.edm_model).to(config.device)
     # edm_diffusion_model = torch.compile(edm_diffusion_model)
     # get data
     data = make_swiss_roll(n_samples=config.parameter.data_num, noise=0.01)[0].astype(
@@ -214,10 +235,10 @@ if __name__ == "__main__":
     history_iteration = [-1]
     batch_data = next(data_generator)
     batch_data = batch_data.to(config.device)
-    
+
     for i in range(10):
         edm_diffusion_model.train()
-        loss = edm_diffusion_model(batch_data)
+        loss = edm_diffusion_model.L2_denoising_matching_loss(batch_data)
         optimizer.zero_grad()
         loss.backward()
         gradien_norm = torch.nn.utils.clip_grad_norm_(
@@ -228,10 +249,11 @@ if __name__ == "__main__":
         loss_sum += loss.item()
         counter += 1
         iteration += 1
-        log.info(f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}")
-        
+        log.info(
+            f"iteration {iteration}, gradient {gradient_sum/counter}, loss {loss_sum/counter}"
+        )
+
     edm_diffusion_model.eval()
-    latents = torch.randn((2048, 2))
-    sampled = edm_diffusion_model.sample(None, None, latents=latents)
+
+    sampled = edm_diffusion_model.sample(batch_size=10)
     log.info(f"Sampled size: {sampled.shape}")
-    
