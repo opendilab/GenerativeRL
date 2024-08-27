@@ -27,7 +27,6 @@ config = EasyDict(
             type="QGPOD4RLDataset",
             args=dict(
                 env_id="halfcheetah-medium-expert-v2",
-                device=device,
             ),
         ),
         model=dict(

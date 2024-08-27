@@ -789,8 +789,9 @@ class GMPOAlgorithm:
                     batch_size=config.parameter.behaviour_policy.batch_size,
                     shuffle=False,
                     sampler=sampler,
-                    pin_memory=False,
+                    pin_memory=True,
                     drop_last=True,
+                    num_workers=8,
                 )
 
                 counter = 1
@@ -800,8 +801,8 @@ class GMPOAlgorithm:
                     behaviour_policy_loss = self.model[
                         "GPPolicy"
                     ].behaviour_policy_loss(
-                        action=data["a"],
-                        state=data["s"],
+                        action=data["a"].to(config.model.GPPolicy.device),
+                        state=data["s"].to(config.model.GPPolicy.device),
                         maximum_likelihood=(
                             config.parameter.behaviour_policy.maximum_likelihood
                             if hasattr(
@@ -857,17 +858,17 @@ class GMPOAlgorithm:
 
                 fake_actions = generate_fake_action(
                     self.model["GPPolicy"],
-                    self.dataset.states[:],
+                    self.dataset.states[:].to(config.model.GPPolicy.device),
                     config.parameter.sample_per_state,
                 )
                 fake_next_actions = generate_fake_action(
                     self.model["GPPolicy"],
-                    self.dataset.next_states[:],
+                    self.dataset.next_states[:].to(config.model.GPPolicy.device),
                     config.parameter.sample_per_state,
                 )
 
-                self.dataset.fake_actions = fake_actions
-                self.dataset.fake_next_actions = fake_next_actions
+                self.dataset.fake_actions = fake_actions.to("cpu")
+                self.dataset.fake_next_actions = fake_next_actions.to("cpu")
 
             # ---------------------------------------
             # make fake action ↑
@@ -901,8 +902,9 @@ class GMPOAlgorithm:
                     batch_size=config.parameter.critic.batch_size,
                     shuffle=False,
                     sampler=sampler,
-                    pin_memory=False,
+                    pin_memory=True,
                     drop_last=True,
+                    num_workers=8,
                 )
 
                 counter = 1
@@ -915,19 +917,19 @@ class GMPOAlgorithm:
                 for data in data_loader:
 
                     v_loss, next_v = self.model["GPPolicy"].critic.v_loss(
-                        state=data["s"],
-                        action=data["a"],
-                        next_state=data["s_"],
+                        state=data["s"].to(config.model.GPPolicy.device),
+                        action=data["a"].to(config.model.GPPolicy.device),
+                        next_state=data["s_"].to(config.model.GPPolicy.device),
                         tau=config.parameter.critic.tau,
                     )
                     v_optimizer.zero_grad(set_to_none=True)
                     v_loss.backward()
                     v_optimizer.step()
                     q_loss, q, q_target = self.model["GPPolicy"].critic.iql_q_loss(
-                        state=data["s"],
-                        action=data["a"],
-                        reward=data["r"],
-                        done=data["d"],
+                        state=data["s"].to(config.model.GPPolicy.device),
+                        action=data["a"].to(config.model.GPPolicy.device),
+                        reward=data["r"].to(config.model.GPPolicy.device),
+                        done=data["d"].to(config.model.GPPolicy.device),
                         next_v=next_v,
                         discount=config.parameter.critic.discount_factor,
                     )
@@ -1022,8 +1024,9 @@ class GMPOAlgorithm:
                     batch_size=config.parameter.guided_policy.batch_size,
                     shuffle=False,
                     sampler=sampler,
-                    pin_memory=False,
+                    pin_memory=True,
                     drop_last=True,
+                    num_workers=8,
                 )
 
                 counter = 1
@@ -1049,8 +1052,8 @@ class GMPOAlgorithm:
                         ) = self.model[
                             "GPPolicy"
                         ].policy_optimization_loss_by_advantage_weighted_regression(
-                            data["a"],
-                            data["s"],
+                            data["a"].to(config.model.GPPolicy.device),
+                            data["s"].to(config.model.GPPolicy.device),
                             maximum_likelihood=(
                                 config.parameter.guided_policy.maximum_likelihood
                                 if hasattr(
@@ -1079,8 +1082,8 @@ class GMPOAlgorithm:
                         ) = self.model[
                             "GPPolicy"
                         ].policy_optimization_loss_by_advantage_weighted_regression_softmax(
-                            data["s"],
-                            data["fake_a"],
+                            data["s"].to(config.model.GPPolicy.device),
+                            data["fake_a"].to(config.model.GPPolicy.device),
                             maximum_likelihood=(
                                 config.parameter.guided_policy.maximum_likelihood
                                 if hasattr(
@@ -1095,10 +1098,10 @@ class GMPOAlgorithm:
                         matching_loss_sum += matching_loss
                     elif config.parameter.algorithm_type == "GMPO_softmax_sample":
                         fake_actions_ = self.model["GPPolicy"].behaviour_policy_sample(
-                            state=data["s"],
+                            state=data["s"].to(config.model.GPPolicy.device),
                             t_span=(
                                 torch.linspace(0.0, 1.0, config.parameter.t_span).to(
-                                    data["s"].device
+                                    config.model.GPPolicy.device
                                 )
                                 if hasattr(config.parameter, "t_span")
                                 and config.parameter.t_span is not None
@@ -1115,7 +1118,7 @@ class GMPOAlgorithm:
                         ) = self.model[
                             "GPPolicy"
                         ].policy_optimization_loss_by_advantage_weighted_regression_softmax(
-                            data["s"],
+                            data["s"].to(config.model.GPPolicy.device),
                             fake_actions_,
                             maximum_likelihood=(
                                 config.parameter.guided_policy.maximum_likelihood

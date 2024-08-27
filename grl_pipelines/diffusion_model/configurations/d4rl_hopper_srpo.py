@@ -27,7 +27,6 @@ config = EasyDict(
             type="D4RLDataset",
             args=dict(
                 env_id="hopper-medium-expert-v2",
-                device=device,
             ),
         ),
         model=dict(

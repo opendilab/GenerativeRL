@@ -21,6 +21,8 @@
 - [已集成的生成式强化学习算法](#已集成的生成式强化学习算法)
 - [安装](#安装)
 - [快速开始](#快速开始)
+- [教程](#教程)
+- [基线实验](#基线实验)
 
 ## 特性
 
@@ -40,22 +42,22 @@
 
 |                                                                                     | [Score Matching](https://ieeexplore.ieee.org/document/6795935) | [Flow Matching](https://arxiv.org/abs/2210.02747) |
 |-------------------------------------------------------------------------------------| -------------------------------------------------------------- | ------------------------------------------------- |
-| **扩散模型**   [Colab](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk#scrollTo=xcfAsMbM2yCP)    |                          |                                                  |
+| **扩散模型**   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk)    |               |               |
 | [Linear VP SDE](https://arxiv.org/abs/2011.13456)                                   | ✔                                                              | ✔                                                |
 | [Generalized VP SDE](https://arxiv.org/abs/2209.15571)                              | ✔                                                              | ✔                                                |
 | [Linear SDE](https://arxiv.org/abs/2206.00364)                                      | ✔                                                              | ✔                                                |
-| **流模型**      [Colab](https://colab.research.google.com/drive/1vrxREVXKsSbnsv9G2CnKPVvrbFZleElI?usp=sharing)    |                                   |                                                   |
+| **流模型**    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1vrxREVXKsSbnsv9G2CnKPVvrbFZleElI)    |               |                |
 | [Independent Conditional Flow Matching](https://arxiv.org/abs/2302.00482)           | 🚫                                                             | ✔                                                 |
 | [Optimal Transport Conditional Flow Matching](https://arxiv.org/abs/2302.00482)     | 🚫                                                             | ✔                                                 |
 
 ## 已集成的生成式强化学习算法
 
-| 算法/模型                                           | 扩散模型            | 流模型            |
-|---------------------------------------------------- | ---------------- | ---------------------- |
-| [QGPO](https://arxiv.org/abs/2304.12824)            | ✔                |  🚫                   |
-| [SRPO](https://arxiv.org/abs/2310.07297)            | ✔                |  🚫                   |
-| GMPO                                                | ✔                | ✔                     |
-| GMPG                                                | ✔                | ✔                     |
+| 算法/模型                                           | 扩散模型                                                                                                                                                               | 流模型                  |
+|---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| [QGPO](https://arxiv.org/abs/2304.12824)            | ✔                                                                                                                                                                    |  🚫                   |
+| [SRPO](https://arxiv.org/abs/2310.07297)            | ✔                                                                                                                                                                    |  🚫                   |
+| GMPO                                                | ✔  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1A79ueOdLvTfrytjOPyfxb6zSKXi1aePv)           | ✔                     |
+| GMPG                                                | ✔  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1hhMvQsrV-mruvpSCpmnsOxmCb6bMPOBq)           | ✔                     |
 
 ## 安装
 
@@ -103,7 +105,7 @@ from grl.utils.log import log
 from grl_pipelines.diffusion_model.configurations.lunarlander_continuous_qgpo import config
 
 def qgpo_pipeline(config):
-    qgpo = QGPOAlgorithm(config, dataset=QGPOCustomizedDataset(numpy_data_path="./data.npz", device=config.train.device))
+    qgpo = QGPOAlgorithm(config, dataset=QGPOCustomizedDataset(numpy_data_path="./data.npz",))
     qgpo.train()
 
     agent = qgpo.deploy()

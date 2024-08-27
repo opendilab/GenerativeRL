@@ -87,30 +87,23 @@ class GPD4RLDataset(GPDataset):
     def __init__(
         self,
         env_id: str,
-        device: str = None,
     ):
         """
         Overview:
             Initialization method of GPD4RLDataset class
         Arguments:
             env_id (:obj:`str`): The environment id
-            device (:obj:`str`): The device to store the dataset
         """
 
         super().__init__()
         import d4rl
 
-        self.device = "cpu" if device is None else device
         data = d4rl.qlearning_dataset(gym.make(env_id))
-        self.states = torch.from_numpy(data["observations"]).float().to(device)
-        self.actions = torch.from_numpy(data["actions"]).float().to(device)
-        self.next_states = (
-            torch.from_numpy(data["next_observations"]).float().to(device)
-        )
-        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float().to(device)
-        self.is_finished = (
-            torch.from_numpy(data["terminals"]).view(-1, 1).float().to(device)
-        )
+        self.states = torch.from_numpy(data["observations"]).float()
+        self.actions = torch.from_numpy(data["actions"]).float()
+        self.next_states = torch.from_numpy(data["next_observations"]).float()
+        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float()
+        self.is_finished = torch.from_numpy(data["terminals"]).view(-1, 1).float()
 
         reward_tune = "iql_antmaze" if "antmaze" in env_id else "iql_locomotion"
         if reward_tune == "normalize":
@@ -157,41 +150,34 @@ class GPOnlineDataset(GPDataset):
         self,
         fake_action_shape: int = None,
         data: List = None,
-        device: str = None,
     ):
         """
         Overview:
             Initialization method of GPD4RLDataset class
         Arguments:
             data (:obj:`List`): The data list
-            device (:obj:`str`): The device to store the dataset
         """
 
         super().__init__()
-        self.device = "cpu" if device is None else device
         self.fake_action_shape = fake_action_shape
         if data is not None:
-            self.states = torch.from_numpy(data["observations"]).float().to(device)
-            self.actions = torch.from_numpy(data["actions"]).float().to(device)
-            self.next_states = (
-                torch.from_numpy(data["next_observations"]).float().to(device)
-            )
-            reward = torch.from_numpy(data["rewards"]).view(-1, 1).float().to(device)
-            self.is_finished = (
-                torch.from_numpy(data["terminals"]).view(-1, 1).float().to(device)
-            )
+            self.states = torch.from_numpy(data["observations"]).float()
+            self.actions = torch.from_numpy(data["actions"]).float()
+            self.next_states = torch.from_numpy(data["next_observations"]).float()
+            reward = torch.from_numpy(data["rewards"]).view(-1, 1).float()
+            self.is_finished = torch.from_numpy(data["terminals"]).view(-1, 1).float()
             self.rewards = reward
             # self.fake_actions = torch.zeros_like(self.actions.unsqueeze(1).expand(-1, fake_action_shape, -1))
             # self.fake_next_actions = torch.zeros_like(self.actions.unsqueeze(1).expand(-1, fake_action_shape, -1))
             self.len = self.states.shape[0]
         else:
-            self.states = torch.tensor([]).to(device)
-            self.actions = torch.tensor([]).to(device)
-            self.next_states = torch.tensor([]).to(device)
-            self.is_finished = torch.tensor([]).to(device)
-            self.rewards = torch.tensor([]).to(device)
-            # self.fake_actions = torch.tensor([]).to(device)
-            # self.fake_next_actions = torch.tensor([]).to(device)
+            self.states = torch.tensor([])
+            self.actions = torch.tensor([])
+            self.next_states = torch.tensor([])
+            self.is_finished = torch.tensor([])
+            self.rewards = torch.tensor([])
+            # self.fake_actions = torch.tensor([])
+            # self.fake_next_actions = torch.tensor([])
             self.len = 0
         log.debug(f"{self.len} data loaded in GPOnlineDataset")
 
@@ -200,10 +186,10 @@ class GPOnlineDataset(GPDataset):
         drop_num = int(self.len * drop_ratio)
         # randomly drop the data if random is True
         if random:
-            drop_indices = torch.randperm(self.len)[:drop_num].to(self.device)
+            drop_indices = torch.randperm(self.len)[:drop_num]
         else:
-            drop_indices = torch.arange(drop_num).to(self.device)
-        keep_mask = torch.ones(self.len, dtype=torch.bool).to(self.device)
+            drop_indices = torch.arange(drop_num)
+        keep_mask = torch.ones(self.len, dtype=torch.bool)
         keep_mask[drop_indices] = False
         self.states = self.states[keep_mask]
         self.actions = self.actions[keep_mask]
@@ -217,14 +203,13 @@ class GPOnlineDataset(GPDataset):
 
     def load_data(self, data: List):
         # concatenate the data into the dataset
-        device = self.device
 
         # collate the data by sorting the keys
 
         keys = ["obs", "action", "done", "next_obs", "reward"]
 
         collated_data = {
-            k: torch.tensor(np.stack([item[k] for item in data])).to(device)
+            k: torch.tensor(np.stack([item[k] for item in data]))
             for i, k in enumerate(keys)
         }
 
@@ -258,7 +243,6 @@ class GPOnlineDataset(GPDataset):
         assert sum(lengths) == len(dataset["rewards"])
         return min(returns), max(returns)
 
-
 class GPD4RLOnlineDataset(GPDataset):
     """
     Overview:
@@ -271,32 +255,24 @@ class GPD4RLOnlineDataset(GPDataset):
         self,
         env_id: str,
         fake_action_shape: int = None,
-        device: str = None,
     ):
         """
         Overview:
             Initialization method of GPD4RLDataset class
         Arguments:
             data (:obj:`List`): The data list
-            device (:obj:`str`): The device to store the dataset
         """
 
         super().__init__()
-        self.device = "cpu" if device is None else device
         self.fake_action_shape = fake_action_shape
         import d4rl
 
-        self.device = "cpu" if device is None else device
         data = d4rl.qlearning_dataset(gym.make(env_id))
-        self.states = torch.from_numpy(data["observations"]).float().to(device)
-        self.actions = torch.from_numpy(data["actions"]).float().to(device)
-        self.next_states = (
-            torch.from_numpy(data["next_observations"]).float().to(device)
-        )
-        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float().to(device)
-        self.is_finished = (
-            torch.from_numpy(data["terminals"]).view(-1, 1).float().to(device)
-        )
+        self.states = torch.from_numpy(data["observations"]).float()
+        self.actions = torch.from_numpy(data["actions"]).float()
+        self.next_states = torch.from_numpy(data["next_observations"]).float()
+        reward = torch.from_numpy(data["rewards"]).view(-1, 1).float()
+        self.is_finished = torch.from_numpy(data["terminals"]).view(-1, 1).float()
 
         reward_tune = "iql_antmaze" if "antmaze" in env_id else "iql_locomotion"
         if reward_tune == "normalize":
@@ -321,10 +297,10 @@ class GPD4RLOnlineDataset(GPDataset):
         drop_num = int(self.len * drop_ratio)
         # randomly drop the data if random is True
         if random:
-            drop_indices = torch.randperm(self.len)[:drop_num].to(self.device)
+            drop_indices = torch.randperm(self.len)[:drop_num]
         else:
-            drop_indices = torch.arange(drop_num).to(self.device)
-        keep_mask = torch.ones(self.len, dtype=torch.bool).to(self.device)
+            drop_indices = torch.arange(drop_num)
+        keep_mask = torch.ones(self.len, dtype=torch.bool)
         keep_mask[drop_indices] = False
         self.states = self.states[keep_mask]
         self.actions = self.actions[keep_mask]
@@ -338,14 +314,13 @@ class GPD4RLOnlineDataset(GPDataset):
 
     def load_data(self, data: List):
         # concatenate the data into the dataset
-        device = self.device
 
         # collate the data by sorting the keys
 
         keys = ["obs", "action", "done", "next_obs", "reward"]
 
         collated_data = {
-            k: torch.tensor(np.stack([item[k] for item in data])).to(device)
+            k: torch.tensor(np.stack([item[k] for item in data]))
             for i, k in enumerate(keys)
         }
 
@@ -391,7 +366,6 @@ class GPCustomizedDataset(GPDataset):
     def __init__(
         self,
         env_id: str = None,
-        device: str = None,
         numpy_data_path: str = None,
     ):
         """
@@ -399,21 +373,18 @@ class GPCustomizedDataset(GPDataset):
             Initialization method of GPCustomizedDataset class
         Arguments:
             env_id (:obj:`str`): The environment id
-            device (:obj:`str`): The device to store the dataset
             numpy_data_path (:obj:`str`): The path to the numpy data
         """
 
         super().__init__()
 
-        self.device = "cpu" if device is None else device
-
         data = np.load(numpy_data_path)
 
-        self.states = torch.from_numpy(data["obs"]).float().to(device)
-        self.actions = torch.from_numpy(data["action"]).float().to(device)
-        self.next_states = torch.from_numpy(data["next_obs"]).float().to(device)
-        reward = torch.from_numpy(data["reward"]).view(-1, 1).float().to(device)
-        self.is_finished = torch.from_numpy(data["done"]).view(-1, 1).float().to(device)
+        self.states = torch.from_numpy(data["obs"]).float()
+        self.actions = torch.from_numpy(data["action"]).float()
+        self.next_states = torch.from_numpy(data["next_obs"]).float()
+        reward = torch.from_numpy(data["reward"]).view(-1, 1).float()
+        self.is_finished = torch.from_numpy(data["done"]).view(-1, 1).float()
 
         self.rewards = reward
         self.len = self.states.shape[0]
