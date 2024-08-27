@@ -27,11 +27,11 @@ from grl.utils import find_parameters
 from grl.utils import set_seed
 from grl.utils.log import log
 
-from .edm_preconditioner import PreConditioner
-from .edm_utils import SIGMA_T, SIGMA_T_DERIV, SIGMA_T_INV
-from .edm_utils import SCALE_T, SCALE_T_DERIV
-from .edm_utils import INITIAL_SIGMA_MAX, INITIAL_SIGMA_MIN
-from .edm_utils import DEFAULT_PARAM, DEFAULT_SOLVER_PARAM
+from grl.generative_models.edm_diffusion_model.edm_preconditioner import PreConditioner
+from grl.generative_models.edm_diffusion_model.edm_utils import SIGMA_T, SIGMA_T_DERIV, SIGMA_T_INV
+from grl.generative_models.edm_diffusion_model.edm_utils import SCALE_T, SCALE_T_DERIV
+from grl.generative_models.edm_diffusion_model.edm_utils import INITIAL_SIGMA_MAX, INITIAL_SIGMA_MIN
+from grl.generative_models.edm_diffusion_model.edm_utils import DEFAULT_PARAM, DEFAULT_SOLVER_PARAM
 
 
 class EDMModel(nn.Module):
@@ -175,6 +175,7 @@ class EDMModel(nn.Module):
 
         sigma, weight = self._sample_sigma_weight_train(x)
         n = torch.randn_like(x) * sigma
+        inv_t = SIGMA_T_INV[self.edm_type](sigma) # TODO: Use t? or sigma? as input
         D_xn = self.preconditioner(sigma, x+n, condition=condition)
         loss = weight * ((D_xn - x) ** 2)
         return loss.mean()
@@ -308,7 +309,18 @@ class EDMModel(nn.Module):
             with_grad: bool = False,
             solver_config: EasyDict = None,
         ):
+        sigma_steps, t_steps = self._get_sigma_steps_t_steps(num_steps=self.solver_params.num_steps, epsilon_s=self.solver_params.epsilon_s, rho=self.solver_params.rho)
+
+        sigma, sigma_deriv, sigma_inv, scale, scale_deriv = self._get_sigma_deriv_inv_scale_deriv()
+                
+        S_churn = self.solver_params.S_churn
+        S_min = self.solver_params.S_min
+        S_max = self.solver_params.S_max
+        S_noise = self.solver_params.S_noise
+        alpha = self.solver_params.alpha
         
+        t_next = t_steps[0]
+        # x_next = x_0 * (sigma(t_next) * scale(t_next))
         if t_span is not None:
             t_span = t_span.to(self.device)
 
@@ -350,6 +362,7 @@ class EDMModel(nn.Module):
             x = self.gaussian_generator(
                 batch_size=torch.prod(extra_batch_size) * data_batch_size
             )
+            x = x * (sigma(t_next) * scale(t_next))
             # x.shape = (B*N, D)
         else:
             if isinstance(self.x_size, int):
@@ -377,28 +390,25 @@ class EDMModel(nn.Module):
             # condition.shape = (B*N, D)
 
         
-        sigma_steps, t_steps = self._get_sigma_steps_t_steps(num_steps=self.solver_params.num_steps, epsilon_s=self.solver_params.epsilon_s, rho=self.solver_params.rho)
 
-        sigma, sigma_deriv, sigma_inv, scale, scale_deriv = self._get_sigma_deriv_inv_scale_deriv()
-                
-        S_churn = self.solver_params.S_churn
-        S_min = self.solver_params.S_min
-        S_max = self.solver_params.S_max
-        S_noise = self.solver_params.S_noise
-        alpha = self.solver_params.alpha
         
         # # Main sampling loop
-        # t_next = t_steps[0]
-        # x_next = x_0 * (sigma(t_next) * scale(t_next))
+
+        # x_next = torch.randn_like(x)
+        # x_list = [x_next]
         # for i, (t_cur, t_next) in enumerate(zip(t_steps[:-1], t_steps[1:])): # 0, ..., N-1
         #     x_cur = x_next
 
         #     # Euler step.
         #     h = t_next - t_cur
         #     denoised = self.preconditioner(sigma(t_cur), x_cur / scale(t_cur), condition)
-        #     d_cur = (sigma_deriv(t_cur) / sigma(t_cur) + scale_deriv(t_cur) / scale(t_cur)) * x_cur - sigma_deriv(t_cur) * scale(t_cur) / sigma(t_cur) * denoised
+        #     d_cur = ((sigma_deriv(t_cur) / sigma(t_cur)) + (scale_deriv(t_cur) / scale(t_cur))) * x_cur - ((sigma_deriv(t_cur) * scale(t_cur)) / sigma(t_cur)) * denoised
             
         #     x_next = x_cur + h * d_cur
+        #     x_list.append(x_next)
+            
+        # return x_list
+        
 
         def drift(t, x):
             t_shape = [x.shape[0]] + [1] * (x.ndim - 1)
