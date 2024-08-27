@@ -113,7 +113,7 @@ config = EasyDict(
         ),
         parameter=dict(
             training_loss_type="score_matching",
-            lr=5e-3,
+            lr=1e-4,
             data_num=10000,
             iterations=1000,
             batch_size=2048,
@@ -233,10 +233,10 @@ if __name__ == "__main__":
         )
 
     history_iteration = [-1]
-    batch_data = next(data_generator)
-    batch_data = batch_data.to(config.device)
+    # batch_data = next(data_generator).to(config.device)
 
-    for i in range(10):
+    for i in range(10000):
+        batch_data = next(data_generator).to(config.device)
         edm_diffusion_model.train()
         loss = edm_diffusion_model.L2_denoising_matching_loss(batch_data)
         optimizer.zero_grad()
@@ -255,5 +255,9 @@ if __name__ == "__main__":
 
     edm_diffusion_model.eval()
 
-    sampled = edm_diffusion_model.sample(batch_size=10)
+    sampled = edm_diffusion_model.sample(batch_size=1000)
     log.info(f"Sampled size: {sampled.shape}")
+    
+    plt.scatter(sampled[:, 0].detach().cpu(), sampled[:, 1].detach().cpu(), s=1)
+
+    plt.savefig("./result.png")

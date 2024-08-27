@@ -4,7 +4,7 @@ from easydict import EasyDict
 
 ############# Sampling Section #############
 
-# Scheduling in Table 1 in paper https://arxiv.org/abs/2206.00364
+# Scheduling in Table 1 of paper https://arxiv.org/abs/2206.00364
 SIGMA_T = {
     "VP_edm": lambda t, beta_d=19.9, beta_min=0.1: ((0.5 * beta_d * (t ** 2) + beta_min * t).exp() - 1) ** 0.5,
     "VE_edm": lambda t, **kwargs: t.sqrt(),
@@ -13,10 +13,10 @@ SIGMA_T = {
 }
 
 SIGMA_T_DERIV = {
-    "VP_edm": lambda t, beta_d=19.9, beta_min=0.1: 0.5 * (beta_min + beta_d * t) * (SIGMA_T["VP_edm"](t, beta_d, beta_min) + 1 / SIGMA_T["VP_edm"](t, beta_d, beta_min)),
-    "VE_edm": lambda t, **kwargs: t.sqrt(),
-    "iDDPM_edm": lambda t, **kwargs: t,
-    "EDM": lambda t, **kwargs: t
+    "VP_edm": lambda t, beta_d=19.9, beta_min=0.1: 0.5 * (beta_min + beta_d * t) * (SIGMA_T["VP_edm"](t, beta_d, beta_min) + (1 / SIGMA_T["VP_edm"](t, beta_d, beta_min))),
+    "VE_edm": lambda t, **kwargs: 1 / (2 * t.sqrt()),
+    "iDDPM_edm": lambda t, **kwargs: 1,
+    "EDM": lambda t, **kwargs: 1
 }
 
 SIGMA_T_INV = {

@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from grl.utils.log import log
-from .edm_utils import SIGMA_T, SIGMA_T_INV
+from grl.generative_models.edm_diffusion_model.edm_utils import SIGMA_T, SIGMA_T_INV
 
 class PreConditioner(nn.Module):
     """
@@ -169,7 +169,7 @@ class PreConditioner(nn.Module):
         if sigma.numel() == 1:
             sigma = sigma.view(-1).expand(*sigma_shape)
         else:
-            sigma = sigma.view(*sigma_shape)
+            sigma = sigma.reshape(*sigma_shape)
         dtype = torch.float16 if (self.use_mixes_precision and x.device.type == 'cuda') else torch.float32
         c_skip, c_out, c_in, c_noise = self.get_precondition_c(sigma)
         F_x = self.denoise_model(c_noise.flatten(), (c_in * x).to(dtype), condition=condition, **model_kwargs)
