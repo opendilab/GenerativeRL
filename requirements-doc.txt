@@ -1,5 +1,5 @@
 Jinja2>=3.0.0
-sphinx>=3.2.0
+sphinx<7
 sphinx_rtd_theme>=0.4.3
 enum_tools
 sphinx-toolbox
@@ -19,3 +19,4 @@ setuptools_scm
 sphinx_autodoc_typehints
 lxml_html_clean
 lxml
+-e git+https://github.com/opendilab/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme

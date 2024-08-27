@@ -211,7 +211,12 @@ def gaussian_random_variable(
             data_size, device, batch_size
         )
     else:
-        raise ValueError(f"Invalid data size: {data_size}")
+        try:
+            return lambda batch_size=None: generate_batch_tensor(
+                    list(data_size), device, batch_size
+                )
+        except:
+            raise ValueError(f"Invalid data size: {data_size}")
 
 
 if __name__ == "__main__":

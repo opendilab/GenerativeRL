@@ -28,7 +28,6 @@ config = EasyDict(
         #     type = "QGPOCustomizedDataset",
         #     args = dict(
         #         env_id = "LunarLanderContinuous-v2",
-        #         device = device,
         #         numpy_data_path = "./data.npz",
         #     ),
         # ),

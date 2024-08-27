@@ -27,7 +27,6 @@ config = EasyDict(
             type="D4RLDataset",
             args=dict(
                 env_id="walker2d-medium-expert-v2",
-                device=device,
             ),
         ),
         model=dict(

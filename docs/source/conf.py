@@ -141,17 +141,24 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of plugins themes.
 #
-html_theme = 'sphinx_rtd_theme'
-htmlhelp_basename = 'TreeValue'
+import pytorch_sphinx_theme
+html_theme = 'pytorch_sphinx_theme'
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the plugins static files,
-# so a file named "default.css" will overwrite the plugins "default.css".
+html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
+html_theme_options = {
+    'logo_url':
+    'https://opendilab.github.io/GenerativeRL/',
+    'menu': [
+        {
+            'name': 'GitHub',
+            'url': 'https://github.com/opendilab/GenerativeRL'
+        },
+    ],
+    # Specify the language of shared menu
+    'menu_lang': "en"
+}
 html_static_path = ['_static']
-
-html_css_files = [
-    'css/custom.css',
-]
+html_css_files = ['css/style.css']
 
 epub_title = project
 epub_exclude_files = ['search.html']
