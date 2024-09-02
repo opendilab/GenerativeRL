@@ -1,6 +1,6 @@
 # Generative Reinforcement Learning Benchmark
 
-English | [简体中文(Simplified Chinese)](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/benchmark/README.zh.md)
+English | [简体中文(Simplified Chinese)](https://github.com/zjowowen/GenerativeRL_Preview/tree/main/grl_pipelines/benchmark/README.zh.md)
 
 We evaluate the performance of policies based on generative models in reinforcement learning tasks using the [D4RL](https://arxiv.org/abs/2004.07219) dataset in an offline RL setting.
 
@@ -9,7 +9,7 @@ We evaluate the performance of policies based on generative models in reinforcem
 Previous work on using generative models to model policies in reinforcement learning tasks has yielded promising results, as follows:
 
 | Algo.                           | [SfBC](https://arxiv.org/abs/2209.14548) |[Diffusion-QL](https://arxiv.org/abs/2208.06193)  |[QGPO](https://proceedings.mlr.press/v202/lu23d/lu23d.pdf) |[IDQL](https://arxiv.org/abs/2304.10573)|[SRPO](https://arxiv.org/abs/2310.07297)|
-|-------------------------------- | ---------------------------------------- | -------------------------------------------------| --------------------------------------------------------- | -------------------------------------- | -------------------------------------- |
+|-------------------------------- | ---------- | ---------- | ---------- | --------- | --------- |
 | Env./Model.                     | VPSDE                                    |  DDPM                                            | VPSDE                                                     |  DDPM                                  |  VPSDE                                 |
 | halfcheetah-medium-expert-v2    | 92.6                                     |  96.8                                            | 93.5                                                      |  95.9                                  |  92.2                                  |
 | hopper-medium-expert-v2         | 108.6                                    |  111.1                                           | 108.0                                                     |  108.6                                 |  100.1                                 |
@@ -168,7 +168,7 @@ config = EasyDict(
             ),
         ),
         dataset=dict(
-            type="GPCustomizedDataset",
+            type="GPCustomizedTensorDictDataset",
             args=dict(
                 env_id=env_id,
                 numpy_data_path=data_path,

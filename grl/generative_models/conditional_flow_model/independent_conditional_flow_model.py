@@ -2,6 +2,7 @@ from typing import List, Tuple, Union
 
 import torch
 import torch.nn as nn
+from torch.distributions import Independent, Normal
 import treetensor
 from easydict import EasyDict
 from tensordict import TensorDict
@@ -10,6 +11,7 @@ from grl.generative_models.intrinsic_model import IntrinsicModel
 from grl.generative_models.model_functions.velocity_function import VelocityFunction
 from grl.generative_models.random_generator import gaussian_random_variable
 from grl.generative_models.stochastic_process import StochasticProcess
+from grl.generative_models.metric import compute_likelihood
 from grl.numerical_methods.numerical_solvers import get_solver
 from grl.numerical_methods.numerical_solvers.dpm_solver import DPMSolver
 from grl.numerical_methods.numerical_solvers.ode_solver import (
@@ -382,6 +384,172 @@ class IndependentConditionalFlowModel(nn.Module):
             raise NotImplementedError("Not implemented")
 
         return data
+
+    def log_prob(
+        self,
+        x_1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        log_prob_x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        function_log_prob_x_0: Union[callable, nn.Module] = None,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        t: torch.Tensor = None,
+        using_Hutchinson_trace_estimator: bool = True,
+    ) -> torch.Tensor:
+        """
+        Overview:
+            Compute the log probability of the final state given the initial state and the condition.
+        Arguments:
+            x_1 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The final state.
+            log_prob_x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The log probability of the initial state.
+            function_log_prob_x_0 (:obj:`Union[callable, nn.Module]`): The function to compute the log probability of the initial state.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The condition.
+            t (:obj:`torch.Tensor`): The time span.
+            using_Hutchinson_trace_estimator (:obj:`bool`): Whether to use Hutchinson trace estimator. It is an approximation of the trace of the Jacobian of the drift function, \
+                which is faster but less accurate. We recommend setting it to True for high dimensional data.
+        Returns:
+            log_likelihood (:obj:`torch.Tensor`): The log likelihood of the final state given the initial state and the condition.
+        """
+
+        model_drift = lambda t, x: - self.model(1 - t, x, condition)
+        model_params = find_parameters(self.model)
+
+        def compute_trace_of_jacobian_general(dx, x):
+            # Assuming x has shape (B, D1, ..., Dn)
+            shape = x.shape[1:]  # get the shape of a single element in the batch
+            outputs = torch.zeros(
+                x.shape[0], device=x.device, dtype=x.dtype
+            )  # trace for each batch
+            # Iterate through each index in the product of dimensions
+            for index in torch.cartesian_prod(*(torch.arange(s) for s in shape)):
+                if len(index.shape) > 0:
+                    index = tuple(index)
+                else:
+                    index = (index,)
+                grad_outputs = torch.zeros_like(x)
+                grad_outputs[(slice(None), *index)] = (
+                    1  # set one at the specific index across all batches
+                )
+                grads = torch.autograd.grad(
+                    outputs=dx, inputs=x, grad_outputs=grad_outputs, retain_graph=True
+                )[0]
+                outputs += grads[(slice(None), *index)]
+            return outputs
+
+        def compute_trace_of_jacobian_by_Hutchinson_Skilling(dx, x, eps):
+            """Create the divergence function of `fn` using the Hutchinson-Skilling trace estimator."""
+
+            fn_eps = torch.sum(dx * eps)
+            grad_fn_eps = torch.autograd.grad(fn_eps, x, create_graph=True)[0]
+            outputs = torch.sum(grad_fn_eps * eps, dim=tuple(range(1, len(x.shape))))
+            return outputs
+
+        def composite_drift(t, x):
+            # where x is actually x0_and_diff_logp, (x0, diff_logp), which is a tuple containing x and logp_xt_minus_logp_x0
+            with torch.set_grad_enabled(True):
+                t = t.detach()
+                x_t = x[0].detach()
+                logp_xt_minus_logp_x0 = x[1]
+
+                x_t.requires_grad = True
+                t.requires_grad = True
+
+                dx = model_drift(t, x_t)
+                if using_Hutchinson_trace_estimator:
+                    noise = torch.randn_like(x_t, device=x_t.device)
+                    logp_drift = -compute_trace_of_jacobian_by_Hutchinson_Skilling(
+                        dx, x_t, noise
+                    )
+                    # logp_drift = - divergence_approx(dx, x_t, noise)
+                else:
+                    logp_drift = -compute_trace_of_jacobian_general(dx, x_t)
+
+                return dx, logp_drift
+
+        # x.shape = [batch_size, state_dim]
+        x1_and_diff_logp = (x_1, torch.zeros(x_1.shape[0], device=x_1.device))
+
+        if t is None:
+            eps = 1e-3
+            t_span = torch.linspace(eps, 1.0, 1000).to(x.device)
+        else:
+            t_span = t.to(x_1.device)
+
+        solver = ODESolver(library="torchdiffeq_adjoint")
+
+        x0_and_logpx0 = solver.integrate(
+            drift=composite_drift,
+            x0=x1_and_diff_logp,
+            t_span=t_span,
+            adjoint_params=model_params,
+        )
+
+        logp_x0_minus_logp_x1 = x0_and_logpx0[1][-1]
+        x0 = x0_and_logpx0[0][-1]
+
+        if log_prob_x_0 is not None:
+            log_likelihood = log_prob_x_0 - logp_x0_minus_logp_x1
+        elif function_log_prob_x_0 is not None:
+            log_prob_x_0 = function_log_prob_x_0(x0)
+            log_likelihood = log_prob_x_0 - logp_x0_minus_logp_x1
+        else:
+            x0_1d = x0.reshape(x0.shape[0], -1)
+            log_prob_x_0 = Independent(
+                Normal(
+                    loc=torch.zeros_like(x0_1d, device=x0_1d.device),
+                    scale=torch.ones_like(x0_1d, device=x0_1d.device),
+                ),
+                1,
+            ).log_prob(x0_1d)
+
+            log_likelihood = log_prob_x_0 - logp_x0_minus_logp_x1
+
+        return log_likelihood
+
+    def sample_with_log_prob(
+        self,
+        t_span: torch.Tensor = None,
+        batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
+        x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+        using_Hutchinson_trace_estimator: bool = True,
+    ) -> Tuple[
+        Union[torch.Tensor, TensorDict, treetensor.torch.Tensor], torch.Tensor
+    ]:
+        """
+        Overview:
+            Sample from the model, return the final state and the log probability of the initial state.
+        Arguments:
+            t_span (:obj:`torch.Tensor`): The time span.
+            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): The batch size.
+            x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state, if not provided, it will be sampled from the Gaussian distribution.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+            using_Hutchinson_trace_estimator (:obj:`bool`): Whether to use Hutchinson trace estimator. It is an approximation of the trace of the Jacobian of the drift function, \
+                which is faster but less accurate. We recommend setting it to True for high dimensional data.
+        Returns:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The sampled result.
+            log_prob_x_0 (:obj:`torch.Tensor`): The log probability of the initial state.
+        """
+
+        x = self.sample(
+            t_span=t_span,
+            batch_size=batch_size,
+            x_0=x_0,
+            condition=condition,
+            with_grad=with_grad,
+            solver_config=solver_config,
+        )
+
+        log_prob_x_0 = self.log_prob(
+            x_1=x,
+            condition=condition,
+            t=t_span,
+            using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator,
+        )
+
+        return x, log_prob_x_0
 
     def flow_matching_loss(
         self,

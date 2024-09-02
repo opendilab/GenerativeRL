@@ -342,11 +342,20 @@ class EnergyConditionalDiffusionModel(nn.Module):
             # x.shape = (B*N, D)
 
         if condition is not None:
-            condition = torch.repeat_interleave(
-                condition, torch.prod(extra_batch_size), dim=0
-            )
-            # condition.shape = (B*N, D)
-
+            if isinstance(condition, TensorDict):
+                repeated_condition = TensorDict(
+                    {
+                        key: torch.repeat_interleave(value, torch.prod(extra_batch_size), dim=0)
+                        for key, value in condition.items()
+                    }
+                )
+                repeated_condition.batch_size = torch.Size([torch.prod(extra_batch_size).item()])
+                repeated_condition.to(condition.device)
+                condition = repeated_condition
+            else:
+                condition = torch.repeat_interleave(
+                    condition, torch.prod(extra_batch_size), dim=0
+                )
         if isinstance(solver, DPMSolver):
 
             def noise_function_with_energy_guidance(t, x, condition):

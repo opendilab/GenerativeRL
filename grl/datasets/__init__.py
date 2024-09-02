@@ -1,11 +1,25 @@
 from .d4rl import D4RLDataset
-from .qgpo import QGPOCustomizedDataset, QGPOD4RLDataset, QGPODataset, QGPOOnlineDataset
+from .qgpo import (
+    QGPODataset,
+    QGPOD4RLDataset,
+    QGPOOnlineDataset,
+    QGPOCustomizedDataset,
+    QGPOTensorDictDataset,
+    QGPOD4RLTensorDictDataset,
+    QGPOCustomizedTensorDictDataset,
+    QGPODMcontrolTensorDictDataset,
+)
 from .gp import (
     GPDataset,
     GPD4RLDataset,
     GPOnlineDataset,
     GPD4RLOnlineDataset,
     GPCustomizedDataset,
+    GPTensorDictDataset,
+    GPD4RLTensorDictDataset,
+    GPCustomizedTensorDictDataset,
+    GPDMcontrolTensorDictDataset,
+
 )
 from .minari_dataset import MinariDataset
 
@@ -15,12 +29,20 @@ DATASETS = {
     "D4RLDataset".lower(): D4RLDataset,
     "QGPOOnlineDataset".lower(): QGPOOnlineDataset,
     "QGPOCustomizedDataset".lower(): QGPOCustomizedDataset,
+    "QGPOTensorDictDataset".lower(): QGPOTensorDictDataset,
+    "QGPOD4RLTensorDictDataset".lower(): QGPOD4RLTensorDictDataset,
+    "QGPOCustomizedTensorDictDataset".lower(): QGPOCustomizedTensorDictDataset,
     "MinariDataset".lower(): MinariDataset,
     "GPDataset".lower(): GPDataset,
     "GPD4RLDataset".lower(): GPD4RLDataset,
     "GPOnlineDataset".lower(): GPOnlineDataset,
     "GPD4RLOnlineDataset".lower(): GPD4RLOnlineDataset,
     "GPCustomizedDataset".lower(): GPCustomizedDataset,
+    "GPTensorDictDataset".lower(): GPTensorDictDataset,
+    "GPD4RLTensorDictDataset".lower(): GPD4RLTensorDictDataset,
+    "GPCustomizedTensorDictDataset".lower(): GPCustomizedTensorDictDataset,
+    "GPDMcontrolTensorDictDataset".lower():GPDMcontrolTensorDictDataset,
+    "QGPODMcontrolTensorDictDataset".lower():QGPODMcontrolTensorDictDataset,
 }
 
 

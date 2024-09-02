@@ -5,6 +5,20 @@ import torch
 import torch.nn as nn
 
 
+class  TensorDictencoder(torch.nn.Module):
+    def __init__(self):
+        super(TensorDictencoder, self).__init__()
+
+    def forward(self, x: dict) -> torch.Tensor:
+        tensors = []
+        for v in x.values():
+            if v.dim() == 3 and v.shape[0] == 1:
+                v = v.view(1, -1)
+            tensors.append(v)
+        x = torch.cat(tensors, dim=1)
+        return x
+
+
 def get_encoder(type: str):
     """
     Overview:
@@ -234,4 +248,5 @@ ENCODERS = {
     "GaussianFourierProjectionEncoder".lower(): GaussianFourierProjectionEncoder,
     "ExponentialFourierProjectionTimeEncoder".lower(): ExponentialFourierProjectionTimeEncoder,
     "SinusoidalPosEmb".lower(): SinusoidalPosEmb,
+    "TensorDictencoder".lower(): TensorDictencoder,
 }

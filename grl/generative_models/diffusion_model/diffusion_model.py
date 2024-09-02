@@ -15,6 +15,7 @@ from grl.generative_models.model_functions.noise_function import NoiseFunction
 from grl.generative_models.model_functions.score_function import ScoreFunction
 from grl.generative_models.model_functions.velocity_function import VelocityFunction
 from grl.generative_models.random_generator import gaussian_random_variable
+from grl.generative_models.metric import compute_likelihood
 from grl.numerical_methods.numerical_solvers import get_solver
 from grl.numerical_methods.numerical_solvers.dpm_solver import DPMSolver
 from grl.numerical_methods.numerical_solvers.ode_solver import (
@@ -181,9 +182,10 @@ class DiffusionModel(nn.Module):
                 assert False, "Invalid batch size"
 
         if x_0 is not None and condition is not None:
-            assert (
-                x_0.shape[0] == condition.shape[0]
-            ), "The batch size of x_0 and condition must be the same"
+            if type(x_0) == type(condition):
+                assert (
+                    x_0.shape[0] == condition.shape[0]
+                ), "The batch size of x_0 and condition must be the same"
             data_batch_size = x_0.shape[0]
         elif x_0 is not None:
             data_batch_size = x_0.shape[0]
@@ -225,10 +227,25 @@ class DiffusionModel(nn.Module):
             # x.shape = (B*N, D)
 
         if condition is not None:
-            condition = torch.repeat_interleave(
-                condition, torch.prod(extra_batch_size), dim=0
-            )
-            # condition.shape = (B*N, D)
+            if isinstance(condition, torch.Tensor):
+                condition = torch.repeat_interleave(
+                    condition, torch.prod(extra_batch_size), dim=0
+                )
+                # condition.shape = (B*N, D)
+            elif isinstance(condition, treetensor.torch.Tensor):
+                for key in condition.keys():
+                    condition[key] = torch.repeat_interleave(
+                        condition[key], torch.prod(extra_batch_size), dim=0
+                    )
+                # condition.shape = (B*N, D)   
+            elif isinstance(condition, TensorDict):
+                for key in condition.keys():
+                    condition[key] = torch.repeat_interleave(
+                        condition[key], torch.prod(extra_batch_size), dim=0
+                    )
+            else:
+                raise NotImplementedError("Not implemented")
+
 
         if isinstance(solver, DPMSolver):
             # Note: DPMSolver does not support t_span argument assignment
@@ -857,12 +874,39 @@ class DiffusionModel(nn.Module):
             solver_config (:obj:`EasyDict`): The configuration of the solver.
         """
 
+        return self.forward_sample_process(
+            x=x,
+            t_span=t_span,
+            condition=condition,
+            with_grad=with_grad,
+            solver_config=solver_config,
+        )[-1]
+
+    def forward_sample_process(
+        self,
+        x: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        t_span: torch.Tensor,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+    ):
+        """
+        Overview:
+            Use forward path of the diffusion model given the sampled x. Note that this is not the reverse process, and thus is not designed for sampling form the diffusion model.
+            Rather, it is used for encode a sampled x to the latent space. Return all intermediate states.
+
+        Arguments:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.
+            t_span (:obj:`torch.Tensor`): The time span.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+        """
+
         # TODO: very important function
         # TODO: validate these functions
 
         t_span = t_span.to(self.device)
-
-        batch_size = x.shape[0]
 
         if solver_config is not None:
             solver = get_solver(solver_config.type)(**solver_config.args)
@@ -884,7 +928,8 @@ class DiffusionModel(nn.Module):
                     ).drift,
                     x0=x,
                     t_span=t_span,
-                )[-1]
+                    adjoint_params=find_parameters(self.model),
+                )
             else:
                 with torch.no_grad():
                     data = solver.integrate(
@@ -895,7 +940,8 @@ class DiffusionModel(nn.Module):
                         ).drift,
                         x0=x,
                         t_span=t_span,
-                    )[-1]
+                        adjoint_params=find_parameters(self.model),
+                    )
         elif isinstance(solver, SDESolver):
             # TODO: make it compatible with TensorDict
             # TODO: validate the implementation
@@ -916,7 +962,7 @@ class DiffusionModel(nn.Module):
                     diffusion=sde.diffusion,
                     x0=x,
                     t_span=t_span,
-                )[-1]
+                )
             else:
                 with torch.no_grad():
                     data = solver.integrate(
@@ -924,7 +970,7 @@ class DiffusionModel(nn.Module):
                         diffusion=sde.diffusion,
                         x0=x,
                         t_span=t_span,
-                    )[-1]
+                    )
         else:
             raise NotImplementedError(
                 "Solver type {} is not implemented".format(self.config.solver.type)
@@ -1070,6 +1116,66 @@ class DiffusionModel(nn.Module):
         """
 
         return self.data_prediction_function_.forward(self.model, t, x, condition)
+
+    def log_prob(
+        self,
+        x: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        using_Hutchinson_trace_estimator: bool = True,
+        with_grad: bool = False
+    ):
+        r"""
+        Overview:
+            Return the log probability of the model given the initial state and the condition.
+
+            .. math::
+                \log p_{\theta}(x)
+
+        Arguments:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+        """
+
+        if with_grad:
+            return compute_likelihood(
+                model=self, x=x, condition=condition, using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator
+            )
+        else:
+            with torch.no_grad():
+                return compute_likelihood(
+                    model=self, x=x, condition=condition, using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator
+                )
+
+    def sample_with_log_prob(
+        self,
+        t_span: torch.Tensor,
+        batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+    ):
+        r"""
+        Overview:
+            Sample from the model and return the log probability of the sampled result.
+
+        Arguments:
+            t_span (:obj:`torch.Tensor`): The time span.
+            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): The batch size.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+        """
+
+        x = self.sample_forward_process(
+            t_span=t_span,
+            batch_size=batch_size,
+            condition=condition,
+            with_grad=with_grad,
+            solver_config=solver_config,
+        )[-1]
+
+        return x, self.log_prob(x=x, condition=condition, with_grad=with_grad)
 
     def dpo_loss(
         self,

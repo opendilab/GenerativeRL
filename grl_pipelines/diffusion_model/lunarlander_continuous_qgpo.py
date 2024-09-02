@@ -1,7 +1,7 @@
 import gym
 
 from grl.algorithms.qgpo import QGPOAlgorithm
-from grl.datasets import QGPOCustomizedDataset
+from grl.datasets import QGPOCustomizedTensorDictDataset
 from grl.utils.log import log
 from grl_pipelines.diffusion_model.configurations.lunarlander_continuous_qgpo import (
     config,
@@ -12,8 +12,9 @@ def qgpo_pipeline(config):
 
     qgpo = QGPOAlgorithm(
         config,
-        dataset=QGPOCustomizedDataset(
+        dataset=QGPOCustomizedTensorDictDataset(
             numpy_data_path="./data.npz",
+            action_augment_num=config.train.parameter.action_augment_num
         ),
     )
 

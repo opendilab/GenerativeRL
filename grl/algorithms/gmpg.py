@@ -8,6 +8,8 @@ import torch.nn as nn
 from easydict import EasyDict
 from rich.progress import track
 from tensordict import TensorDict
+from torchrl.data import TensorDictReplayBuffer
+from torchrl.data.replay_buffers.samplers import SamplerWithoutReplacement
 
 import wandb
 from grl.agents.gm import GPAgent
@@ -759,7 +761,7 @@ class GMPGAlgorithm:
                     else:
                         raise NotImplementedError
 
-            def generate_fake_action(model, states, sample_per_state):
+            def generate_fake_action(model, states, action_augment_num):
 
                 fake_actions_sampled = []
                 for states in track(
@@ -769,7 +771,7 @@ class GMPGAlgorithm:
 
                     fake_actions_ = model.behaviour_policy_sample(
                         state=states,
-                        batch_size=sample_per_state,
+                        batch_size=action_augment_num,
                         t_span=(
                             torch.linspace(0.0, 1.0, config.parameter.t_span).to(
                                 states.device
@@ -788,11 +790,22 @@ class GMPGAlgorithm:
                 evaluation_results = dict()
 
                 def policy(obs: np.ndarray) -> np.ndarray:
-                    obs = torch.tensor(
-                        obs,
-                        dtype=torch.float32,
-                        device=config.model.GPPolicy.device,
-                    ).unsqueeze(0)
+                    if isinstance(obs, torch.Tensor):
+                        obs = torch.tensor(
+                            obs,
+                            dtype=torch.float32,
+                            device=config.model.GPPolicy.device,
+                        ).unsqueeze(0)
+                    elif isinstance(obs, dict):
+                        for key in obs:
+                            obs[key] = torch.tensor(
+                                obs[key],
+                                dtype=torch.float32,
+                                device=config.model.GPPolicy.device
+                            ).unsqueeze(0)
+                            if obs[key].dim() == 1 and obs[key].shape[0] == 1:
+                                obs[key] = obs[key].unsqueeze(1)
+                        obs = TensorDict(obs, batch_size=[1])
                     action = (
                         model.sample(
                             condition=obs,
@@ -855,11 +868,18 @@ class GMPGAlgorithm:
 
             # ---------------------------------------
             # behavior training code ↓
-            # ---------------------------------------
-
+            # ---------------------------------------          
             behaviour_policy_optimizer = torch.optim.Adam(
                 self.model["GPPolicy"].base_model.model.parameters(),
                 lr=config.parameter.behaviour_policy.learning_rate,
+            )
+
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.behaviour_policy.batch_size,
+                sampler=SamplerWithoutReplacement(),
+                prefetch=10,
+                pin_memory=True,
             )
 
             behaviour_policy_train_iter = 0
@@ -870,22 +890,9 @@ class GMPGAlgorithm:
                 if self.behaviour_policy_train_epoch >= epoch:
                     continue
 
-                sampler = torch.utils.data.RandomSampler(
-                    self.dataset, replacement=False
-                )
-                data_loader = torch.utils.data.DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.behaviour_policy.batch_size,
-                    shuffle=False,
-                    sampler=sampler,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
-
                 counter = 1
                 behaviour_policy_loss_sum = 0
-                for data in data_loader:
+                for index, data in enumerate(replay_buffer):
 
                     behaviour_policy_loss = self.model[
                         "GPPolicy"
@@ -946,25 +953,20 @@ class GMPGAlgorithm:
                 lr=config.parameter.critic.learning_rate,
             )
 
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.critic.batch_size,
+                sampler=SamplerWithoutReplacement(),
+                prefetch=10,
+                pin_memory=True,
+            )
+
             critic_train_iter = 0
             for epoch in track(
                 range(config.parameter.critic.epochs), description="Critic training"
             ):
                 if self.critic_train_epoch >= epoch:
                     continue
-
-                sampler = torch.utils.data.RandomSampler(
-                    self.dataset, replacement=False
-                )
-                data_loader = torch.utils.data.DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.critic.batch_size,
-                    shuffle=False,
-                    sampler=sampler,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
 
                 counter = 1
 
@@ -973,7 +975,7 @@ class GMPGAlgorithm:
                 q_loss_sum = 0.0
                 q_sum = 0.0
                 q_target_sum = 0.0
-                for data in data_loader:
+                for index, data in enumerate(replay_buffer):
 
                     v_loss, next_v = self.model["GPPolicy"].critic.v_loss(
                         state=data["s"].to(config.model.GPPolicy.device),
@@ -1062,6 +1064,14 @@ class GMPGAlgorithm:
                 lr=config.parameter.guided_policy.learning_rate,
             )
 
+            replay_buffer=TensorDictReplayBuffer(
+                storage=self.dataset.storage,
+                batch_size=config.parameter.guided_policy.batch_size,
+                sampler=SamplerWithoutReplacement(),
+                prefetch=10,
+                pin_memory=True,
+            )
+
             guided_policy_train_iter = 0
             beta = config.parameter.guided_policy.beta
             for epoch in track(
@@ -1072,22 +1082,9 @@ class GMPGAlgorithm:
                 if self.guided_policy_train_epoch >= epoch:
                     continue
 
-                sampler = torch.utils.data.RandomSampler(
-                    self.dataset, replacement=False
-                )
-                data_loader = torch.utils.data.DataLoader(
-                    self.dataset,
-                    batch_size=config.parameter.guided_policy.batch_size,
-                    shuffle=False,
-                    sampler=sampler,
-                    pin_memory=True,
-                    drop_last=True,
-                    num_workers=8,
-                )
-
                 counter = 1
                 guided_policy_loss_sum = 0.0
-                for data in data_loader:
+                for index, data in enumerate(replay_buffer):
                     if config.parameter.algorithm_type == "GMPG":
                         (
                             guided_policy_loss,

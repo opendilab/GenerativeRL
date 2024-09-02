@@ -3,6 +3,9 @@ from easydict import EasyDict
 
 action_size = 6
 state_size = 17
+env_id="halfcheetah-medium-expert-v2"
+algorithm="QGPO"
+action_augment_num = 16
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 t_embedding_dim = 32
 t_encoder = dict(
@@ -16,17 +19,19 @@ solver_type = "DPMSolver"
 
 config = EasyDict(
     train=dict(
-        project="d4rl-halfcheetah-v2-qgpo",
+        project=f"{env_id}-{algorithm}",
+        device=device,
         simulator=dict(
             type="GymEnvSimulator",
             args=dict(
-                env_id="HalfCheetah-v2",
+                env_id=env_id,
             ),
         ),
         dataset=dict(
-            type="QGPOD4RLDataset",
+            type="QGPOD4RLTensorDictDataset",
             args=dict(
-                env_id="halfcheetah-medium-expert-v2",
+                env_id=env_id,
+                action_augment_num=action_augment_num,
             ),
         ),
         model=dict(
@@ -125,35 +130,37 @@ config = EasyDict(
             behaviour_policy=dict(
                 batch_size=4096,
                 learning_rate=1e-4,
-                iterations=600000,
+                iterations=2000,
             ),
-            sample_per_state=16,
+            action_augment_num=action_augment_num,
             fake_data_t_span=None if solver_type == "DPMSolver" else 32,
             energy_guided_policy=dict(
                 batch_size=256,
             ),
             critic=dict(
-                stop_training_iterations=500000,
+                stop_training_iterations=2000,
                 learning_rate=3e-4,
                 discount_factor=0.99,
                 update_momentum=0.995,
             ),
             energy_guidance=dict(
-                iterations=600000,
-                learning_rate=3e-4,
+                iterations=4000,
+                learning_rate=1e-4,
             ),
             evaluation=dict(
-                evaluation_interval=10000,
-                guidance_scale=[0.0, 1.0],
+                evaluation_interval=200,
+                guidance_scale=[0.0, 1.0, 2.0, 3.0, 5.0, 8.0, 10.0],
             ),
+            checkpoint_path=f"./{env_id}-{algorithm}",
         ),
     ),
     deploy=dict(
         device=device,
         env=dict(
-            env_id="HalfCheetah-v2",
+            env_id=env_id,
             seed=0,
         ),
         num_deploy_steps=1000,
+        t_span=None if solver_type == "DPMSolver" else 32,
     ),
 )

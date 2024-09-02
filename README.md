@@ -108,7 +108,7 @@ from grl.utils.log import log
 from grl_pipelines.diffusion_model.configurations.lunarlander_continuous_qgpo import config
 
 def qgpo_pipeline(config):
-    qgpo = QGPOAlgorithm(config, dataset=QGPOCustomizedDataset(numpy_data_path="./data.npz",))
+    qgpo = QGPOAlgorithm(config, dataset=QGPOCustomizedDataset(numpy_data_path="./data.npz", action_augment_num=config.train.parameter.action_augment_num))
     qgpo.train()
 
     agent = qgpo.deploy()

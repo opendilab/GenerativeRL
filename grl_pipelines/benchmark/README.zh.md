@@ -1,6 +1,6 @@
 # 生成式强化学习基线实验
 
-[英语 (English)](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/benchmark/README.md) | 简体中文
+[英语 (English)](https://github.com/zjowowen/GenerativeRL_Preview/tree/main/grl_pipelines/benchmark/README.md) | 简体中文
 
 我们评估了使用生成式模型作为强化学习策略在 [D4RL](https://arxiv.org/abs/2004.07219) 数据集上进行离线强化学习的表现.
 
@@ -9,7 +9,7 @@
 以前的相关工作的取得了不错的性能成绩，详细信息如下：
 
 | Algo.                           | [SfBC](https://arxiv.org/abs/2209.14548) |[Diffusion-QL](https://arxiv.org/abs/2208.06193)  |[QGPO](https://proceedings.mlr.press/v202/lu23d/lu23d.pdf) |[IDQL](https://arxiv.org/abs/2304.10573)|[SRPO](https://arxiv.org/abs/2310.07297)|
-|-------------------------------- | ---------------------------------------- | -------------------------------------------------| --------------------------------------------------------- | -------------------------------------- | -------------------------------------- |
+|-------------------------------- | ---------- | ---------- | ---------- | --------- | --------- |
 | Env./Model.                     | VPSDE                                    |  DDPM                                            | VPSDE                                                     |  DDPM                                  |  VPSDE                                 |
 | halfcheetah-medium-expert-v2    | 92.6                                     |  96.8                                            | 93.5                                                      |  95.9                                  |  92.2                                  |
 | hopper-medium-expert-v2         | 108.6                                    |  111.1                                           | 108.0                                                     |  108.6                                 |  100.1                                 |
@@ -169,7 +169,7 @@ config = EasyDict(
             ),
         ),
         dataset=dict(
-            type="GPCustomizedDataset",
+            type="GPCustomizedTensorDictDataset",
             args=dict(
                 env_id=env_id,
                 numpy_data_path=data_path,

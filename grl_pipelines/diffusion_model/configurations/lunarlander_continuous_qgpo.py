@@ -3,6 +3,9 @@ from easydict import EasyDict
 
 action_size = 2
 state_size = 8
+env_id="LunarLanderContinuous-v2"
+algorithm="QGPO"
+action_augment_num = 16
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 t_embedding_dim = 32
 t_encoder = dict(
@@ -16,19 +19,20 @@ solver_type = "DPMSolver"
 
 config = EasyDict(
     train=dict(
-        project="LunarLanderContinuous-v2-QGPO",
+        project=f"{env_id}-{algorithm}",
         device=device,
         simulator=dict(
             type="GymEnvSimulator",
             args=dict(
-                env_id="LunarLanderContinuous-v2",
+                env_id=env_id,
             ),
         ),
         # dataset = dict(
-        #     type = "QGPOCustomizedDataset",
+        #     type = "QGPOCustomizedTensorDictDataset",
         #     args = dict(
-        #         env_id = "LunarLanderContinuous-v2",
+        #         env_id = env_id,
         #         numpy_data_path = "./data.npz",
+        #         action_augment_num = action_augment_num,
         #     ),
         # ),
         model=dict(
@@ -127,33 +131,34 @@ config = EasyDict(
             behaviour_policy=dict(
                 batch_size=1024,
                 learning_rate=1e-4,
-                iterations=100000,
+                iterations=500,
             ),
-            sample_per_state=16,
+            action_augment_num=action_augment_num,
             fake_data_t_span=None if solver_type == "DPMSolver" else 32,
             energy_guided_policy=dict(
                 batch_size=256,
             ),
             critic=dict(
-                stop_training_iterations=50000,
+                stop_training_iterations=500,
                 learning_rate=1e-4,
                 discount_factor=0.99,
                 update_momentum=0.995,
             ),
             energy_guidance=dict(
-                iterations=100000,
+                iterations=1000,
                 learning_rate=1e-4,
             ),
             evaluation=dict(
-                evaluation_interval=5000,
+                evaluation_interval=50,
                 guidance_scale=[0.0, 1.0, 2.0],
             ),
+            checkpoint_path=f"./{env_id}-{algorithm}",
         ),
     ),
     deploy=dict(
         device=device,
         env=dict(
-            env_id="LunarLanderContinuous-v2",
+            env_id=env_id,
             seed=0,
         ),
         num_deploy_steps=1000,

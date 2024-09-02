@@ -100,7 +100,6 @@ config = EasyDict(
     dataset=dict(
         data_num=data_num,
         noise=0.6,
-        temperature=0.1,
     ),
     model=dict(
         device=device,
