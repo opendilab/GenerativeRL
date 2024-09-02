@@ -302,6 +302,7 @@
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.distributions</span> <span class="kn">import</span> <span class="n">Independent</span><span class="p">,</span> <span class="n">Normal</span>
 <span class="kn">import</span> <span class="nn">treetensor</span>
 <span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
 <span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
@@ -310,6 +311,7 @@
 <span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.velocity_function</span> <span class="kn">import</span> <span class="n">VelocityFunction</span>
 <span class="kn">from</span> <span class="nn">grl.generative_models.random_generator</span> <span class="kn">import</span> <span class="n">gaussian_random_variable</span>
 <span class="kn">from</span> <span class="nn">grl.generative_models.stochastic_process</span> <span class="kn">import</span> <span class="n">StochasticProcess</span>
+<span class="kn">from</span> <span class="nn">grl.generative_models.metric</span> <span class="kn">import</span> <span class="n">compute_likelihood</span>
 <span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers</span> <span class="kn">import</span> <span class="n">get_solver</span>
 <span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.dpm_solver</span> <span class="kn">import</span> <span class="n">DPMSolver</span>
 <span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.ode_solver</span> <span class="kn">import</span> <span class="p">(</span>
@@ -682,6 +684,172 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="IndependentConditionalFlowModel.log_prob"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.IndependentConditionalFlowModel.log_prob">[docs]</a>    <span class="k">def</span> <span class="nf">log_prob</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">log_prob_x_0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">function_log_prob_x_0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">callable</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">using_Hutchinson_trace_estimator</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Compute the log probability of the final state given the initial state and the condition.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            x_1 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The final state.</span>
+<span class="sd">            log_prob_x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The log probability of the initial state.</span>
+<span class="sd">            function_log_prob_x_0 (:obj:`Union[callable, nn.Module]`): The function to compute the log probability of the initial state.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The condition.</span>
+<span class="sd">            t (:obj:`torch.Tensor`): The time span.</span>
+<span class="sd">            using_Hutchinson_trace_estimator (:obj:`bool`): Whether to use Hutchinson trace estimator. It is an approximation of the trace of the Jacobian of the drift function, \</span>
+<span class="sd">                which is faster but less accurate. We recommend setting it to True for high dimensional data.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            log_likelihood (:obj:`torch.Tensor`): The log likelihood of the final state given the initial state and the condition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">model_drift</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">find_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">compute_trace_of_jacobian_general</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="c1"># Assuming x has shape (B, D1, ..., Dn)</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># get the shape of a single element in the batch</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="p">)</span>  <span class="c1"># trace for each batch</span>
+            <span class="c1"># Iterate through each index in the product of dimensions</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">torch</span><span class="o">.</span><span class="n">cartesian_prod</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span><span class="p">,)</span>
+                <span class="n">grad_outputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">grad_outputs</span><span class="p">[(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="o">*</span><span class="n">index</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mi">1</span>  <span class="c1"># set one at the specific index across all batches</span>
+                <span class="p">)</span>
+                <span class="n">grads</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span>
+                    <span class="n">outputs</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">grad_outputs</span><span class="o">=</span><span class="n">grad_outputs</span><span class="p">,</span> <span class="n">retain_graph</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">outputs</span> <span class="o">+=</span> <span class="n">grads</span><span class="p">[(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="o">*</span><span class="n">index</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">outputs</span>
+
+        <span class="k">def</span> <span class="nf">compute_trace_of_jacobian_by_Hutchinson_Skilling</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create the divergence function of `fn` using the Hutchinson-Skilling trace estimator.&quot;&quot;&quot;</span>
+
+            <span class="n">fn_eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">eps</span><span class="p">)</span>
+            <span class="n">grad_fn_eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">fn_eps</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">create_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad_fn_eps</span> <span class="o">*</span> <span class="n">eps</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">))))</span>
+            <span class="k">return</span> <span class="n">outputs</span>
+
+        <span class="k">def</span> <span class="nf">composite_drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="c1"># where x is actually x0_and_diff_logp, (x0, diff_logp), which is a tuple containing x and logp_xt_minus_logp_x0</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                <span class="n">x_t</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+                <span class="n">logp_xt_minus_logp_x0</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">x_t</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">model_drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x_t</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">using_Hutchinson_trace_estimator</span><span class="p">:</span>
+                    <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">x_t</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x_t</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                    <span class="n">logp_drift</span> <span class="o">=</span> <span class="o">-</span><span class="n">compute_trace_of_jacobian_by_Hutchinson_Skilling</span><span class="p">(</span>
+                        <span class="n">dx</span><span class="p">,</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">noise</span>
+                    <span class="p">)</span>
+                    <span class="c1"># logp_drift = - divergence_approx(dx, x_t, noise)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logp_drift</span> <span class="o">=</span> <span class="o">-</span><span class="n">compute_trace_of_jacobian_general</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">x_t</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">dx</span><span class="p">,</span> <span class="n">logp_drift</span>
+
+        <span class="c1"># x.shape = [batch_size, state_dim]</span>
+        <span class="n">x1_and_diff_logp</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">x_1</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-3</span>
+            <span class="n">t_span</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t_span</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x_1</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">solver</span> <span class="o">=</span> <span class="n">ODESolver</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;torchdiffeq_adjoint&quot;</span><span class="p">)</span>
+
+        <span class="n">x0_and_logpx0</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+            <span class="n">drift</span><span class="o">=</span><span class="n">composite_drift</span><span class="p">,</span>
+            <span class="n">x0</span><span class="o">=</span><span class="n">x1_and_diff_logp</span><span class="p">,</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+            <span class="n">adjoint_params</span><span class="o">=</span><span class="n">model_params</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">logp_x0_minus_logp_x1</span> <span class="o">=</span> <span class="n">x0_and_logpx0</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">x0_and_logpx0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">log_prob_x_0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">log_prob_x_0</span> <span class="o">-</span> <span class="n">logp_x0_minus_logp_x1</span>
+        <span class="k">elif</span> <span class="n">function_log_prob_x_0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log_prob_x_0</span> <span class="o">=</span> <span class="n">function_log_prob_x_0</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+            <span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">log_prob_x_0</span> <span class="o">-</span> <span class="n">logp_x0_minus_logp_x1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x0_1d</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">log_prob_x_0</span> <span class="o">=</span> <span class="n">Independent</span><span class="p">(</span>
+                <span class="n">Normal</span><span class="p">(</span>
+                    <span class="n">loc</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x0_1d</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x0_1d</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">scale</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x0_1d</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x0_1d</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                <span class="p">),</span>
+                <span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">x0_1d</span><span class="p">)</span>
+
+            <span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">log_prob_x_0</span> <span class="o">-</span> <span class="n">logp_x0_minus_logp_x1</span>
+
+        <span class="k">return</span> <span class="n">log_likelihood</span></div>
+
+<div class="viewcode-block" id="IndependentConditionalFlowModel.sample_with_log_prob"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.IndependentConditionalFlowModel.sample_with_log_prob">[docs]</a>    <span class="k">def</span> <span class="nf">sample_with_log_prob</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">x_0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">with_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">solver_config</span><span class="p">:</span> <span class="n">EasyDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">using_Hutchinson_trace_estimator</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Sample from the model, return the final state and the log probability of the initial state.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            t_span (:obj:`torch.Tensor`): The time span.</span>
+<span class="sd">            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): The batch size.</span>
+<span class="sd">            x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state, if not provided, it will be sampled from the Gaussian distribution.</span>
+<span class="sd">            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.</span>
+<span class="sd">            with_grad (:obj:`bool`): Whether to return the gradient.</span>
+<span class="sd">            solver_config (:obj:`EasyDict`): The configuration of the solver.</span>
+<span class="sd">            using_Hutchinson_trace_estimator (:obj:`bool`): Whether to use Hutchinson trace estimator. It is an approximation of the trace of the Jacobian of the drift function, \</span>
+<span class="sd">                which is faster but less accurate. We recommend setting it to True for high dimensional data.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The sampled result.</span>
+<span class="sd">            log_prob_x_0 (:obj:`torch.Tensor`): The log probability of the initial state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">x_0</span><span class="o">=</span><span class="n">x_0</span><span class="p">,</span>
+            <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+            <span class="n">with_grad</span><span class="o">=</span><span class="n">with_grad</span><span class="p">,</span>
+            <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">log_prob_x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span>
+            <span class="n">x_1</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+            <span class="n">t</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+            <span class="n">using_Hutchinson_trace_estimator</span><span class="o">=</span><span class="n">using_Hutchinson_trace_estimator</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">log_prob_x_0</span></div>
 
 <div class="viewcode-block" id="IndependentConditionalFlowModel.flow_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.IndependentConditionalFlowModel.flow_matching_loss">[docs]</a>    <span class="k">def</span> <span class="nf">flow_matching_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>

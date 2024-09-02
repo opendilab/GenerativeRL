@@ -642,11 +642,20 @@
             <span class="c1"># x.shape = (B*N, D)</span>
 
         <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">condition</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span>
-                <span class="n">condition</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
-            <span class="p">)</span>
-            <span class="c1"># condition.shape = (B*N, D)</span>
-
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">):</span>
+                <span class="n">repeated_condition</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="n">key</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">condition</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+                <span class="n">repeated_condition</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()])</span>
+                <span class="n">repeated_condition</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">condition</span> <span class="o">=</span> <span class="n">repeated_condition</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">condition</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span>
+                    <span class="n">condition</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
+                <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DPMSolver</span><span class="p">):</span>
 
             <span class="k">def</span> <span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
