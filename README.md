@@ -21,6 +21,7 @@ English | [简体中文(Simplified Chinese)](https://github.com/opendilab/Genera
 - [Integrated Algorithms](#integrated-algorithms)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Documentation](#documentation)
 - [Tutorials](#tutorials)
 - [Benchmark experiments](#benchmark-experiments)
 
@@ -124,6 +125,10 @@ if __name__ == '__main__':
 ```
 
 For more detailed examples and documentation, please refer to the GenerativeRL documentation.
+
+## Documentation
+
+The full documentation for GenerativeRL can be found at [GenerativeRL Documentation](https://opendilab.github.io/GenerativeRL/).
 
 ## Tutorials
 
