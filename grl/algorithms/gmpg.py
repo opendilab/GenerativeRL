@@ -410,7 +410,7 @@ class GMPGPolicy(nn.Module):
             using_Hutchinson_trace_estimator=True,
         )
         bits_ratio = torch.prod(
-            torch.tensor(state_repeated.shape[1], device=state.device)
+            torch.tensor(action_repeated.shape[1], device=state.device)
         ) * torch.log(torch.tensor(2.0, device=state.device))
         log_p_per_dim = log_p / bits_ratio
         log_mu = compute_likelihood(
