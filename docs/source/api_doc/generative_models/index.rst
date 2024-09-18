@@ -28,3 +28,9 @@ OptimalTransportConditionalFlowModel
 .. autoclass:: OptimalTransportConditionalFlowModel
     :special-members: __init__
     :members:
+
+EDMDiffusionModel
+-------------------------------
+.. autoclass:: EDMModel
+    :special-members: __init__
+    :members:
