@@ -1,0 +1,617 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to train generative models &mdash; GenerativeRL v0.0.1 documentation</title>
+  
+
+  <link rel="shortcut icon" href="../_static/images/favicon.ico" />
+  
+  
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/style.css" type="text/css" />
+  <link rel="index" title="Index" href="../genindex.html" />
+  <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="How to evaluate RL agents performance" href="evaluating_agents.html" />
+  <link rel="prev" title="How to train and deploy reinforcement learning agents" href="training_agents.html" />
+    <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
+
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+  <script>
+    MathJax = {
+        chtml: {
+            scale: 1,
+            minScale: 1,
+        },
+        svg: {
+            scale: 1,
+            minScale: 1,
+        }
+    }
+</script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+</head>
+
+<div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/"
+        aria-label="OpenMMLab"></a>
+
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+          <li >
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a
+                class="resource-option with-down-arrow">
+                OpenDILab
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-engine" target="_blank">
+                  <span class="dropdown-title">DI-engine </span>
+                  <p>OpenDILab Decision AI Engine</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/LightZero" target="_blank">
+                  <span class="dropdown-title">LightZero </span>
+                  <p>OpenDILab Decision Monte Carlo Tree Search Framework</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GenerativeRL" target="_blank">
+                  <span class="dropdown-title">GenerativeRL </span>
+                  <p>OpenDILab Generative AI Framework</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-star" target="_blank">
+                  <span class="dropdown-title">DI-star </span>
+                  <p>OpenDILab Decision AI in StarCraftII</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-drive" target="_blank">
+                  <span class="dropdown-title">DI-drive </span>
+                  <p>OpenDILab Auto-driving platform</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GoBigger" target="_blank">
+                  <span class="dropdown-title">GoBigger </span>
+                  <p>OpenDILab Multi-Agent Environment</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-smartcross" target="_blank">
+                  <span class="dropdown-title">DI-smartcross </span>
+                  <p>Decision Intelligence Platform for Traffic Crossing Signal Control</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-treetensor" target="_blank">
+                  <span class="dropdown-title">DI-treetensor </span>
+                  <p>Tree Nested PyTorch Tensor Lib</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-sheep" target="_blank">
+                  <span class="dropdown-title">DI-sheep </span>
+                  <p>Deep Reinforcement Learning + 3 Tiles Game</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-model-based-RL" target="_blank">
+                  <span class="dropdown-title">awesome-model-based-RL </span>
+                  <p>A curated list of awesome model based RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-decision-transformer" target="_blank">
+                  <span class="dropdown-title">awesome-decision-transformer </span>
+                  <p>A curated list of Decision Transformer resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-exploration-rl" target="_blank">
+                  <span class="dropdown-title">awesome-exploration-rl </span>
+                  <p>A curated list of awesome exploration RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-multi-modal-reinforcement-learning" target="_blank">
+                  <span class="dropdown-title">awesome-multi-modal-reinforcement-learning </span>
+                  <p>A curated list of Multi-Modal Reinforcement Learning resources (continually updated)</p>
+                </a>
+              </div>
+          </li>
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+<body class="pytorch-body">
+
+   
+
+  
+
+  <div class="table-of-contents-link-wrapper">
+    <span>Table of Contents</span>
+    <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+  </div>
+
+  <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+    <div class="pytorch-side-scroll">
+      <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <div class="pytorch-left-menu-search">
+          
+
+          
+          
+          
+          <div class="version">
+            0.0.1
+          </div>
+          
+          
+
+          
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search Docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        
+        
+        
+        
+        
+        <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quick_start/index.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/index.html">Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/agents/index.html">grl.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/algorithms/index.html">grl.algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/datasets/index.html">grl.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/generative_models/index.html">grl.generative_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/neural_network/index.html">grl.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/numerical_methods/index.html">grl.numerical_methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/rl_modules/index.html">grl.rl_modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_doc/utils/index.html">grl.utils</a></li>
+</ul>
+
+        
+        
+      </div>
+    </div>
+  </nav>
+
+  <div class="pytorch-container">
+    <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+      <div class="pytorch-breadcrumbs-wrapper">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        <a href="../index.html">
+            Docs
+        </a> &gt;
+      </li>
+
+        
+          <li><a href="index.html">User Guide</a> &gt;</li>
+        
+      <li>How to train generative models</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user_guide/training_generative_models.rst.txt" rel="nofollow"><img src="../_static/images/view-page-source-icon.svg"></a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+</div>
+      </div>
+
+      <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">
+        Shortcuts
+      </div>
+    </div>
+
+    <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+      <div class="pytorch-content-left">
+        
+          <div class="rst-content">
+            
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+                
+  <section id="how-to-train-generative-models">
+<h1>How to train generative models<a class="headerlink" href="#how-to-train-generative-models" title="Permalink to this heading">¶</a></h1>
+<p>GenerativeRL provides a set of generative models that can be used to generate data samples for diverse applications.
+These models include diffusion models, flow models, and bridge models.</p>
+<section id="stochastic-path">
+<h2>Stochastic path<a class="headerlink" href="#stochastic-path" title="Permalink to this heading">¶</a></h2>
+<p>Diffusion models take the form of a stochastic differential equation (SDE) that describes the diffusion process evolution of a data distribution over time.
+A typical diffusion process is defined by the following SDE:</p>
+<div class="math notranslate nohighlight">
+\[dX_t = f(X_t, t) dt + \sigma(X_t, t) dW_t\]</div>
+<p>where <span class="math notranslate nohighlight">\(X_t\)</span> is the data distribution at time <span class="math notranslate nohighlight">\(t\)</span>, <span class="math notranslate nohighlight">\(f\)</span> is the drift function, <span class="math notranslate nohighlight">\(\sigma\)</span> is the diffusion function, and <span class="math notranslate nohighlight">\(dW_t\)</span> is the Wiener process increment.</p>
+<p>The drift function <span class="math notranslate nohighlight">\(f\)</span> and the diffusion function <span class="math notranslate nohighlight">\(\sigma\)</span> are defined in class <code class="docutils literal notranslate"><span class="pre">GaussianConditionalProbabilityPath</span></code> in <code class="docutils literal notranslate"><span class="pre">grl.numerical_methods.probability_path</span></code>
+Every kind of diffusion path defines a different kind of diffusion model, such as the Variance-Preserving Stochastic Differential Equation (VP-SDE).</p>
+<p>GenerativeRL currently supports the following diffusion models:</p>
+<ul class="simple">
+<li><p>Variance-Preserving Stochastic Differential Equation (VP-SDE)</p></li>
+<li><p>Generalized Variance-Preserving Stochastic Differential Equation (GVP)</p></li>
+<li><p>Linear Stochastic Differential Equation (Linear-SDE)</p></li>
+</ul>
+<p>We usally take the diffusion time <span class="math notranslate nohighlight">\(T\)</span> to be from 0 to 1, and the initial distribution <span class="math notranslate nohighlight">\(X_0\)</span> to be the data distribution we want to model, while <span class="math notranslate nohighlight">\(X_1\)</span> to be a standard normal distribution.</p>
+</section>
+<section id="model-parameterization">
+<h2>Model parameterization<a class="headerlink" href="#model-parameterization" title="Permalink to this heading">¶</a></h2>
+<p>The reverse-time diffusion process is defined as the generation process of the data distribution from a standard normal distribution to the target distribution.
+By using Fokker-Planck-Kolmogorov (FPK) equation, we can derive the reverse-time diffusion process from the forward-time diffusion process.</p>
+<div class="math notranslate nohighlight">
+\[dX_t = f(X_t, t) dt - \frac{1}{2}(g^2(t)+g'^2(t))\nabla_{x_t}\log p(x_t) dt + g'(t) d\hat{W}_t\]</div>
+<p>where <span class="math notranslate nohighlight">\(g(t) = \sigma(X_t, t)\)</span>, <span class="math notranslate nohighlight">\(g'(t) = \sigma'(X_t, t)\)</span>, which is the noise coefficient used at reverse-time diffusion process, and <span class="math notranslate nohighlight">\(d\hat{W}_t\)</span> is the Wiener process increment in the reverse-time diffusion process.</p>
+<p>The score function <span class="math notranslate nohighlight">\(\nabla_{x_t}\log p(x_t)\)</span> can be parameterized by a neural network, which is also denoted as <cite>s_{theta}</cite> in the codebase.
+In the work of DDPM, the score function is parameterized by a transformation into <span class="math notranslate nohighlight">\(-\sigma(t)\nabla_{x_t}\log p(x_t)\)</span>, which has a comparable scale as standard gaussian noise and is called the noise function.</p>
+<p>Or, we can also parameterize the velocity field <span class="math notranslate nohighlight">\(v(x_t, t) = f(X_t, t) -\frac{1}{2}(g^2(t)+g'^2(t))\nabla_{x_t}\log p(x_t)\)</span> by neural networks.</p>
+<p>GenerativeRL currently supports the following nerual network parameterizations method:</p>
+<ul class="simple">
+<li><p>Score function</p></li>
+<li><p>Noise function</p></li>
+<li><p>Velocity</p></li>
+<li><p>Data denoiser</p></li>
+</ul>
+<p>User can independently define which parameterization method to use for neural networks in the generative model.</p>
+<p>These functions has a same input-output shape, which is the same as the data distribution shape. Therefore, in GenerativeRL, we use a unified class <code class="docutils literal notranslate"><span class="pre">grl.generative_models.IntrinsicModel</span></code> to define the neural network parameterization of these functions.
+This class takes time <span class="math notranslate nohighlight">\(t\)</span>, data <span class="math notranslate nohighlight">\(X_t\)</span> and condition <span class="math notranslate nohighlight">\(c\)</span> as input, and returns the output of the neural network.
+Any neural network architecture can be used in this class, such as MLP, CNN, U-net, or Transformer.
+GenerativeRL provides a set of neural network architectures in the <code class="docutils literal notranslate"><span class="pre">grl.neural_network</span></code> module, which can be called from the configurations, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">diffusion_model</span><span class="o">=</span><span class="n">EasyDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="n">x_size</span><span class="o">=</span><span class="n">x_size</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ODESolver&quot;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">library</span><span class="o">=</span><span class="s2">&quot;torchdyn&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">path</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;linear_vp_sde&quot;</span><span class="p">,</span>
+        <span class="n">beta_0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">beta_1</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">model</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;noise_function&quot;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">t_encoder</span><span class="o">=</span><span class="n">t_encoder</span><span class="p">,</span>
+            <span class="n">backbone</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;TemporalSpatialResidualNet&quot;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">hidden_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">512</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span>
+                    <span class="n">output_dim</span><span class="o">=</span><span class="n">x_size</span><span class="p">,</span>
+                    <span class="n">t_dim</span><span class="o">=</span><span class="n">t_embedding_dim</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">grl.generative_models</span> <span class="kn">import</span> <span class="n">DiffusionModel</span>
+<span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="n">diffusion_model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, neural network of class <code class="docutils literal notranslate"><span class="pre">TemporalSpatialResidualNet</span></code> is used to parameterize the noise function.</p>
+</section>
+<section id="customized-neural-network">
+<h2>Customized neural network<a class="headerlink" href="#customized-neural-network" title="Permalink to this heading">¶</a></h2>
+<p>For customized neural network architectures, GenerativeRL provide API <code class="docutils literal notranslate"><span class="pre">grl.neural_network.register_module</span></code> for registering new neural network classes.
+User can define their own neural network class and register it in the <code class="docutils literal notranslate"><span class="pre">grl.neural_network</span></code> module, so that it can be called from the configurations, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl.neural_network</span> <span class="kn">import</span> <span class="n">register_module</span>
+
+<span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_sizes</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MyModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">hidden_sizes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_dim</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;MyModule&quot;</span><span class="p">,</span> <span class="n">MyModule</span><span class="p">)</span>
+
+<span class="n">diffusion_model</span><span class="o">=</span><span class="n">EasyDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="n">x_size</span><span class="o">=</span><span class="n">x_size</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ODESolver&quot;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">library</span><span class="o">=</span><span class="s2">&quot;torchdyn&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">path</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;linear_vp_sde&quot;</span><span class="p">,</span>
+        <span class="n">beta_0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">beta_1</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">model</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;noise_function&quot;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">t_encoder</span><span class="o">=</span><span class="n">t_encoder</span><span class="p">,</span>
+            <span class="n">backbone</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;MyModule&quot;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">hidden_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">512</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">128</span><span class="p">],</span>
+                    <span class="n">output_dim</span><span class="o">=</span><span class="n">x_size</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">grl.generative_models</span> <span class="kn">import</span> <span class="n">DiffusionModel</span>
+<span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="n">diffusion_model</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Usually, the generative model is trained by maximum likelihood estimation (MLE) or its variants, such as score matching, bridge matching, or flow matching.</p>
+</section>
+<section id="training-objective-for-different-generative-models">
+<h2>Training objective for different generative models<a class="headerlink" href="#training-objective-for-different-generative-models" title="Permalink to this heading">¶</a></h2>
+<p>GenerativeRL currently supports both score matching and flow matching for training diffusion models. Flow model can not obtain its score function directly, so it can only be trained by flow matching.</p>
+<p>Score matching loss is defined as a weighted mean squared error between the score function and the neural network parameterization of the score function.</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}_{\text{DSM}} = \frac{1}{2}\int_{0}^{1}{\mathbb{E}_{p(x_t,x_0)}\left[\lambda(t)\|s_{\theta}(x_t)-\nabla_{x_t}\log p(x_t|x_0)\|^2\right]\mathrm{d}t}\]</div>
+<p>Flow matching loss is defined as a mean squared error between the velocity field and the neural network parameterization of the velocity field.</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L}_{\text{CFM}} = \frac{1}{2}\int_{0}^{1} \mathbb{E}_{p(x_t, x_0, x_1)}\left[\|v_{\theta}(x_t) - v(x_t|x_0, x_1)\|^2\right] \mathrm{d}t\]</div>
+<p>GenerativeRL provides a unified API for training with score matching loss and flow matching loss, simply calling the <code class="docutils literal notranslate"><span class="pre">score_matching_loss</span></code> or <code class="docutils literal notranslate"><span class="pre">flow_matching_loss</span></code> method in the generative model class.
+Here is the example code for training a diffusion model with score matching loss:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl.generative_models</span> <span class="kn">import</span> <span class="n">DiffusionModel</span>
+
+<span class="c1"># Create a diffusion model</span>
+<span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># Train the diffusion model with score matching loss</span>
+<span class="n">score_matching_loss</span> <span class="o">=</span> <span class="n">diffusion_model</span><span class="o">.</span><span class="n">score_matching_loss</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="c1"># Train the diffusion model with flow matching loss</span>
+<span class="n">flow_matching_loss</span> <span class="o">=</span> <span class="n">diffusion_model</span><span class="o">.</span><span class="n">flow_matching_loss</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+              </article>
+              
+            </div>
+            <footer>
+  
+  <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+    
+    <a href="evaluating_agents.html" class="btn btn-neutral float-right" title="How to evaluate RL agents performance" accesskey="n"
+      rel="next">Next <img src="../_static/images/chevron-right-blue.svg"
+        class="next-page"></a>
+    
+    
+    <a href="training_agents.html" class="btn btn-neutral" title="How to train and deploy reinforcement learning agents" accesskey="p"
+      rel="prev"><img src="../_static/images/chevron-right-blue.svg" class="previous-page"> Previous</a>
+    
+  </div>
+  
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>
+      &copy; Copyright 2024, OpenDILab Contributors.
+
+    </p>
+  </div>
+  
+  <div>
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+      href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the
+      Docs</a>.
+  </div>
+   
+
+</footer>
+          </div>
+        </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              <ul>
+<li><a class="reference internal" href="#">How to train generative models</a><ul>
+<li><a class="reference internal" href="#stochastic-path">Stochastic path</a></li>
+<li><a class="reference internal" href="#model-parameterization">Model parameterization</a></li>
+<li><a class="reference internal" href="#customized-neural-network">Customized neural network</a></li>
+<li><a class="reference internal" href="#training-objective-for-different-generative-models">Training objective for different generative models</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+    </section>
+  </div>
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" id="documentation_options" data-url_root="../"
+    src="../_static/documentation_options.js"></script>
+  <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+  <script src="../_static/doctools.js"></script>
+  <script src="../_static/sphinx_highlight.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+  <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+
+  
+
+  <script type="text/javascript" src="../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+    jQuery(function () {
+      SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+  </div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/" aria-label="OpenMMLab"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function (e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
+</body>
+
+</html>

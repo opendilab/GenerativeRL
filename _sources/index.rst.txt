@@ -16,8 +16,15 @@ This library aims to provide a framework for combining the power of generative m
 
 .. toctree::
     :maxdepth: 2
-    :caption: Best Practice
+    :caption: Concepts
 
+    concepts/index
+
+.. toctree::
+    :maxdepth: 2
+    :caption: User Guide
+
+    user_guide/index
 
 .. toctree::
     :maxdepth: 2

@@ -9,10 +9,11 @@
 
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; GenerativeRL v0.0.1 documentation</title>
+  <title>Concepts &mdash; GenerativeRL v0.0.1 documentation</title>
   
 
   <link rel="shortcut icon" href="../_static/images/favicon.ico" />
@@ -35,6 +36,8 @@
   <link rel="stylesheet" href="../_static/css/style.css" type="text/css" />
   <link rel="index" title="Index" href="../genindex.html" />
   <link rel="search" title="Search" href="../search.html" />
+  <link rel="next" title="User Guide" href="../user_guide/index.html" />
+  <link rel="prev" title="Quick Start" href="../tutorials/quick_start/index.html" />
     <link href="../_static/css/style.css" rel="stylesheet" type="text/css">
 
 
@@ -222,8 +225,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/quick_start/index.html">Quick Start</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/index.html">Concepts</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Concepts</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -277,10 +280,14 @@
       </li>
 
         
-      <li>Overview: module code</li>
+      <li>Concepts</li>
     
     
       <li class="pytorch-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/concepts/index.rst.txt" rel="nofollow"><img src="../_static/images/view-page-source-icon.svg"></a>
+          
         
       </li>
     
@@ -303,35 +310,83 @@
             <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="grl/agents/gm.html">grl.agents.gm</a></li>
-<li><a href="grl/agents/qgpo.html">grl.agents.qgpo</a></li>
-<li><a href="grl/agents/srpo.html">grl.agents.srpo</a></li>
-<li><a href="grl/datasets/gp.html">grl.datasets.gp</a></li>
-<li><a href="grl/datasets/qgpo.html">grl.datasets.qgpo</a></li>
-<li><a href="grl/generative_models/conditional_flow_model/independent_conditional_flow_model.html">grl.generative_models.conditional_flow_model.independent_conditional_flow_model</a></li>
-<li><a href="grl/generative_models/conditional_flow_model/optimal_transport_conditional_flow_model.html">grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model</a></li>
-<li><a href="grl/generative_models/diffusion_model/diffusion_model.html">grl.generative_models.diffusion_model.diffusion_model</a></li>
-<li><a href="grl/generative_models/diffusion_model/energy_conditional_diffusion_model.html">grl.generative_models.diffusion_model.energy_conditional_diffusion_model</a></li>
-<li><a href="grl/neural_network.html">grl.neural_network</a></li>
-<ul><li><a href="grl/neural_network/transformers/dit.html">grl.neural_network.transformers.dit</a></li>
-</ul><li><a href="grl/numerical_methods/numerical_solvers/dpm_solver.html">grl.numerical_methods.numerical_solvers.dpm_solver</a></li>
-<li><a href="grl/numerical_methods/numerical_solvers/ode_solver.html">grl.numerical_methods.numerical_solvers.ode_solver</a></li>
-<li><a href="grl/numerical_methods/numerical_solvers/sde_solver.html">grl.numerical_methods.numerical_solvers.sde_solver</a></li>
-<li><a href="grl/numerical_methods/ode.html">grl.numerical_methods.ode</a></li>
-<li><a href="grl/numerical_methods/probability_path.html">grl.numerical_methods.probability_path</a></li>
-<li><a href="grl/numerical_methods/sde.html">grl.numerical_methods.sde</a></li>
-<li><a href="grl/rl_modules/simulators/gym_env_simulator.html">grl.rl_modules.simulators.gym_env_simulator</a></li>
-<li><a href="grl/rl_modules/value_network/one_shot_value_function.html">grl.rl_modules.value_network.one_shot_value_function</a></li>
-<li><a href="grl/rl_modules/value_network/q_network.html">grl.rl_modules.value_network.q_network</a></li>
-<li><a href="grl/rl_modules/value_network/value_network.html">grl.rl_modules.value_network.value_network</a></li>
-<li><a href="grl/utils.html">grl.utils</a></li>
+  <section id="concepts">
+<h1>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading">¶</a></h1>
+<p>Frameworks consist of code and APIs designed for data transformation, model training, and deployment.
+GenerativeRL is a framework that provides user-friendly APIs for training and deploying generative models and reinforcement learning (RL) agents.
+In this section, we will explore the core concepts of GenerativeRL, including generative models, reinforcement learning, and their integration.
+We will discuss the key design principles that underpin the GenerativeRL library and how they can be leveraged to address complex problems in the field of reinforcement learning.
+Additionally, we will explain why these concepts are important and what makes GenerativeRL unique and adaptable across a wide range of applications.</p>
+<section id="concepts-overview">
+<h2>Concepts Overview<a class="headerlink" href="#concepts-overview" title="Permalink to this heading">¶</a></h2>
+<section id="generative-models">
+<h3>Generative Models<a class="headerlink" href="#generative-models" title="Permalink to this heading">¶</a></h3>
+<p>Generative models are a class of machine learning models used to generate new data samples from a given distribution, typically learned from a training dataset.
+Most generative models are trained using unsupervised learning techniques and can be applied to tasks such as image, video, or audio generation, data augmentation, and interpolation.
+GenerativeRL focuses on models that use continuous-time dynamics to model data distributions, such as diffusion models and flow models.
+These models have a high capacity to capture complex data distributions and have demonstrated promising results in a variety of applications.
+They are typically trained using maximum likelihood estimation or its variants, such as score matching, and can generate high-quality samples by solving an ordinary differential equation (ODE) or a stochastic differential equation (SDE).</p>
+<div class="math notranslate nohighlight">
+\[dX_t = f(X_t, t) dt + \sigma(X_t, t) dW_t\]</div>
+<p>GenerativeRL provides unified APIs for training and deploying generative models based on continuous-time dynamics.
+However, different generative models vary in their definitions of the drift function <span class="math notranslate nohighlight">\(f\)</span> and the diffusion function <span class="math notranslate nohighlight">\(\sigma\)</span>.
+Some of these can be unified under common APIs, while others may require specific implementations.
+There are four key differences between generative models implemented across different open-source libraries:</p>
+<ul class="simple">
+<li><p><strong>Model Definitions</strong>: The neural network used to parameterize certain parts of the model, such as the drift function, score function, data denoiser, or potential function.</p></li>
+<li><p><strong>Path Definitions</strong>: The definition of the stochastic process path, which determines whether the model is a diffusion model, a flow model, or a specific type of diffusion or flow model.</p></li>
+<li><p><strong>Training Procedure</strong>: The fundamental training objective used to optimize the model parameters to maximize the likelihood of the training data. This can include pretraining methods like score matching, flow matching, or bridge matching, and fine-tuning techniques such as advantage-weighted regression, policy gradients, or adjoint matching.</p></li>
+<li><p><strong>Sampling Procedure</strong>: The method used to generate new data samples from the model, which can involve forward or reverse sampling depending on the path and the numerical method used (e.g., Euler-Maruyama or Runge-Kutta).</p></li>
 </ul>
+<p>GenerativeRL offers maximum flexibility, allowing users to customize and extend generative models to suit their specific needs across these four dimensions.
+For instance, users can easily define their own neural network architectures, paths, training procedures, and sampling methods to create new generative models tailored to specific applications and data formats.</p>
+</section>
+<section id="reinforcement-learning">
+<h3>Reinforcement Learning<a class="headerlink" href="#reinforcement-learning" title="Permalink to this heading">¶</a></h3>
+<p>Reinforcement learning (RL) is a class of machine learning algorithms that learn to make decisions by interacting with an environment and receiving rewards or penalties based on their actions.
+RL agents learn to maximize a cumulative reward signal by exploring the environment, taking actions, and updating their policies or value functions based on the observed rewards.
+RL algorithms can be categorized into model-free and model-based methods, depending on whether they learn a model of the environment dynamics or directly optimize a policy or value function.
+RL algorithms can also be categorized into online and offline methods, depending on whether they learn from interactions with the environment or from a fixed dataset.
+Online RL algorithms can also be classified based on their exploration strategies, such as on-policy or off-policy methods, and their optimization objectives, such as policy gradients, value functions, or actor-critic methods.</p>
+<p>Generative model integration with RL is a promising research direction that leverages generative models to improve sample efficiency, generalization, and exploration in RL.
+For example, generative models can be used to learn a model of the environment dynamics, generate synthetic data for offline RL, or provide a learned Generative model policy or value function.</p>
+<p>GenerativeRL provides a decoupled architecture that allows users to easily integrate generative models with RL algorithms.
+Different generative models can be trained independently of the RL algorithms with unified APIs with little modifications to configurations.</p>
+</section>
+</section>
+<section id="design-principles">
+<h2>Design Principles<a class="headerlink" href="#design-principles" title="Permalink to this heading">¶</a></h2>
+<p>GenerativeRL is designed with the following principles, ranked from most important to least important:</p>
+<ul class="simple">
+<li><p><strong>Automatic Differentiation</strong>: GenerativeRL leverages automatic differentiation libraries, such as PyTorch, <cite>torchdiffeq</cite>, and <cite>torchdyn</cite>, to efficiently and accurately compute gradients.</p></li>
+<li><p><strong>Unification</strong>: GenerativeRL unifies the training and deployment of various generative models and reinforcement learning agents within a single framework.</p></li>
+<li><p><strong>Simplicity</strong>: GenerativeRL provides a simple and intuitive interface for training and deploying generative models and RL agents.</p></li>
+<li><p><strong>Flexibility</strong>: GenerativeRL is designed to be flexible and extensible, enabling users to easily customize and extend the library to suit their specific needs for different applications and data formats, such as tensors or dictionaries.</p></li>
+<li><p><strong>Modularity</strong>: GenerativeRL is built on a modular architecture that allows users to mix and match different components, such as generative models, RL algorithms, and neural network architectures.</p></li>
+<li><p><strong>Reproducibility</strong>: GenerativeRL ensures reproducible training and evaluation procedures through configurations, random seed initialization, logging, and checkpointing, making it possible to reproduce results across different runs and environments.</p></li>
+<li><p><strong>Minimal Dependencies</strong>: GenerativeRL seeks to minimize external dependencies, providing a lightweight library that can be easily installed and used on various platforms and environments.</p></li>
+<li><p><strong>Compatibility with Existing RL Frameworks</strong>: GenerativeRL is designed to work seamlessly with existing RL frameworks like OpenAI Gym and TorchRL, leveraging their functionality and environments.</p></li>
+</ul>
+</section>
+</section>
+
 
               </article>
               
             </div>
             <footer>
+  
+  <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+    
+    <a href="../user_guide/index.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n"
+      rel="next">Next <img src="../_static/images/chevron-right-blue.svg"
+        class="next-page"></a>
+    
+    
+    <a href="../tutorials/quick_start/index.html" class="btn btn-neutral" title="Quick Start" accesskey="p"
+      rel="prev"><img src="../_static/images/chevron-right-blue.svg" class="previous-page"> Previous</a>
+    
+  </div>
   
 
   <hr>
@@ -357,7 +412,18 @@
         <div class="pytorch-content-right" id="pytorch-content-right">
           <div class="pytorch-right-menu" id="pytorch-right-menu">
             <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
-              
+              <ul>
+<li><a class="reference internal" href="#">Concepts</a><ul>
+<li><a class="reference internal" href="#concepts-overview">Concepts Overview</a><ul>
+<li><a class="reference internal" href="#generative-models">Generative Models</a></li>
+<li><a class="reference internal" href="#reinforcement-learning">Reinforcement Learning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#design-principles">Design Principles</a></li>
+</ul>
+</li>
+</ul>
+
             </div>
           </div>
         </div>
@@ -376,6 +442,8 @@
   <script src="../_static/doctools.js"></script>
   <script src="../_static/sphinx_highlight.js"></script>
   <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+  <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   
 
   
