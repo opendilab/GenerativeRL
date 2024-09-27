@@ -53,5 +53,5 @@ Check whether the installation is successful by running the following command:
 
 .. code-block:: bash
 
-    python -c "import generativerl"
+    python -c "import grl"
 
