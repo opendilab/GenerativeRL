@@ -1,5 +1,5 @@
 How to train and deploy reinforcement learning agents
--------------------------------------------------
+-----------------------------------------------------
 
 In GenerativeRL, the RL algorithms are implemented as a class under the ``grl.algorithms`` module, while the agents are implemented as a class under the ``grl.agents`` module.
 
