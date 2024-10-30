@@ -318,12 +318,13 @@
 <span class="sd">    Overview:</span>
 <span class="sd">        Set the random seed. If no seed value is provided, generate a random seed.</span>
 <span class="sd">    Arguments:</span>
-<span class="sd">        - seed_value (:obj:`int`, optional): The random seed to set. If None, a random seed will be generated.</span>
-<span class="sd">        - cudnn_deterministic (:obj:`bool`, optional): Whether to make cuDNN operations deterministic. Defaults to True.</span>
-<span class="sd">        - cudnn_benchmark (:obj:`bool`, optional): Whether to enable cuDNN benchmarking for convolutional operations. Defaults to False.</span>
+<span class="sd">        seed_value (:obj:`int`, optional): The random seed to set. If None, a random seed will be generated.</span>
+<span class="sd">        cudnn_deterministic (:obj:`bool`, optional): Whether to make cuDNN operations deterministic. Defaults to True.</span>
+<span class="sd">        cudnn_benchmark (:obj:`bool`, optional): Whether to enable cuDNN benchmarking for convolutional operations. Defaults to False.</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        - seed_value (:obj:`int`): The seed value used.</span>
+<span class="sd">        seed_value (:obj:`int`): The seed value used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">seed_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Generate a random seed from system randomness</span>
         <span class="n">seed_value</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="s2">&quot;little&quot;</span><span class="p">)</span>
@@ -344,6 +345,7 @@
 <span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">merge_dict1_into_dict2</span><span class="p">,</span> <span class="n">merge_two_dicts_into_newone</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">.statistics</span> <span class="kn">import</span> <span class="n">find_parameters</span>
+<span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="n">plot_distribution</span>
 </pre></div>
 
               </article>

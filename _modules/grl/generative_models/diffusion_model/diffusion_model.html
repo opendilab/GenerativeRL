@@ -545,7 +545,7 @@
                     <span class="n">condition</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span>
                         <span class="n">condition</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">extra_batch_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
                     <span class="p">)</span>
-                <span class="c1"># condition.shape = (B*N, D)   </span>
+                <span class="c1"># condition.shape = (B*N, D)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">condition</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">condition</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span>
@@ -553,7 +553,6 @@
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
-
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DPMSolver</span><span class="p">):</span>
             <span class="c1"># Note: DPMSolver does not support t_span argument assignment</span>
@@ -1430,7 +1429,7 @@
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">using_Hutchinson_trace_estimator</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">with_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">with_grad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
@@ -1447,12 +1446,18 @@
 
         <span class="k">if</span> <span class="n">with_grad</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">compute_likelihood</span><span class="p">(</span>
-                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span> <span class="n">using_Hutchinson_trace_estimator</span><span class="o">=</span><span class="n">using_Hutchinson_trace_estimator</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+                <span class="n">using_Hutchinson_trace_estimator</span><span class="o">=</span><span class="n">using_Hutchinson_trace_estimator</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">compute_likelihood</span><span class="p">(</span>
-                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span> <span class="n">using_Hutchinson_trace_estimator</span><span class="o">=</span><span class="n">using_Hutchinson_trace_estimator</span>
+                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+                    <span class="n">using_Hutchinson_trace_estimator</span><span class="o">=</span><span class="n">using_Hutchinson_trace_estimator</span><span class="p">,</span>
                 <span class="p">)</span></div>
 
 <div class="viewcode-block" id="DiffusionModel.sample_with_log_prob"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.DiffusionModel.sample_with_log_prob">[docs]</a>    <span class="k">def</span> <span class="nf">sample_with_log_prob</span><span class="p">(</span>
