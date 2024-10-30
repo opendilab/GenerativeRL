@@ -19,6 +19,7 @@ from grl.utils import set_seed
 from grl.utils.log import log
 
 x_size = 2
+x_size = (2, 2)
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 t_embedding_dim = 32
 t_encoder = dict(
@@ -71,7 +72,7 @@ config = EasyDict(
             lr=5e-4,
             data_num=100000,
             iterations=1000000,
-            batch_size=2048,
+            batch_size=4096,
             clip_grad_norm=1.0,
             eval_freq=1000,
             checkpoint_freq=1000,

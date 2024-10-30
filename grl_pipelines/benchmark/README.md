@@ -2,7 +2,7 @@
 
 English | [简体中文(Simplified Chinese)](https://github.com/zjowowen/GenerativeRL_Preview/tree/main/grl_pipelines/benchmark/README.zh.md)
 
-We evaluate the performance of policies based on generative models in reinforcement learning tasks using the [D4RL](https://arxiv.org/abs/2004.07219) dataset in an offline RL setting.
+We evaluate the performance of policies based on generative models in reinforcement learning tasks using the [D4RL](https://arxiv.org/abs/2004.07219) dataset and [RL-Unplugged DeepMind Control Suite](https://arxiv.org/abs/2006.13888) dataset in an offline RL setting.
 
 ## D4RL locomotion
 
@@ -43,6 +43,63 @@ Run the following command to reproduce the results:
 ```bash
 python ./grl_pipelines/benchmark/gmpo/gvp/halfcheetah_medium_expert.py
 ```
+
+## D4RL AntMaze
+
+| Algo.                           | [SfBC](https://arxiv.org/abs/2209.14548) |[Diffusion-QL](https://arxiv.org/abs/2208.06193)  |[QGPO](https://proceedings.mlr.press/v202/lu23d/lu23d.pdf) |[IDQL](https://arxiv.org/abs/2304.10573)|[SRPO](https://arxiv.org/abs/2310.07297)|
+|-------------------------------- | ---------- | ---------- | ---------- | --------- | --------- |
+| Env./Model.                     | VPSDE                                    |  DDPM                                            | VPSDE                                                     |  DDPM                                  |  VPSDE                                 |
+| antmaze-umaze-v0                | 92.0                                     |  93.4                                            | 96.4                                                      |  94.0                                  |  97.1                                  |
+| antmaze-umaze-diverse-v0        | 85.3                                     |  66.2                                            | 74.4                                                      |  80.2                                  |  82.1                                  |
+| antmaze-medium-play-v0          | 81.3                                     |  76.6                                            | 83.6                                                      |  84.5                                  |  80.7                                  |
+| antmaze-medium-diverse-v0       | 82.0                                     |  78.6                                            | 83.8                                                      |  84.8                                  |  75.0                                  |
+| antmaze-large-play-v0           | 59.3                                     |  46.4                                            | 66.6                                                      |  63.5                                  |  53.6                                  |
+| antmaze-large-diverse-v0        | 64.8                                     |  56.6                                            | 64.8                                                      |  67.9                                  |  53.6                                  |
+| **Average**                     | 74.2                                     |  69.6                                            | 78.3                                                      |  79.1                                  |  73.6                                  |
+
+
+| Algo.                           | GMPO       | GMPG       |
+|-------------------------------- | ---------- | ---------  |
+| Env./Model.                     | GVP        |  VPSDE     | 
+| antmaze-umaze-v0                | 94.2 ± 0.9 | 92.5 ± 1.6 |
+| antmaze-umaze-diverse-v0        | 76.8 ± 11.2| 76.0 ± 3.4 |
+| antmaze-medium-play-v0          | 84.6 ± 4.2 | 62.5 ± 3.7 |
+| antmaze-medium-diverse-v0       | 69.0 ± 5.6 | 67.2 ± 2.0 |
+| antmaze-large-play-v0           | 49.2 ± 11.2| 40.1 ± 8.6 |
+| antmaze-large-diverse-v0        | 69.4 ± 15.2| 60.5 ± 3.7 |
+| **Average**                     | 73.8 ± 8.0 | 66.5 ± 3.8 |
+
+## RL-Unplugged DeepMind Control Suite
+
+| Algo.                           | [D4PG](https://arxiv.org/abs/1804.08617) | [RABM](https://arxiv.org/abs/2002.08396)         |[QGPO](https://proceedings.mlr.press/v202/lu23d/lu23d.pdf) |[IDQL](https://arxiv.org/abs/2304.10573)|[SRPO](https://arxiv.org/abs/2310.07297)|
+|-------------------------------- | ---------- | ---------- | ---------- | --------- | --------- |
+| Env./Model.                     | /                                        |  /                                               | VPSDE                                                     |  VPSDE                                 |  VPSDE                                 |
+| Cartpole swingup                | 856 ± 13                                 |  798 ± 31                                        | 806 ± 54                                                  |  851 ± 9                               |  842 ± 13                              |
+| Cheetah run                     | 308 ± 122                                |  304 ± 32                                        | 338 ± 135                                                 |  451 ± 231                             |  344 ± 127                             |
+| Humanoid run                    | 1.72 ± 166                               |  303 ± 6                                         | 245 ±  45                                                 |  179 ±  91                             |  242 ±  22                             |
+| Manipulator insert ball         | 154 ± 55                                 |  409 ± 5                                         | 340 ± 451                                                 |  308 ± 433                             |  352 ± 458                             |
+| Walker stand                    | 930 ± 46                                 |  689 ± 14                                        | 672 ± 266                                                 |  850 ± 161                             |  946 ± 23                              |
+| Finger turn hard                | 714 ± 80                                 |  433 ± 3                                         | 698 ± 352                                                 |  534 ± 417                             |  328 ± 464                             |
+| Fish swim                       | 180 ± 55                                 |  504 ± 13                                        | 412 ± 297                                                 |  474 ± 248                             |  597 ± 356                             |
+| Manipulator insert peg          | 50.4 ± 9.2                               |  209 ± 15                                        | 279 ± 229                                                 |  314 ± 376                             |  327 ± 383                             |
+| Walker walk                     | 549 ± 366                                |  651 ± 8                                         | 791 ± 150                                                 |  887 ±  51                             |  963 ± 15                              |
+| **Average**                     | 416 ± 83                                 |  487 ± 14                                        | 509 ± 220                                                 |  538 ± 224                             |  561 ± 207                             |
+
+| Algo.                           | GMPO       | GMPG       |
+|-------------------------------- | ---------- | ---------  |
+| Env./Model.                     | GVP        |  GVP       | 
+| Cartpole swingup                | 830 ± 51   | 858 ± 51   |
+| Cheetah run                     | 359 ± 188  | 503 ± 212  |
+| Humanoid run                    | 226 ± 72   | 209 ± 61   |
+| Manipulator insert ball         | 402 ± 489  | 686 ± 341  |
+| Walker stand                    | 593 ± 287  | 771 ± 292  |
+| Finger turn hard                | 738 ± 204  | 657 ± 371  |
+| Fish swim                       | 634 ± 192  | 515 ± 168  |
+| Manipulator insert peg          | 398 ± 481  | 540 ± 343  |
+| Walker walk                     | 869 ± 241  | 656 ± 233  |
+| **Average**                     | 561 ± 243  | 599 ± 230  |
+
+Please download [RL-Unplugged DeepMind Control Suite](https://huggingface.co/datasets/OpenDILabCommunity/rl_unplugged_dm_control_suite) datasets from Hugging Face repository.
 
 ## Requisites
 
@@ -236,7 +293,7 @@ config = EasyDict(
             ),
             evaluation=dict(
                 eval=True,
-                repeat=5,
+                repeat=10,
                 interval=100,
             ),
             checkpoint_path=f"./{project_name}/checkpoint",

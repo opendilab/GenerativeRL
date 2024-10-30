@@ -33,6 +33,7 @@ from grl.rl_modules.value_network.value_network import VNetwork, DoubleVNetwork
 from grl.utils.config import merge_two_dicts_into_newone
 from grl.utils.log import log
 from grl.utils import set_seed
+from grl.utils.plot import plot_distribution, plot_histogram2d_x_y
 from grl.utils.statistics import sort_files_by_criteria
 from grl.generative_models.metric import compute_likelihood
 
@@ -701,7 +702,7 @@ class GMPOAlgorithm:
                 evaluation_results = dict()
 
                 def policy(obs: np.ndarray) -> np.ndarray:
-                    if isinstance(obs, torch.Tensor):
+                    if isinstance(obs, np.ndarray):
                         obs = torch.tensor(
                             obs,
                             dtype=torch.float32,
@@ -712,7 +713,7 @@ class GMPOAlgorithm:
                             obs[key] = torch.tensor(
                                 obs[key],
                                 dtype=torch.float32,
-                                device=config.model.GPPolicy.device
+                                device=config.model.GPPolicy.device,
                             ).unsqueeze(0)
                             if obs[key].dim() == 1 and obs[key].shape[0] == 1:
                                 obs[key] = obs[key].unsqueeze(1)
@@ -752,8 +753,11 @@ class GMPOAlgorithm:
                 evaluation_results[f"evaluation/return_max"] = return_max
                 evaluation_results[f"evaluation/return_min"] = return_min
 
-                if isinstance(self.dataset, GPD4RLDataset) or isinstance(self.dataset, GPD4RLTensorDictDataset):
+                if isinstance(self.dataset, GPD4RLDataset) or isinstance(
+                    self.dataset, GPD4RLTensorDictDataset
+                ):
                     import d4rl
+
                     env_id = config.dataset.args.env_id
                     evaluation_results[f"evaluation/return_mean_normalized"] = (
                         d4rl.get_normalized_score(env_id, return_mean)
@@ -786,7 +790,7 @@ class GMPOAlgorithm:
                 lr=config.parameter.behaviour_policy.learning_rate,
             )
 
-            replay_buffer=TensorDictReplayBuffer(
+            replay_buffer = TensorDictReplayBuffer(
                 storage=self.dataset.storage,
                 batch_size=config.parameter.behaviour_policy.batch_size,
                 sampler=SamplerWithoutReplacement(),
@@ -801,6 +805,53 @@ class GMPOAlgorithm:
             ):
                 if self.behaviour_policy_train_epoch >= epoch:
                     continue
+
+                if (
+                    hasattr(config.parameter.evaluation, "analysis_interval")
+                    and epoch % config.parameter.evaluation.analysis_interval == 0
+                ):
+                    for index, data in enumerate(replay_buffer):
+
+                        evaluation_results = evaluate(
+                            self.model["GPPolicy"].base_model,
+                            train_epoch=epoch,
+                            repeat=(
+                                1
+                                if not hasattr(config.parameter.evaluation, "repeat")
+                                else config.parameter.evaluation.repeat
+                            ),
+                        )
+                        if not os.path.exists(config.parameter.checkpoint_path):
+                            os.makedirs(config.parameter.checkpoint_path)
+                        plot_distribution(
+                            data["a"],
+                            os.path.join(
+                                config.parameter.checkpoint_path,
+                                f"action_base_{epoch}.png",
+                            ),
+                        )
+
+                        action = self.model["GPPolicy"].sample(
+                            state=data["s"].to(config.model.GPPolicy.device),
+                            t_span=(
+                                torch.linspace(0.0, 1.0, config.parameter.t_span).to(
+                                    config.model.GPPolicy.device
+                                )
+                                if hasattr(config.parameter, "t_span")
+                                and config.parameter.t_span is not None
+                                else None
+                            ),
+                        )
+                        plot_distribution(
+                            action,
+                            os.path.join(
+                                config.parameter.checkpoint_path,
+                                f"action_base_model_{epoch}_{evaluation_results['evaluation/return_mean']}.png",
+                            ),
+                        )
+
+                        wandb.log(data=evaluation_results, commit=False)
+                        break
 
                 counter = 1
                 behaviour_policy_loss_sum = 0
@@ -897,7 +948,7 @@ class GMPOAlgorithm:
                 lr=config.parameter.critic.learning_rate,
             )
 
-            replay_buffer=TensorDictReplayBuffer(
+            replay_buffer = TensorDictReplayBuffer(
                 storage=self.dataset.storage,
                 batch_size=config.parameter.critic.batch_size,
                 sampler=SamplerWithoutReplacement(),
@@ -944,7 +995,7 @@ class GMPOAlgorithm:
 
                     # Update target
                     for param, target_param in zip(
-                        self.model["GPPolicy"].critic.parameters(),
+                        self.model["GPPolicy"].critic.q.parameters(),
                         self.model["GPPolicy"].critic.q_target.parameters(),
                     ):
                         target_param.data.copy_(
@@ -1012,16 +1063,18 @@ class GMPOAlgorithm:
                 lr=config.parameter.guided_policy.learning_rate,
             )
             guided_policy_train_iter = 0
+            logp_mean = []
+            end_return = []
             beta = config.parameter.guided_policy.beta
-            
-            replay_buffer=TensorDictReplayBuffer(
+
+            replay_buffer = TensorDictReplayBuffer(
                 storage=self.dataset.storage,
                 batch_size=config.parameter.guided_policy.batch_size,
                 sampler=SamplerWithoutReplacement(),
                 prefetch=10,
                 pin_memory=True,
             )
-            
+
             for epoch in track(
                 range(config.parameter.guided_policy.epochs),
                 description="Guided policy training",
@@ -1029,6 +1082,90 @@ class GMPOAlgorithm:
 
                 if self.guided_policy_train_epoch >= epoch:
                     continue
+
+                if (
+                    hasattr(config.parameter.evaluation, "analysis_interval")
+                    and epoch % config.parameter.evaluation.analysis_interval == 0
+                ):
+                    timlimited = 0
+                    for index, data in enumerate(replay_buffer):
+                        if timlimited == 0:
+                            if not os.path.exists(config.parameter.checkpoint_path):
+                                os.makedirs(config.parameter.checkpoint_path)
+                            plot_distribution(
+                                data["a"].detach().cpu().numpy(),
+                                os.path.join(
+                                    config.parameter.checkpoint_path,
+                                    f"action_base_{epoch}.png",
+                                ),
+                            )
+
+                            action = self.model["GPPolicy"].sample(
+                                state=data["s"].to(config.model.GPPolicy.device),
+                                t_span=(
+                                    torch.linspace(
+                                        0.0, 1.0, config.parameter.t_span
+                                    ).to(config.model.GPPolicy.device)
+                                    if hasattr(config.parameter, "t_span")
+                                    and config.parameter.t_span is not None
+                                    else None
+                                ),
+                            )
+
+                        evaluation_results = evaluate(
+                            self.model["GPPolicy"].guided_model,
+                            train_epoch=epoch,
+                            repeat=(
+                                1
+                                if not hasattr(config.parameter.evaluation, "repeat")
+                                else config.parameter.evaluation.repeat
+                            ),
+                        )
+
+                        log_p = compute_likelihood(
+                            model=self.model["GPPolicy"].guided_model,
+                            x=data["a"].to(config.model.GPPolicy.device),
+                            condition=data["s"].to(config.model.GPPolicy.device),
+                            t=torch.linspace(0.0, 1.0, 100).to(
+                                config.model.GPPolicy.device
+                            ),
+                            using_Hutchinson_trace_estimator=True,
+                        )
+                        logp_mean.append(log_p.mean().detach().cpu().numpy())
+                        end_return.append(evaluation_results["evaluation/return_mean"])
+
+                        if timlimited == 0:
+                            plot_distribution(
+                                action.detach().cpu().numpy(),
+                                os.path.join(
+                                    config.parameter.checkpoint_path,
+                                    f"action_guided_model_{epoch}_{evaluation_results['evaluation/return_mean']}.png",
+                                ),
+                            )
+                        timlimited += 1
+                        wandb.log(data=evaluation_results, commit=False)
+
+                        if timlimited > 10:
+                            logp_dict = {
+                                "logp_mean": logp_mean,
+                                "end_return": end_return,
+                            }
+                            np.savez(
+                                os.path.join(
+                                    config.parameter.checkpoint_path,
+                                    f"logp_data_guided_{epoch}.npz",
+                                ),
+                                **logp_dict,
+                            )
+                            plot_histogram2d_x_y(
+                                end_return,
+                                logp_mean,
+                                os.path.join(
+                                    config.parameter.checkpoint_path,
+                                    f"return_logp_guided_{epoch}.png",
+                                ),
+                            )
+                            break
 
                 counter = 1
                 guided_policy_loss_sum = 0.0
@@ -1148,9 +1285,9 @@ class GMPOAlgorithm:
 
                 if (
                     config.parameter.evaluation.eval
-                    and hasattr(config.parameter.evaluation, "interval")
+                    and hasattr(config.parameter.evaluation, "epoch_interval")
                     and (self.guided_policy_train_epoch + 1)
-                    % config.parameter.evaluation.interval
+                    % config.parameter.evaluation.epoch_interval
                     == 0
                 ):
                     evaluation_results = evaluate(

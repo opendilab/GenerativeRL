@@ -169,7 +169,7 @@ config = EasyDict(
     ),
     parameter=dict(
         unconditional_model=dict(
-            batch_size=2048,
+            batch_size=4096,
             learning_rate=5e-5,
             iterations=50000,
         ),

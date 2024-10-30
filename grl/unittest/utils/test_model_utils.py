@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from grl.utils.model_utils import save_model, load_model
 
+
 class TestModelCheckpointing(unittest.TestCase):
 
     def setUp(self):
@@ -28,7 +29,6 @@ class TestModelCheckpointing(unittest.TestCase):
 
         # Check if the directory was created and torch.save was called correctly
         self.assertTrue(os.path.exists(self.temp_dir))
-
 
     def test_load_model(self):
         # Create a mock checkpoint file
@@ -54,10 +54,30 @@ class TestModelCheckpointing(unittest.TestCase):
         self.assertEqual(loaded_iteration, iteration)
 
         # Check if the model and optimizer were loaded correctly
-        self.assertTrue(torch.allclose(new_model.state_dict()["weight"], self.model.state_dict()["weight"]))
-        self.assertTrue(torch.allclose(new_model.state_dict()["bias"], self.model.state_dict()["bias"]))
-        self.assertTrue(torch.allclose(torch.tensor(new_optimizer.state_dict()["param_groups"][0]["lr"]), torch.tensor(self.optimizer.state_dict()["param_groups"][0]["lr"])))
-        self.assertTrue(torch.allclose(torch.tensor(new_optimizer.state_dict()["param_groups"][0]["momentum"]), torch.tensor(self.optimizer.state_dict()["param_groups"][0]["momentum"])))
+        self.assertTrue(
+            torch.allclose(
+                new_model.state_dict()["weight"], self.model.state_dict()["weight"]
+            )
+        )
+        self.assertTrue(
+            torch.allclose(
+                new_model.state_dict()["bias"], self.model.state_dict()["bias"]
+            )
+        )
+        self.assertTrue(
+            torch.allclose(
+                torch.tensor(new_optimizer.state_dict()["param_groups"][0]["lr"]),
+                torch.tensor(self.optimizer.state_dict()["param_groups"][0]["lr"]),
+            )
+        )
+        self.assertTrue(
+            torch.allclose(
+                torch.tensor(new_optimizer.state_dict()["param_groups"][0]["momentum"]),
+                torch.tensor(
+                    self.optimizer.state_dict()["param_groups"][0]["momentum"]
+                ),
+            )
+        )
 
     def test_load_model_order(self):
         # Create mock checkpoint files
@@ -81,13 +101,13 @@ class TestModelCheckpointing(unittest.TestCase):
         # Check if the correct iteration was returned
         self.assertEqual(loaded_iteration, iterations[-1])
 
-
     def test_load_model_no_files(self):
         # Test loading when no checkpoint files exist
         loaded_iteration = load_model(self.temp_dir, self.model, self.optimizer)
-        
+
         # Check that the function returns -1 when no files are found
         self.assertEqual(loaded_iteration, -1)
-        
+
+
 if __name__ == "__main__":
     unittest.main()

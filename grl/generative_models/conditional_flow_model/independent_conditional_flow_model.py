@@ -6,7 +6,8 @@ from torch.distributions import Independent, Normal
 import treetensor
 from easydict import EasyDict
 from tensordict import TensorDict
-
+import ot
+import numpy as np
 from grl.generative_models.intrinsic_model import IntrinsicModel
 from grl.generative_models.model_functions.velocity_function import VelocityFunction
 from grl.generative_models.random_generator import gaussian_random_variable
@@ -113,6 +114,55 @@ class IndependentConditionalFlowModel(nn.Module):
             batch_size=batch_size,
             x_0=x_0,
             condition=condition,
+            with_grad=with_grad,
+            solver_config=solver_config,
+        )[-1]
+
+    def sample_with_mask(
+        self,
+        t_span: torch.Tensor = None,
+        batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
+        x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        mask: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        x_1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+    ):
+        """
+        Overview:
+            Sample from the model with masked element, return the final state.
+
+        Arguments:
+            t_span (:obj:`torch.Tensor`): The time span.
+            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): The batch size.
+            x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state, if not provided, it will be sampled from the Gaussian distribution.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            mask (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The mask.
+            x_1 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The masked element, same shape as x_1.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+
+        Returns:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The sampled result.
+
+        Shapes:
+            t_span: :math:`(T)`, where :math:`T` is the number of time steps.
+            batch_size: :math:`(B)`, where :math:`B` is the batch size of data, which could be a scalar or a tensor such as :math:`(B1, B2)`.
+            x_0: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the state, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            condition: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the condition, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            mask: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the mask, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            x_1: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the masked element, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            x: :math:`(N, D)`, if extra batch size :math:`B` is provided, the shape will be :math:`(B, N, D)`. If x_0 is not provided, the shape will be :math:`(B, D)`. If x_0 and condition are not provided, the shape will be :math:`(D)`.
+        """
+
+        return self.sample_with_mask_forward_process(
+            t_span=t_span,
+            batch_size=batch_size,
+            x_0=x_0,
+            condition=condition,
+            mask=mask,
+            x_1=x_1,
             with_grad=with_grad,
             solver_config=solver_config,
         )[-1]
@@ -385,6 +435,69 @@ class IndependentConditionalFlowModel(nn.Module):
 
         return data
 
+    def sample_with_mask_forward_process(
+        self,
+        t_span: torch.Tensor = None,
+        batch_size: Union[torch.Size, int, Tuple[int], List[int]] = None,
+        x_0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        mask: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        x_1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+    ):
+        """
+        Overview:
+            Sample from the diffusion model, return all intermediate states.
+
+        Arguments:
+            t_span (:obj:`torch.Tensor`): The time span.
+            batch_size (:obj:`Union[torch.Size, int, Tuple[int], List[int]]`): An extra batch size used for repeated sampling with the same initial state.
+            x_0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state, if not provided, it will be sampled from the Gaussian distribution.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            mask (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The mask.
+            x_1 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The masked element, same shape as x_1.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+
+        Returns:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The sampled result.
+
+        Shapes:
+            t_span: :math:`(T)`, where :math:`T` is the number of time steps.
+            batch_size: :math:`(B)`, where :math:`B` is the batch size of data, which could be a scalar or a tensor such as :math:`(B1, B2)`.
+            x_0: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the state, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            condition: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the condition, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            mask: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the mask, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            x_1: :math:`(N, D)`, where :math:`N` is the batch size of data and :math:`D` is the dimension of the masked element, which could be a scalar or a tensor such as :math:`(D1, D2)`.
+            x: :math:`(T, N, D)`, if extra batch size :math:`B` is provided, the shape will be :math:`(T, B, N, D)`. If x_0 is not provided, the shape will be :math:`(T, B, D)`. If x_0 and condition are not provided, the shape will be :math:`(T, D)`.
+        """
+
+        if mask is None:
+            return self.sample_forward_process(
+                t_span=t_span,
+                batch_size=batch_size,
+                x_0=x_0,
+                condition=condition,
+                with_grad=with_grad,
+                solver_config=solver_config,
+            )
+
+        else:
+
+            x_1_sampled = self.sample_forward_process(
+                t_span=t_span,
+                batch_size=batch_size,
+                x_0=x_0,
+                condition=condition,
+                with_grad=with_grad,
+                solver_config=solver_config,
+            )
+
+            x_1 = torch.where(mask, x_1, x_1_sampled)
+
+            return x_1
+
     def log_prob(
         self,
         x_1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
@@ -409,7 +522,7 @@ class IndependentConditionalFlowModel(nn.Module):
             log_likelihood (:obj:`torch.Tensor`): The log likelihood of the final state given the initial state and the condition.
         """
 
-        model_drift = lambda t, x: - self.model(1 - t, x, condition)
+        model_drift = lambda t, x: -self.model(1 - t, x, condition)
         model_params = find_parameters(self.model)
 
         def compute_trace_of_jacobian_general(dx, x):
@@ -468,8 +581,7 @@ class IndependentConditionalFlowModel(nn.Module):
         x1_and_diff_logp = (x_1, torch.zeros(x_1.shape[0], device=x_1.device))
 
         if t is None:
-            eps = 1e-3
-            t_span = torch.linspace(eps, 1.0, 1000).to(x.device)
+            t_span = torch.linspace(0.0, 1.0, 1000).to(x.device)
         else:
             t_span = t.to(x_1.device)
 
@@ -513,9 +625,7 @@ class IndependentConditionalFlowModel(nn.Module):
         with_grad: bool = False,
         solver_config: EasyDict = None,
         using_Hutchinson_trace_estimator: bool = True,
-    ) -> Tuple[
-        Union[torch.Tensor, TensorDict, treetensor.torch.Tensor], torch.Tensor
-    ]:
+    ) -> Tuple[Union[torch.Tensor, TensorDict, treetensor.torch.Tensor], torch.Tensor]:
         """
         Overview:
             Sample from the model, return the final state and the log probability of the initial state.
@@ -570,4 +680,204 @@ class IndependentConditionalFlowModel(nn.Module):
 
         return self.velocity_function_.flow_matching_loss_icfm(
             self.model, x0, x1, condition, average
+        )
+
+    def flow_matching_loss_with_mask(
+        self,
+        x0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        x1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        mask: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        average: bool = True,
+    ) -> torch.Tensor:
+        """
+        Overview:
+            Return the flow matching loss function of the model given the initial state and the condition with a mask.
+        Arguments:
+            x0 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The initial state.
+            x1 (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The final state.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The condition for the flow matching loss.
+            mask (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The mask signal for x0, which is either True or False and has same shape as x0, if it is True, the corresponding element in x0 will not be used for the loss computation, and the true value of that element is usually not provided in condition.
+            average (:obj:`bool`): Whether to average the loss across the batch.
+        """
+
+        if mask is None:
+            return self.flow_matching_loss(self.model, x0, x1, condition, average)
+        else:
+            # loss shape is (B, D)
+            loss = self.velocity_function_.flow_matching_loss_icfm(
+                self.model, x0, x1, condition, average=False, sum_all_elements=False
+            )
+
+            # replace the False elements in mask with 0
+            loss = loss.masked_fill(~mask, 0.0)
+
+            # num of elements in mask, sum them batch-wise, there maybe more than 1 dim in mask
+            num_elements = mask.sum(dim=tuple(range(1, len(mask.shape))))
+
+            # clamp num_elements to be at least 1
+            num_elements = torch.clamp(num_elements, min=1)
+
+            # average the loss across the batch
+            loss = loss.sum(dim=tuple(range(1, len(loss.shape)))) / num_elements
+
+            if average:
+                loss = loss.mean()
+
+            return loss
+
+    def forward_sample(
+        self,
+        x: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        t_span: torch.Tensor,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+    ):
+        """
+        Overview:
+            Use forward path of the flow model given the sampled x. Note that this is not the reverse process, and thus is not designed for sampling form the flow model.
+            Rather, it is used for encode a sampled x to the latent space.
+
+        Arguments:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.
+            t_span (:obj:`torch.Tensor`): The time span.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+        """
+
+        return self.forward_sample_process(
+            x=x,
+            t_span=t_span,
+            condition=condition,
+            with_grad=with_grad,
+            solver_config=solver_config,
+        )[-1]
+
+    def forward_sample_process(
+        self,
+        x: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        t_span: torch.Tensor,
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        with_grad: bool = False,
+        solver_config: EasyDict = None,
+    ):
+        """
+        Overview:
+            Use forward path of the diffusion model given the sampled x. Note that this is not the reverse process, and thus is not designed for sampling form the diffusion model.
+            Rather, it is used for encode a sampled x to the latent space. Return all intermediate states.
+
+        Arguments:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.
+            t_span (:obj:`torch.Tensor`): The time span.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+            with_grad (:obj:`bool`): Whether to return the gradient.
+            solver_config (:obj:`EasyDict`): The configuration of the solver.
+        """
+
+        # TODO: very important function
+        # TODO: validate these functions
+        t_span = t_span.to(self.device)
+
+        if solver_config is not None:
+            solver = get_solver(solver_config.type)(**solver_config.args)
+        else:
+            assert hasattr(
+                self, "solver"
+            ), "solver must be specified in config or solver_config"
+            solver = self.solver
+
+        if isinstance(solver, ODESolver):
+
+            def reverse_drift(t, x):
+                reverse_t = t_span.max() - t + t_span.min()
+                return -self.model(t=reverse_t, x=x, condition=condition)
+
+            # TODO: make it compatible with TensorDict
+            if solver.library == "torchdiffeq_adjoint":
+                if with_grad:
+                    data = solver.integrate(
+                        drift=reverse_drift,
+                        x0=x,
+                        t_span=t_span,
+                        adjoint_params=find_parameters(self.model),
+                    )
+                else:
+                    with torch.no_grad():
+                        data = solver.integrate(
+                            drift=reverse_drift,
+                            x0=x,
+                            t_span=t_span,
+                            adjoint_params=find_parameters(self.model),
+                        )
+            else:
+                if with_grad:
+                    data = solver.integrate(
+                        drift=reverse_drift,
+                        x0=x,
+                        t_span=t_span,
+                    )
+                else:
+                    with torch.no_grad():
+                        data = solver.integrate(
+                            drift=reverse_drift,
+                            x0=x,
+                            t_span=t_span,
+                        )
+        else:
+            raise NotImplementedError(
+                "Solver type {} is not implemented".format(self.config.solver.type)
+            )
+        return data
+
+    def optimal_transport_flow_matching_loss(
+        self,
+        x0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        x1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
+        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
+        average: bool = True,
+    ) -> torch.Tensor:
+        """
+        Overview:
+            Return the flow matching loss function of the model given the initial state and the condition, using the optimal transport plan to match samples from two distributions.
+        Arguments:
+            x (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input state.
+            condition (:obj:`Union[torch.Tensor, TensorDict, treetensor.torch.Tensor]`): The input condition.
+        """
+
+        a = ot.unif(x0.shape[0])
+        b = ot.unif(x1.shape[0])
+        # TODO: make it compatible with TensorDict and treetensor.torch.Tensor
+        if x0.dim() > 2:
+            x0_ = x0.reshape(x0.shape[0], -1)
+        else:
+            x0_ = x0
+        if x1.dim() > 2:
+            x1_ = x1.reshape(x1.shape[0], -1)
+        else:
+            x1_ = x1
+
+        M = torch.cdist(x0_, x1_) ** 2
+        p = ot.emd(a, b, M.detach().cpu().numpy())
+        assert np.all(np.isfinite(p)), "p is not finite"
+
+        p_flatten = p.flatten()
+        p_flatten = p_flatten / p_flatten.sum()
+
+        choices = np.random.choice(
+            p.shape[0] * p.shape[1], p=p_flatten, size=x0.shape[0], replace=True
+        )
+
+        i, j = np.divmod(choices, p.shape[1])
+        x0_ot = x0[i]
+        x1_ot = x1[j]
+        if condition is not None:
+            # condition_ot = condition0_ot = condition1_ot = condition[j]
+            condition_ot = condition[j]
+        else:
+            condition_ot = None
+
+        return self.velocity_function_.flow_matching_loss_icfm(
+            self.model, x0_ot, x1_ot, condition_ot, average
         )

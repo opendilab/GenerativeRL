@@ -224,6 +224,7 @@ class VelocityFunction:
         x1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
         condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
         average: bool = True,
+        sum_all_elements: bool = True,
     ) -> torch.Tensor:
 
         def get_batch_size_and_device(x):
@@ -243,7 +244,12 @@ class VelocityFunction:
                         torch.sum(0.5 * (velocity_value - velocity) ** 2, dim=(1,))
                     )
                 else:
-                    return torch.sum(0.5 * (velocity_value - velocity) ** 2, dim=(1,))
+                    if sum_all_elements:
+                        return torch.sum(
+                            0.5 * (velocity_value - velocity) ** 2, dim=(1,)
+                        )
+                    else:
+                        return 0.5 * (velocity_value - velocity) ** 2
             elif isinstance(velocity_value, TensorDict):
                 raise NotImplementedError("Not implemented yet")
             elif isinstance(velocity_value, treetensor.torch.Tensor):
@@ -257,82 +263,19 @@ class VelocityFunction:
                         )
                     )
                 else:
-                    return treetensor.torch.sum(
-                        0.5 * (velocity_value - velocity) * (velocity_value - velocity),
-                        dim=(1,),
-                    )
-            else:
-                raise NotImplementedError(
-                    "Unknown type of velocity_value {}".format(type)
-                )
-
-        # TODO: make it compatible with TensorDict
-        if self.model_type == "noise_function":
-            raise NotImplementedError("Not implemented yet")
-        elif self.model_type == "score_function":
-            raise NotImplementedError("Not implemented yet")
-        elif self.model_type == "velocity_function":
-            eps = 1e-5
-            batch_size, device = get_batch_size_and_device(x0)
-            t_random = (
-                torch.rand(batch_size, device=device) * (self.process.t_max - eps) + eps
-            )
-            x_t = self.process.direct_sample(t_random, x0, x1)
-            velocity_value = model(t_random, x_t, condition=condition)
-            velocity = self.process.velocity(t_random, x0, x1)
-            loss = get_loss(velocity_value, velocity)
-            return loss
-        elif self.model_type == "data_prediction_function":
-            raise NotImplementedError("Not implemented yet")
-        else:
-            raise NotImplementedError(
-                "Unknown type of velocity function {}".format(type)
-            )
-
-    def flow_matching_loss_icfm_backup(
-        self,
-        model: Union[Callable, nn.Module],
-        x0: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
-        x1: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor],
-        condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
-        average: bool = True,
-    ) -> torch.Tensor:
-
-        def get_batch_size_and_device(x):
-            if isinstance(x, torch.Tensor):
-                return x.shape[0], x.device
-            elif isinstance(x, TensorDict):
-                return x.shape, x.device
-            elif isinstance(x, treetensor.torch.Tensor):
-                return list(x.values())[0].shape[0], list(x.values())[0].device
-            else:
-                raise NotImplementedError("Unknown type of x {}".format(type))
-
-        def get_loss(velocity_value, velocity):
-            if isinstance(velocity_value, torch.Tensor):
-                if average:
-                    return torch.mean(
-                        torch.sum(0.5 * (velocity_value - velocity) ** 2, dim=(1,))
-                    )
-                else:
-                    return torch.sum(0.5 * (velocity_value - velocity) ** 2, dim=(1,))
-            elif isinstance(velocity_value, TensorDict):
-                raise NotImplementedError("Not implemented yet")
-            elif isinstance(velocity_value, treetensor.torch.Tensor):
-                if average:
-                    return treetensor.torch.mean(
-                        treetensor.torch.sum(
+                    if sum_all_elements:
+                        return treetensor.torch.sum(
                             0.5
                             * (velocity_value - velocity)
                             * (velocity_value - velocity),
                             dim=(1,),
                         )
-                    )
-                else:
-                    return treetensor.torch.sum(
-                        0.5 * (velocity_value - velocity) * (velocity_value - velocity),
-                        dim=(1,),
-                    )
+                    else:
+                        return (
+                            0.5
+                            * (velocity_value - velocity)
+                            * (velocity_value - velocity)
+                        )
             else:
                 raise NotImplementedError(
                     "Unknown type of velocity_value {}".format(type)
@@ -344,11 +287,8 @@ class VelocityFunction:
         elif self.model_type == "score_function":
             raise NotImplementedError("Not implemented yet")
         elif self.model_type == "velocity_function":
-            eps = 1e-5
             batch_size, device = get_batch_size_and_device(x0)
-            t_random = (
-                torch.rand(batch_size, device=device) * (self.process.t_max - eps) + eps
-            )
+            t_random = torch.rand(batch_size, device=device) * self.process.t_max
             x_t = self.process.direct_sample(t_random, x0, x1)
             velocity_value = model(t_random, x_t, condition=condition)
             velocity = self.process.velocity(t_random, x0, x1)

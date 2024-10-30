@@ -133,8 +133,8 @@ config = EasyDict(
             ),
             evaluation=dict(
                 eval=True,
-                repeat=5,
-                interval=100,
+                repeat=10,
+                epoch_interval=100,
             ),
             checkpoint_path=f"./{project_name}/checkpoint",
             checkpoint_freq=10,

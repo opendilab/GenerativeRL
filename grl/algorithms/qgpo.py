@@ -106,10 +106,22 @@ class QGPOCritic(nn.Module):
         """
         with torch.no_grad():
             softmax = nn.Softmax(dim=1)
+            if isinstance(next_state, TensorDict):
+                new_next_state = next_state.clone(False)
+                for key, value in next_state.items():
+                    if isinstance(value, torch.Tensor):
+                        stacked_value = torch.stack(
+                            [value] * fake_next_action.shape[1], axis=1
+                        )
+                        new_next_state.set(key, stacked_value)
+            else:
+                new_next_state = torch.stack(
+                    [next_state] * fake_next_action.shape[1], axis=1
+                )
             next_energy = (
                 self.q_target(
                     fake_next_action,
-                    torch.stack([next_state] * fake_next_action.shape[1], axis=1),
+                    new_next_state,
                 )
                 .detach()
                 .squeeze(dim=-1)
@@ -336,7 +348,9 @@ class QGPOAlgorithm:
 
             if torch.__version__ >= "2.0.0":
                 self.model["QGPOPolicy"] = torch.compile(
-                    QGPOPolicy(config.model.QGPOPolicy).to(config.model.QGPOPolicy.device)
+                    QGPOPolicy(config.model.QGPOPolicy).to(
+                        config.model.QGPOPolicy.device
+                    )
                 )
             else:
                 self.model["QGPOPolicy"] = QGPOPolicy(config.model.QGPOPolicy).to(
@@ -353,7 +367,7 @@ class QGPOAlgorithm:
                     optimizer=None,
                     prefix="behaviour_policy",
                 )
-                
+
                 self.energy_guidance_train_epoch = load_model(
                     path=config.parameter.checkpoint_path,
                     model=self.model["QGPOPolicy"].diffusion_model.energy_guidance,
@@ -363,7 +377,7 @@ class QGPOAlgorithm:
 
                 self.critic_train_epoch = load_model(
                     path=config.parameter.checkpoint_path,
-                    model=self.model["QGPOPolicy"].critic.q,
+                    model=self.model["QGPOPolicy"].critic,
                     optimizer=None,
                     prefix="critic",
                 )
@@ -394,12 +408,7 @@ class QGPOAlgorithm:
             else self.config.train
         )
 
-        with wandb.init(
-            project=(
-                config.project if hasattr(config, "project") else __class__.__name__
-            ),
-            **config.wandb if hasattr(config, "wandb") else {},
-        ) as wandb_run:
+        with wandb.init(**config.wandb) as wandb_run:
             config = merge_two_dicts_into_newone(EasyDict(wandb_run.config), config)
             wandb_run.config.update(config)
             self.config.train = config
@@ -416,49 +425,70 @@ class QGPOAlgorithm:
             )
 
             # ---------------------------------------
-            # Customized model initialization code ↓
-            # ---------------------------------------
-
-            if hasattr(config.model, "QGPOPolicy"):
-                self.model["QGPOPolicy"] = QGPOPolicy(config.model.QGPOPolicy)
-                self.model["QGPOPolicy"].to(config.model.QGPOPolicy.device)
-                if torch.__version__ >= "2.0.0":
-                    self.model["QGPOPolicy"] = torch.compile(self.model["QGPOPolicy"])
-
-            # ---------------------------------------
-            # Customized model initialization code ↑
-            # ---------------------------------------
-
-            # ---------------------------------------
             # Customized training code ↓
             # ---------------------------------------
 
             def generate_fake_action(model, states, action_augment_num):
                 # model.eval()
                 fake_actions_sampled = []
-                for states in track(
-                    np.array_split(states, states.shape[0] // 4096 + 1),
-                    description="Generate fake actions",
-                ):
-                    # TODO: mkae it batchsize
-                    fake_actions_per_state = []
-                    for _ in range(action_augment_num):
-                        fake_actions_per_state.append(
-                            model.sample(
-                                state=states,
-                                guidance_scale=0.0,
-                                t_span=(
-                                    torch.linspace(
-                                        0.0, 1.0, config.parameter.fake_data_t_span
-                                    ).to(states.device)
-                                    if config.parameter.fake_data_t_span is not None
-                                    else None
-                                ),
-                            )
-                        )
-                    fake_actions_sampled.append(
-                        torch.stack(fake_actions_per_state, dim=1)
+                if isinstance(states, TensorDict):
+                    from torchrl.data import LazyTensorStorage
+
+                    storage = LazyTensorStorage(max_size=states.shape[0])
+                    storage.set(
+                        range(states.shape[0]),
+                        TensorDict(
+                            {
+                                "s": states,
+                            },
+                            batch_size=[states.shape[0]],
+                        ),
                     )
+                    for index in torch.split(torch.arange(0, states.shape[0], 1), 4096):
+                        index = index.int()
+                        data = storage[index]
+                        fake_actions_per_state = []
+                        for _ in range(action_augment_num):
+                            fake_actions_per_state.append(
+                                model.sample(
+                                    state=data["s"].to(config.model.QGPOPolicy.device),
+                                    guidance_scale=0.0,
+                                    t_span=(
+                                        torch.linspace(
+                                            0.0, 1.0, config.parameter.fake_data_t_span
+                                        ).to(config.model.QGPOPolicy.device)
+                                        if config.parameter.fake_data_t_span is not None
+                                        else None
+                                    ),
+                                )
+                            )
+                        fake_actions_sampled.append(
+                            torch.stack(fake_actions_per_state, dim=1)
+                        )
+                else:
+                    for states in track(
+                        np.array_split(states, states.shape[0] // 4096 + 1),
+                        description="Generate fake actions",
+                    ):
+                        # TODO: mkae it batchsize
+                        fake_actions_per_state = []
+                        for _ in range(action_augment_num):
+                            fake_actions_per_state.append(
+                                model.sample(
+                                    state=states,
+                                    guidance_scale=0.0,
+                                    t_span=(
+                                        torch.linspace(
+                                            0.0, 1.0, config.parameter.fake_data_t_span
+                                        ).to(states.device)
+                                        if config.parameter.fake_data_t_span is not None
+                                        else None
+                                    ),
+                                )
+                            )
+                        fake_actions_sampled.append(
+                            torch.stack(fake_actions_per_state, dim=1)
+                        )
                 fake_actions = torch.cat(fake_actions_sampled, dim=0)
                 return fake_actions
 
@@ -467,7 +497,7 @@ class QGPOAlgorithm:
                 for guidance_scale in config.parameter.evaluation.guidance_scale:
 
                     def policy(obs: np.ndarray) -> np.ndarray:
-                        if isinstance(obs, np.ndarray):   
+                        if isinstance(obs, np.ndarray):
                             obs = torch.tensor(
                                 obs,
                                 dtype=torch.float32,
@@ -478,7 +508,7 @@ class QGPOAlgorithm:
                                 obs[key] = torch.tensor(
                                     obs[key],
                                     dtype=torch.float32,
-                                    device=config.model.QGPOPolicy.device
+                                    device=config.model.QGPOPolicy.device,
                                 ).unsqueeze(0)
                                 if obs[key].dim() == 1 and obs[key].shape[0] == 1:
                                     obs[key] = obs[key].unsqueeze(1)
@@ -513,7 +543,7 @@ class QGPOAlgorithm:
 
                 return evaluation_results
 
-            replay_buffer=TensorDictReplayBuffer(
+            replay_buffer = TensorDictReplayBuffer(
                 storage=self.dataset.storage,
                 batch_size=config.parameter.behaviour_policy.batch_size,
                 sampler=SamplerWithoutReplacement(),
@@ -527,10 +557,10 @@ class QGPOAlgorithm:
             )
 
             for epoch in track(
-                range(config.parameter.behaviour_policy.iterations),
+                range(config.parameter.behaviour_policy.epochs),
                 description="Behaviour policy training",
             ):
-                
+
                 if self.behaviour_policy_train_epoch >= epoch:
                     continue
 
@@ -540,23 +570,25 @@ class QGPOAlgorithm:
 
                     behaviour_model_training_loss = self.model[
                         "QGPOPolicy"
-                    ].behaviour_policy_loss(data["a"].to(config.model.QGPOPolicy.device), data["s"].to(config.model.QGPOPolicy.device))
+                    ].behaviour_policy_loss(
+                        data["a"].to(config.model.QGPOPolicy.device),
+                        data["s"].to(config.model.QGPOPolicy.device),
+                    )
                     behaviour_model_optimizer.zero_grad()
                     behaviour_model_training_loss.backward()
                     behaviour_model_optimizer.step()
 
                     counter += 1
-                    behaviour_model_training_loss_sum += behaviour_model_training_loss.item()
+                    behaviour_model_training_loss_sum += (
+                        behaviour_model_training_loss.item()
+                    )
 
                 if (
                     epoch == 0
-                    or (epoch + 1)
-                    % config.parameter.evaluation.evaluation_interval
+                    or (epoch + 1) % config.parameter.evaluation.evaluation_interval
                     == 0
                 ):
-                    evaluation_results = evaluate(
-                        self.model["QGPOPolicy"], epoch=epoch
-                    )
+                    evaluation_results = evaluate(self.model["QGPOPolicy"], epoch=epoch)
                     wandb_run.log(data=evaluation_results, commit=False)
                     save_model(
                         path=config.parameter.checkpoint_path,
@@ -571,7 +603,8 @@ class QGPOAlgorithm:
                 wandb_run.log(
                     data=dict(
                         behaviour_policy_train_epoch=epoch,
-                        behaviour_model_training_loss=behaviour_model_training_loss_sum / counter,
+                        behaviour_model_training_loss=behaviour_model_training_loss_sum
+                        / counter,
                     ),
                     commit=True,
                 )
@@ -588,12 +621,12 @@ class QGPOAlgorithm:
             ).to("cpu")
 
             self.dataset.load_fake_actions(
-                    fake_actions=fake_actions,
-                    fake_next_actions=fake_next_actions,
-                )
+                fake_actions=fake_actions,
+                fake_next_actions=fake_next_actions,
+            )
 
             # TODO add notation
-            replay_buffer=TensorDictReplayBuffer(
+            replay_buffer = TensorDictReplayBuffer(
                 storage=self.dataset.storage,
                 batch_size=config.parameter.energy_guided_policy.batch_size,
                 sampler=SamplerWithoutReplacement(),
@@ -614,15 +647,15 @@ class QGPOAlgorithm:
             with Progress() as progress:
                 critic_training = progress.add_task(
                     "Critic training",
-                    total=config.parameter.critic.stop_training_iterations,
+                    total=config.parameter.critic.stop_training_epochs,
                 )
                 energy_guidance_training = progress.add_task(
                     "Energy guidance training",
-                    total=config.parameter.energy_guidance.iterations,
+                    total=config.parameter.energy_guidance.epochs,
                 )
 
-                for epoch in range(config.parameter.energy_guidance.iterations):
-                    
+                for epoch in range(config.parameter.energy_guidance.epochs):
+
                     if self.energy_guidance_train_epoch >= epoch:
                         continue
 
@@ -631,8 +664,8 @@ class QGPOAlgorithm:
                     energy_guidance_loss_sum = 0.0
 
                     for index, data in enumerate(replay_buffer):
-                    
-                        if epoch < config.parameter.critic.stop_training_iterations:
+
+                        if epoch < config.parameter.critic.stop_training_epochs:
 
                             q_loss = self.model["QGPOPolicy"].q_loss(
                                 data["a"].to(config.model.QGPOPolicy.device),
@@ -651,7 +684,7 @@ class QGPOAlgorithm:
 
                             # Update target
                             for param, target_param in zip(
-                                self.model["QGPOPolicy"].critic.parameters(),
+                                self.model["QGPOPolicy"].critic.q.parameters(),
                                 self.model["QGPOPolicy"].critic.q_target.parameters(),
                             ):
                                 target_param.data.copy_(
@@ -662,22 +695,24 @@ class QGPOAlgorithm:
 
                         energy_guidance_loss = self.model[
                             "QGPOPolicy"
-                        ].energy_guidance_loss(data["s"].to(config.model.QGPOPolicy.device), data["fake_a"].to(config.model.QGPOPolicy.device))
+                        ].energy_guidance_loss(
+                            data["s"].to(config.model.QGPOPolicy.device),
+                            data["fake_a"].to(config.model.QGPOPolicy.device),
+                        )
                         energy_guidance_optimizer.zero_grad()
                         energy_guidance_loss.backward()
                         energy_guidance_optimizer.step()
                         energy_guidance_loss_sum += energy_guidance_loss.item()
 
-                    if epoch < config.parameter.critic.stop_training_iterations:
+                        counter += 1
+
+                    if epoch < config.parameter.critic.stop_training_epochs:
                         progress.update(critic_training, advance=1)
                     progress.update(energy_guidance_training, advance=1)
 
-                    counter += 1
-
                     if (
                         epoch == 0
-                        or (epoch + 1)
-                        % config.parameter.evaluation.evaluation_interval
+                        or (epoch + 1) % config.parameter.evaluation.evaluation_interval
                         == 0
                     ):
                         evaluation_results = evaluate(
@@ -686,14 +721,16 @@ class QGPOAlgorithm:
                         wandb_run.log(data=evaluation_results, commit=False)
                         save_model(
                             path=config.parameter.checkpoint_path,
-                            model=self.model["QGPOPolicy"].diffusion_model.energy_guidance,
+                            model=self.model[
+                                "QGPOPolicy"
+                            ].diffusion_model.energy_guidance,
                             optimizer=energy_guidance_optimizer,
                             iteration=epoch,
                             prefix="energy_guidance",
                         )
                         save_model(
                             path=config.parameter.checkpoint_path,
-                            model=self.model["QGPOPolicy"].critic.q,
+                            model=self.model["QGPOPolicy"].critic,
                             optimizer=q_optimizer,
                             iteration=epoch,
                             prefix="critic",

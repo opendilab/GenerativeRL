@@ -5,18 +5,18 @@ import torch
 import torch.nn as nn
 
 
-class  TensorDictencoder(torch.nn.Module):
-    def __init__(self):
-        super(TensorDictencoder, self).__init__()
-
-    def forward(self, x: dict) -> torch.Tensor:
-        tensors = []
-        for v in x.values():
-            if v.dim() == 3 and v.shape[0] == 1:
-                v = v.view(1, -1)
-            tensors.append(v)
-        x = torch.cat(tensors, dim=1)
-        return x
+def register_encoder(module: nn.Module, name: str):
+    """
+    Overview:
+        Register the encoder to the module dictionary.
+    Arguments:
+        - module (:obj:`nn.Module`): The module to be registered.
+        - name (:obj:`str`): The name of the module.
+    """
+    global ENCODERS
+    if name.lower() in ENCODERS:
+        raise KeyError(f"Encoder {name} is already registered.")
+    ENCODERS[name.lower()] = module
 
 
 def get_encoder(type: str):
@@ -50,7 +50,7 @@ class GaussianFourierProjectionTimeEncoder(nn.Module):
         ``__init__``, ``forward``.
     """
 
-    def __init__(self, embed_dim, scale=30.0):
+    def __init__(self, embed_dim, scale=30.0, requires_grad=False):
         """
         Overview:
             Initialize the Gaussian Fourier Projection Time Encoder according to arguments.
@@ -62,7 +62,7 @@ class GaussianFourierProjectionTimeEncoder(nn.Module):
         # Randomly sample weights during initialization. These weights are fixed
         # during optimization and are not trainable.
         self.W = nn.Parameter(
-            torch.randn(embed_dim // 2) * scale * 2 * np.pi, requires_grad=False
+            torch.randn(embed_dim // 2) * scale * 2 * np.pi, requires_grad=requires_grad
         )
 
     def forward(self, x):
@@ -243,10 +243,64 @@ class SinusoidalPosEmb(nn.Module):
         return emb
 
 
+class TensorDictConcatenateEncoder(nn.Module):
+    """
+    Overview:
+        Concatenate the tensors in the input dictionary. If the tensor is 1D, reshape it to 2D. If the tensor is 3D or higher, reshape it to 2D.
+        In this way, the output tensor is a 2D tensor, which is of shape (B, D), where B is the batch size and D is the total dimension of the input tensors.
+    Interfaces:
+        ``__init__``, ``forward``
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x: dict) -> torch.Tensor:
+
+        tensors = []
+        for v in x.values():
+            if v.dim() == 1:
+                v = v.unsqueeze(-1)
+            elif v.dim() == 2:
+                pass
+            elif v.dim() > 2:
+                v = v.reshape(v.shape[0], -1)
+            else:
+                raise ValueError(f"Unsupported tensor shape: {v.shape}")
+            tensors.append(v)
+
+        new = torch.cat(tensors, dim=1)
+        return new
+
+
+class DiscreteEmbeddingEncoder(nn.Module):
+
+    def __init__(self, x_dim, x_num, hidden_dim):
+        super().__init__()
+
+        self.x_dim = x_dim
+        self.x_num = x_num
+        self.hidden_dim = hidden_dim
+        self.embedding = nn.Embedding(self.x_dim, self.hidden_dim)
+        self.linear = nn.Linear(self.hidden_dim * self.x_num, self.hidden_dim)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Overview:
+            Return the output of the model at time t given the initial state.
+        """
+        x = self.embedding(x)
+        x = torch.reshape(x, (x.shape[0], -1))
+        x = self.linear(x)
+
+        return x
+
+
 ENCODERS = {
     "GaussianFourierProjectionTimeEncoder".lower(): GaussianFourierProjectionTimeEncoder,
     "GaussianFourierProjectionEncoder".lower(): GaussianFourierProjectionEncoder,
     "ExponentialFourierProjectionTimeEncoder".lower(): ExponentialFourierProjectionTimeEncoder,
     "SinusoidalPosEmb".lower(): SinusoidalPosEmb,
-    "TensorDictencoder".lower(): TensorDictencoder,
+    "TensorDictConcatenateEncoder".lower(): TensorDictConcatenateEncoder,
+    "DiscreteEmbeddingEncoder".lower(): DiscreteEmbeddingEncoder,
 }

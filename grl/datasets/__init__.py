@@ -7,7 +7,7 @@ from .qgpo import (
     QGPOTensorDictDataset,
     QGPOD4RLTensorDictDataset,
     QGPOCustomizedTensorDictDataset,
-    QGPODMcontrolTensorDictDataset,
+    QGPODeepMindControlTensorDictDataset,
 )
 from .gp import (
     GPDataset,
@@ -18,8 +18,8 @@ from .gp import (
     GPTensorDictDataset,
     GPD4RLTensorDictDataset,
     GPCustomizedTensorDictDataset,
-    GPDMcontrolTensorDictDataset,
-
+    GPDeepMindControlTensorDictDataset,
+    GPDeepMindControlVisualTensorDictDataset,
 )
 from .minari_dataset import MinariDataset
 
@@ -32,6 +32,7 @@ DATASETS = {
     "QGPOTensorDictDataset".lower(): QGPOTensorDictDataset,
     "QGPOD4RLTensorDictDataset".lower(): QGPOD4RLTensorDictDataset,
     "QGPOCustomizedTensorDictDataset".lower(): QGPOCustomizedTensorDictDataset,
+    "QGPODeepMindControlTensorDictDataset".lower(): QGPODeepMindControlTensorDictDataset,
     "MinariDataset".lower(): MinariDataset,
     "GPDataset".lower(): GPDataset,
     "GPD4RLDataset".lower(): GPD4RLDataset,
@@ -41,8 +42,8 @@ DATASETS = {
     "GPTensorDictDataset".lower(): GPTensorDictDataset,
     "GPD4RLTensorDictDataset".lower(): GPD4RLTensorDictDataset,
     "GPCustomizedTensorDictDataset".lower(): GPCustomizedTensorDictDataset,
-    "GPDMcontrolTensorDictDataset".lower():GPDMcontrolTensorDictDataset,
-    "QGPODMcontrolTensorDictDataset".lower():QGPODMcontrolTensorDictDataset,
+    "GPDeepMindControlTensorDictDataset".lower(): GPDeepMindControlTensorDictDataset,
+    "GPDeepMindControlVisualTensorDictDataset".lower(): GPDeepMindControlVisualTensorDictDataset,
 }
 
 

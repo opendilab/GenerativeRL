@@ -9,6 +9,11 @@ from grl.neural_network.activation import get_activation
 from grl.neural_network.encoders import get_encoder
 from grl.neural_network.residual_network import MLPResNet
 
+from grl.neural_network.neural_operator.fourier_neural_operator import (
+    FNO2d,
+    FNO2dTemporal,
+)
+
 
 def register_module(module: nn.Module, name: str):
     """
@@ -337,6 +342,111 @@ class TemporalSpatialResidualNet(nn.Module):
         return self.last_block(torch.cat([u, d[0]], dim=-1))
 
 
+class TemporalSpatialConditionalResidualNet(nn.Module):
+    """
+    Overview:
+        Temporal Spatial Residual Network using multiple TemporalSpatialResBlock.
+    Interface:
+        ``__init__``, ``forward``
+    """
+
+    def __init__(
+        self,
+        hidden_sizes: List[int],
+        output_dim: int,
+        t_dim: int,
+        input_dim: int,
+        condition_dim: int = None,
+        t_hidden_dim: int = None,
+    ):
+        """
+        Overview:
+            Initiate the temporal spatial residual network.
+        Arguments:
+            - hidden_sizes (:obj:`List[int]`): The list of hidden sizes.
+            - output_dim (:obj:`int`): The number of channels in the output tensor.
+            - t_dim (:obj:`int`): The dimension of the temporal input.
+            - input_dim (:obj:`int`): The number of channels in the input tensor.
+            - condition_dim (:obj:`int`, optional): The number of channels in the condition tensor. Default is None.
+            - t_hidden_dim (:obj:`int`, optional): The number of channels in the hidden temporal condition tensor. \
+                Default is None.
+        """
+        super().__init__()
+
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+
+        if condition_dim is None or condition_dim <= 0:
+            self.condition_dim = 0
+            self.input_condition_dim = self.input_dim
+            self.output_condition_dim = self.output_dim
+        else:
+            self.condition_dim = condition_dim
+            self.input_condition_dim = self.input_dim + condition_dim
+            self.output_condition_dim = self.output_dim + condition_dim
+
+        self.sort_t = nn.Sequential(
+            nn.Linear(t_dim, t_hidden_dim),
+            torch.nn.SiLU(),
+            nn.Linear(t_hidden_dim, t_hidden_dim),
+        )
+        self.first_block = TemporalSpatialResBlock(
+            self.input_condition_dim, hidden_sizes[0], t_dim=t_hidden_dim
+        )
+        self.down_block = nn.ModuleList(
+            [
+                TemporalSpatialResBlock(
+                    hidden_sizes[i], hidden_sizes[i + 1], t_dim=t_hidden_dim
+                )
+                for i in range(len(hidden_sizes) - 1)
+            ]
+        )
+        self.middle_block = TemporalSpatialResBlock(
+            hidden_sizes[-1], hidden_sizes[-1], t_dim=t_hidden_dim
+        )
+        self.up_block = nn.ModuleList(
+            [
+                TemporalSpatialResBlock(
+                    hidden_sizes[i], hidden_sizes[i], t_dim=t_hidden_dim
+                )
+                for i in range(len(hidden_sizes) - 2, -1, -1)
+            ]
+        )
+        self.last_block = nn.Linear(hidden_sizes[0] * 2, self.output_condition_dim)
+
+    def forward(
+        self,
+        t: torch.Tensor,
+        x: torch.Tensor,
+        condition: torch.Tensor = None,
+    ) -> torch.Tensor:
+        """
+        Overview:
+            Return the output of the temporal spatial residual network.
+        Arguments:
+            - t (:obj:`torch.Tensor`): The temporal input tensor.
+            - x (:obj:`torch.Tensor`): The input tensor.
+            - condition (:obj:`torch.Tensor`, optional): The condition tensor. Default is None.
+        """
+
+        x_condition = torch.cat([x, condition], dim=-1)
+        t_embedding = self.sort_t(t)
+        d0 = self.first_block(t_embedding, x_condition)
+        d = [d0]
+        for i, block in enumerate(self.down_block):
+            d_i = block(t_embedding, d[i])
+            d.append(d_i)
+        u = self.middle_block(t_embedding, d[-1])
+        for i, block in enumerate(self.up_block):
+            u = block(t_embedding, torch.cat([u, d[-i - 1]], dim=-1))
+        out = self.last_block(torch.cat([u, d[0]], dim=-1))
+
+        if self.condition_dim == 0:
+            return out
+        else:
+            return out[:, : self.output_dim]
+
+
 class ConcatenateLayer(nn.Module):
     """
     Overview:
@@ -473,14 +583,21 @@ class ConcatenateMLP(nn.Module):
         return self.model(torch.cat(x, dim=-1))
 
 
-class ALLCONCATMLP(nn.Module):
-    def __init__(self, **kwargs):
+class TemporalConcatenateMLPResNet(nn.Module):
+    """
+    Overview:
+        Temporal Concatenate MLP Residual Network using multiple TemporalSpatialResBlock.
+    Interface:
+        ``__init__``, ``forward``
+    """
+
+    def __init__(self, t_dim: int = 64, activation: str = "mish", **kwargs):
         super().__init__()
         self.main = MLPResNet(**kwargs)
         self.t_cond = MultiLayerPerceptron(
-            hidden_sizes=[64, 128],
-            output_size=128,
-            activation="mish",
+            hidden_sizes=[t_dim, t_dim * 2],
+            output_size=t_dim * 2,
+            activation=activation,
         )
 
     def forward(
@@ -496,6 +613,7 @@ class ALLCONCATMLP(nn.Module):
 
 
 from .transformers.dit import DiT, DiT1D, DiT2D, DiT3D
+from .transformers.maxvit import MaxViT_t
 
 
 class Sequential(nn.Module):
@@ -602,8 +720,9 @@ MODULES = {
     "ConcatenateLayer".lower(): ConcatenateLayer,
     "MultiLayerPerceptron".lower(): MultiLayerPerceptron,
     "ConcatenateMLP".lower(): ConcatenateMLP,
-    "ALLCONCATMLP".lower(): ALLCONCATMLP,
+    "TemporalConcatenateMLPResNet".lower(): TemporalConcatenateMLPResNet,
     "TemporalSpatialResidualNet".lower(): TemporalSpatialResidualNet,
+    "TemporalSpatialConditionalResidualNet".lower(): TemporalSpatialConditionalResidualNet,
     "DiT".lower(): DiT,
     "DiT_3D".lower(): DiT3D,
     "DiT_2D".lower(): DiT,
@@ -611,4 +730,7 @@ MODULES = {
     "DiT3D".lower(): DiT3D,
     "DiT2D".lower(): DiT,
     "DiT1D".lower(): DiT1D,
+    "FNO2d".lower(): FNO2d,
+    "FNO2dTemporal".lower(): FNO2dTemporal,
+    "MaxViT_t".lower(): MaxViT_t,
 }

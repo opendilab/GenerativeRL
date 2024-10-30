@@ -65,6 +65,11 @@ class GPAgent:
                         if self.config.t_span is not None
                         else None
                     ),
+                    solver_config=(
+                        self.config.solver_config
+                        if hasattr(self.config, "solver_config")
+                        else None
+                    ),
                 )
                 .squeeze(0)
                 .cpu()

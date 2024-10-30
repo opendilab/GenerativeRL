@@ -5,6 +5,7 @@ from torch import nn
 
 from grl.generative_models import get_generative_model
 
+
 class DynamicModel(nn.Module):
     """
     Overview:
@@ -56,7 +57,7 @@ class DynamicModel(nn.Module):
         """
 
         return self.model.sample(condition=condition)
-    
+
     def log_prob(
         self,
         next_state: torch.Tensor,

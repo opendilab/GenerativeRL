@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from typing import List
 
+import os
 import gym
 import numpy as np
 import torch
@@ -81,6 +82,7 @@ class GPDataset(torch.utils.data.Dataset):
     def return_range(self, dataset, max_episode_steps):
         raise NotImplementedError
 
+
 class GPTensorDictDataset(torch.utils.data.Dataset):
     """
     Overview:
@@ -133,7 +135,8 @@ class GPTensorDictDataset(torch.utils.data.Dataset):
         self.fake_next_actions = fake_next_actions
         if self.action_augment_num:
             self.storage.set(
-                range(self.len), TensorDict(
+                range(self.len),
+                TensorDict(
                     {
                         "s": self.states,
                         "a": self.actions,
@@ -144,11 +147,12 @@ class GPTensorDictDataset(torch.utils.data.Dataset):
                         "fake_a_": self.fake_next_actions,
                     },
                     batch_size=[self.len],
-                )
+                ),
             )
         else:
             self.storage.set(
-                range(self.len), TensorDict(
+                range(self.len),
+                TensorDict(
                     {
                         "s": self.states,
                         "a": self.actions,
@@ -157,7 +161,7 @@ class GPTensorDictDataset(torch.utils.data.Dataset):
                         "d": self.is_finished,
                     },
                     batch_size=[self.len],
-                )
+                ),
             )
 
     @abstractmethod
@@ -531,22 +535,28 @@ class GPD4RLTensorDictDataset(GPTensorDictDataset):
         self.storage = LazyTensorStorage(max_size=self.len)
         if self.action_augment_num:
             self.storage.set(
-                range(self.len), TensorDict(
+                range(self.len),
+                TensorDict(
                     {
                         "s": self.states,
                         "a": self.actions,
                         "r": self.rewards,
                         "s_": self.next_states,
                         "d": self.is_finished,
-                        "fake_a": torch.zeros_like(self.actions).unsqueeze(1).repeat_interleave(self.action_augment_num, dim=1),
-                        "fake_a_": torch.zeros_like(self.actions).unsqueeze(1).repeat_interleave(self.action_augment_num, dim=1),
+                        "fake_a": torch.zeros_like(self.actions)
+                        .unsqueeze(1)
+                        .repeat_interleave(self.action_augment_num, dim=1),
+                        "fake_a_": torch.zeros_like(self.actions)
+                        .unsqueeze(1)
+                        .repeat_interleave(self.action_augment_num, dim=1),
                     },
                     batch_size=[self.len],
-                )
+                ),
             )
         else:
             self.storage.set(
-                range(self.len), TensorDict(
+                range(self.len),
+                TensorDict(
                     {
                         "s": self.states,
                         "a": self.actions,
@@ -555,7 +565,7 @@ class GPD4RLTensorDictDataset(GPTensorDictDataset):
                         "d": self.is_finished,
                     },
                     batch_size=[self.len],
-                )
+                ),
             )
 
     def return_range(dataset, max_episode_steps):
@@ -602,6 +612,7 @@ class GPD4RLTensorDictDataset(GPTensorDictDataset):
     def __len__(self):
         return self.len
 
+
 class GPCustomizedTensorDictDataset(GPTensorDictDataset):
     """
     Overview:
@@ -640,138 +651,222 @@ class GPCustomizedTensorDictDataset(GPTensorDictDataset):
         self.action_augment_num = action_augment_num
         self.storage = LazyTensorStorage(max_size=self.len)
         self.storage.set(
-            range(self.len), TensorDict(
+            range(self.len),
+            TensorDict(
                 {
                     "s": self.states,
                     "a": self.actions,
                     "r": self.rewards,
                     "s_": self.next_states,
                     "d": self.is_finished,
-                    "fake_a": torch.zeros_like(self.actions).unsqueeze(1).repeat_interleave(action_augment_num, dim=1),
-                    "fake_a_": torch.zeros_like(self.actions).unsqueeze(1).repeat_interleave(action_augment_num, dim=1),
+                    "fake_a": torch.zeros_like(self.actions)
+                    .unsqueeze(1)
+                    .repeat_interleave(action_augment_num, dim=1),
+                    "fake_a_": torch.zeros_like(self.actions)
+                    .unsqueeze(1)
+                    .repeat_interleave(action_augment_num, dim=1),
                 },
                 batch_size=[self.len],
-            )
+            ),
         )
 
 
-class GPDMcontrolTensorDictDataset(torch.utils.data.Dataset):
+class GPDeepMindControlTensorDictDataset(GPTensorDictDataset):
     def __init__(
         self,
-        directory: str,
+        path: str,
+        action_augment_num: int = 16,
     ):
-        import os
-        self.state_dicts = {}
-        self.next_states_dicts = {}
-        actions_list = []
-        rewards_list = []
-        npy_files = []
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                if file.endswith('.npy'):
-                    npy_files.append(os.path.join(root, file))
-        for file_path in npy_files:
-            data = np.load(file_path, allow_pickle=True)
-            self.obs_keys = list(data[0]["s"].keys())
-            
-            for key in self.obs_keys:
-                if key not in self.state_dicts:
-                    self.state_dicts[key] = []
-                    self.next_states_dicts[key] = []
-        
-                state_values = np.array([item["s"][key] for item in data], dtype=np.float32)
-                next_state_values = np.array([item["s_"][key] for item in data], dtype=np.float32)
-                
-                self.state_dicts[key].append(torch.tensor(state_values))
-                self.next_states_dicts[key].append(torch.tensor(next_state_values))
-                    
-            actions_values = np.array([item["a"] for item in data], dtype=np.float32)
-            rewards_values = np.array([item["r"] for item in data], dtype=np.float32).reshape(-1, 1)
-            actions_list.append(torch.tensor(actions_values))
-            rewards_list.append(torch.tensor(rewards_values))
-            
-        # Concatenate all tensors along the first dimension
-        self.state = {key: torch.cat(self.state_dicts[key], dim=0) for key in self.obs_keys}
-        self.next_states = {key: torch.cat(self.next_states_dicts[key], dim=0) for key in self.obs_keys}
-        self.actions = torch.cat(actions_list, dim=0)
-        self.rewards = torch.cat(rewards_list, dim=0)
-        self.dones = torch.zeros_like(self.rewards, dtype=torch.bool)
-        
-    def __len__(self):
-        return self.actions.shape[0]
-    
-    def __getitem__(self, index):
-        # Return a dictionary of the arrays at the given index
-        state_dict = {key: value[index] for key, value in self.state.items()}
-        next_state_dict = {key: value[index] for key, value in self.next_states.items()}
-        return {
-            "s": state_dict ,
-            "s_": next_state_dict,
-            "a": self.actions[index],
-            "r": self.rewards[index],
-            "d": self.dones[index],
-        }
-    
-
-class GPDMcontrolTensorDictDataset(torch.utils.data.Dataset):
-    def __init__(
-        self,
-        directory: str,
-    ):
-        import os
         state_dicts = {}
         next_states_dicts = {}
         actions_list = []
         rewards_list = []
-        npy_files = []
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                if file.endswith('.npy'):
-                    npy_files.append(os.path.join(root, file))
-        for file_path in npy_files:
-            data = np.load(file_path, allow_pickle=True)
-            obs_keys = list(data[0]["s"].keys())
-            
-            for key in obs_keys:
-                if key not in state_dicts:
-                    state_dicts[key] = []
-                    next_states_dicts[key] = []
-        
-                state_values = np.array([item["s"][key] for item in data], dtype=np.float32)
-                next_state_values = np.array([item["s_"][key] for item in data], dtype=np.float32)
-                
-                state_dicts[key].append(torch.tensor(state_values))
-                next_states_dicts[key].append(torch.tensor(next_state_values))
-                    
-            actions_values = np.array([item["a"] for item in data], dtype=np.float32)
-            rewards_values = np.array([item["r"] for item in data], dtype=np.float32).reshape(-1, 1)
-            actions_list.append(torch.tensor(actions_values))
-            rewards_list.append(torch.tensor(rewards_values))
-            
-        # Concatenate all tensors along the first dimension
-        actions = torch.cat(actions_list, dim=0)
-        rewards = torch.cat(rewards_list, dim=0)
-        state = TensorDict(
+
+        data = np.load(path, allow_pickle=True)
+        obs_keys = list(data[0]["s"].keys())
+
+        for key in obs_keys:
+            if key not in state_dicts:
+                state_dicts[key] = []
+                next_states_dicts[key] = []
+
+            state_values = np.array([item["s"][key] for item in data], dtype=np.float32)
+            next_state_values = np.array(
+                [item["s_"][key] for item in data], dtype=np.float32
+            )
+
+            state_dicts[key].append(torch.tensor(state_values))
+            next_states_dicts[key].append(torch.tensor(next_state_values))
+
+        actions_values = np.array([item["a"] for item in data], dtype=np.float32)
+        rewards_values = np.array(
+            [item["r"] for item in data], dtype=np.float32
+        ).reshape(-1, 1)
+        actions_list.append(torch.tensor(actions_values))
+        rewards_list.append(torch.tensor(rewards_values))
+
+        self.actions = torch.cat(actions_list, dim=0)
+        self.rewards = torch.cat(rewards_list, dim=0)
+        self.len = self.actions.shape[0]
+        self.states = TensorDict(
             {key: torch.cat(state_dicts[key], dim=0) for key in obs_keys},
-            batch_size=[actions.shape[0]],
+            batch_size=[self.len],
         )
-        next_state = TensorDict(
+        self.next_states = TensorDict(
             {key: torch.cat(next_states_dicts[key], dim=0) for key in obs_keys},
-            batch_size=[actions.shape[0]],
+            batch_size=[self.len],
         )
-        dones = torch.zeros_like(rewards, dtype=torch.bool)
-        self.len = actions.shape[0]
-        self.storage = LazyMemmapStorage(max_size=self.len)
+        self.is_finished = torch.zeros_like(self.rewards, dtype=torch.bool)
+        self.storage = LazyTensorStorage(max_size=self.len)
         self.storage.set(
-            range(self.len), TensorDict(
+            range(self.len),
+            TensorDict(
                 {
-                    "s": state,
-                    "a": actions,
-                    "r": rewards,
-                    "s_": next_state,
-                    "d": dones,
+                    "s": self.states,
+                    "a": self.actions,
+                    "r": self.rewards,
+                    "s_": self.next_states,
+                    "fake_a": torch.zeros_like(self.actions)
+                    .unsqueeze(1)
+                    .repeat_interleave(action_augment_num, dim=1),
+                    "fake_a_": torch.zeros_like(self.actions)
+                    .unsqueeze(1)
+                    .repeat_interleave(action_augment_num, dim=1),
+                    "d": self.is_finished,
                 },
                 batch_size=[self.len],
-            )
+            ),
         )
-        
+
+
+class GPDeepMindControlVisualTensorDictDataset(torch.utils.data.Dataset):
+    def __init__(
+        self,
+        env_id: str,
+        policy_type: str,
+        pixel_size: int,
+        path: str,
+        stack_frames: int,
+    ):
+        assert env_id in ["cheetah_run", "humanoid_walk", "walker_walk"]
+        assert policy_type in [
+            "expert",
+            "medium",
+            "medium_expert",
+            "medium_replay",
+            "random",
+        ]
+        assert pixel_size in [64, 84]
+        if pixel_size == 64:
+            npz_folder_path = os.path.join(path, env_id, policy_type, "64px")
+        else:
+            npz_folder_path = os.path.join(path, env_id, policy_type, "84px")
+
+        # find all npz files in the folder
+        npz_files = [f for f in os.listdir(npz_folder_path) if f.endswith(".npz")]
+
+        transition_counter = 0
+
+        obs_list = []
+        action_list = []
+        reward_list = []
+        next_obs_list = []
+        is_finished_list = []
+        episode_list = []
+        step_list = []
+
+        # open all npz files in the folder
+        for index, npz_file in enumerate(npz_files):
+
+            npz_path = os.path.join(npz_folder_path, npz_file)
+            data = np.load(npz_path, allow_pickle=True)
+
+            length = data["image"].shape[0]
+            obs = torch.stack(
+                [
+                    torch.from_numpy(data["image"][i : length - stack_frames + i])
+                    for i in range(stack_frames)
+                ],
+                dim=1,
+            )
+            next_obs = torch.stack(
+                [
+                    torch.from_numpy(
+                        data["image"][i + 1 : length - stack_frames + i + 1]
+                    )
+                    for i in range(stack_frames)
+                ],
+                dim=1,
+            )
+
+            action = torch.from_numpy(data["action"][stack_frames:])
+            reward = torch.from_numpy(data["reward"][stack_frames:])
+
+            is_finished = torch.from_numpy(
+                data["is_last"][stack_frames:] + data["is_terminal"][stack_frames:]
+            )
+            episode = torch.tensor([index] * obs.shape[0])
+            step = torch.arange(obs.shape[0])
+            transition_counter += obs.shape[0]
+            obs_list.append(obs)
+            action_list.append(action)
+            reward_list.append(reward)
+            next_obs_list.append(next_obs)
+            is_finished_list.append(is_finished)
+            episode_list.append(episode)
+            step_list.append(step)
+
+            if index > 20:
+                break
+
+        self.states = torch.cat(obs_list, dim=0)
+        self.actions = torch.cat(action_list, dim=0)
+        self.rewards = torch.cat(reward_list, dim=0)
+        self.next_states = torch.cat(next_obs_list, dim=0)
+        self.is_finished = torch.cat(is_finished_list, dim=0)
+        self.episode = torch.cat(episode_list, dim=0)
+        self.step = torch.cat(step_list, dim=0)
+        self.len = self.states.shape[0]
+        self.storage = LazyMemmapStorage(max_size=self.len)
+
+        self.storage.set(
+            range(self.len),
+            TensorDict(
+                {
+                    "s": self.states,
+                    "a": self.actions,
+                    "r": self.rewards,
+                    "s_": self.next_states,
+                    "d": self.is_finished,
+                    "episode": self.episode,
+                    "step": self.step,
+                },
+                batch_size=[self.len],
+            ),
+        )
+
+    def __getitem__(self, index):
+        """
+        Overview:
+            Get data by index
+        Arguments:
+            index (:obj:`int`): Index of data
+        Returns:
+            data (:obj:`dict`): Data dict
+
+        .. note::
+            The data dict contains the following keys:
+
+            s (:obj:`torch.Tensor`): State
+            a (:obj:`torch.Tensor`): Action
+            r (:obj:`torch.Tensor`): Reward
+            s_ (:obj:`torch.Tensor`): Next state
+            d (:obj:`torch.Tensor`): Is finished
+            episode (:obj:`torch.Tensor`): Episode index
+        """
+
+        data = self.storage.get(index=index)
+        return data
+
+    def __len__(self):
+        return self.len

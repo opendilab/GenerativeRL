@@ -3,9 +3,21 @@ from easydict import EasyDict
 
 action_size = 6
 state_size = 17
-env_id="halfcheetah-medium-expert-v2"
-algorithm="QGPO"
+env_id = "halfcheetah-medium-expert-v2"
 action_augment_num = 16
+
+algorithm_type = "QGPO"
+solver_type = "DPMSolver"
+model_type = "DiffusionModel"
+generative_model_type = "VPSDE"
+path = dict(
+    type="linear_vp_sde",
+    beta_0=0.1,
+    beta_1=20.0,
+)
+model_loss_type = "score_matching"
+project_name = f"{env_id}-{algorithm_type}-{generative_model_type}"
+
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 t_embedding_dim = 32
 t_encoder = dict(
@@ -15,12 +27,13 @@ t_encoder = dict(
         scale=30.0,
     ),
 )
-solver_type = "DPMSolver"
+
 
 config = EasyDict(
     train=dict(
-        project=f"{env_id}-{algorithm}",
+        project=project_name,
         device=device,
+        wandb=dict(project=f"IQL-{env_id}-{algorithm_type}-{generative_model_type}"),
         simulator=dict(
             type="GymEnvSimulator",
             args=dict(
@@ -81,16 +94,8 @@ config = EasyDict(
                             )
                         )
                     ),
-                    path=dict(
-                        type="linear_vp_sde",
-                        beta_0=0.1,
-                        beta_1=20.0,
-                    ),
-                    reverse_path=dict(
-                        type="linear_vp_sde",
-                        beta_0=0.1,
-                        beta_1=20.0,
-                    ),
+                    path=path,
+                    reverse_path=path,
                     model=dict(
                         type="noise_function",
                         args=dict(
@@ -130,7 +135,7 @@ config = EasyDict(
             behaviour_policy=dict(
                 batch_size=4096,
                 learning_rate=1e-4,
-                iterations=2000,
+                epochs=2000,
             ),
             action_augment_num=action_augment_num,
             fake_data_t_span=None if solver_type == "DPMSolver" else 32,
@@ -138,20 +143,20 @@ config = EasyDict(
                 batch_size=256,
             ),
             critic=dict(
-                stop_training_iterations=2000,
+                stop_training_epochs=2000,
                 learning_rate=3e-4,
                 discount_factor=0.99,
-                update_momentum=0.995,
+                update_momentum=0.005,
             ),
             energy_guidance=dict(
-                iterations=4000,
+                epochs=4000,
                 learning_rate=1e-4,
             ),
             evaluation=dict(
                 evaluation_interval=200,
                 guidance_scale=[0.0, 1.0, 2.0, 3.0, 5.0, 8.0, 10.0],
             ),
-            checkpoint_path=f"./{env_id}-{algorithm}",
+            checkpoint_path=f"./{env_id}-{algorithm_type}",
         ),
     ),
     deploy=dict(
@@ -164,3 +169,38 @@ config = EasyDict(
         t_span=None if solver_type == "DPMSolver" else 32,
     ),
 )
+
+if __name__ == "__main__":
+
+    import gym
+    import d4rl
+    from grl.algorithms.qgpo import QGPOAlgorithm
+    from grl.utils.log import log
+
+    def qgpo_pipeline(config):
+
+        qgpo = QGPOAlgorithm(config)
+
+        # ---------------------------------------
+        # Customized train code ↓
+        # ---------------------------------------
+        qgpo.train()
+        # ---------------------------------------
+        # Customized train code ↑
+        # ---------------------------------------
+
+        # ---------------------------------------
+        # Customized deploy code ↓
+        # ---------------------------------------
+        agent = qgpo.deploy()
+        env = gym.make(config.deploy.env.env_id)
+        observation = env.reset()
+        for _ in range(config.deploy.num_deploy_steps):
+            env.render()
+            observation, reward, done, _ = env.step(agent.act(observation))
+        # ---------------------------------------
+        # Customized deploy code ↑
+        # ---------------------------------------
+
+    log.info("config: \n{}".format(config))
+    qgpo_pipeline(config)

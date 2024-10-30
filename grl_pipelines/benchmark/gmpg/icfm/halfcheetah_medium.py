@@ -25,7 +25,7 @@ model = dict(
     solver=dict(
         type="ODESolver",
         args=dict(
-            library="torchdiffeq",
+            library="torchdiffeq_adjoint",
         ),
     ),
     path=dict(
@@ -130,7 +130,7 @@ config = EasyDict(
             ),
             evaluation=dict(
                 eval=True,
-                repeat=5,
+                repeat=10,
                 interval=5,
             ),
             checkpoint_path=f"./{project_name}/checkpoint",

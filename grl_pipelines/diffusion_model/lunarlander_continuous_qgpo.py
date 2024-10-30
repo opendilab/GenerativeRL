@@ -14,7 +14,7 @@ def qgpo_pipeline(config):
         config,
         dataset=QGPOCustomizedTensorDictDataset(
             numpy_data_path="./data.npz",
-            action_augment_num=config.train.parameter.action_augment_num
+            action_augment_num=config.train.parameter.action_augment_num,
         ),
     )
 

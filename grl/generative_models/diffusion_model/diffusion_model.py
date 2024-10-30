@@ -237,7 +237,7 @@ class DiffusionModel(nn.Module):
                     condition[key] = torch.repeat_interleave(
                         condition[key], torch.prod(extra_batch_size), dim=0
                     )
-                # condition.shape = (B*N, D)   
+                # condition.shape = (B*N, D)
             elif isinstance(condition, TensorDict):
                 for key in condition.keys():
                     condition[key] = torch.repeat_interleave(
@@ -245,7 +245,6 @@ class DiffusionModel(nn.Module):
                     )
             else:
                 raise NotImplementedError("Not implemented")
-
 
         if isinstance(solver, DPMSolver):
             # Note: DPMSolver does not support t_span argument assignment
@@ -1122,7 +1121,7 @@ class DiffusionModel(nn.Module):
         x: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
         condition: Union[torch.Tensor, TensorDict, treetensor.torch.Tensor] = None,
         using_Hutchinson_trace_estimator: bool = True,
-        with_grad: bool = False
+        with_grad: bool = False,
     ):
         r"""
         Overview:
@@ -1139,12 +1138,18 @@ class DiffusionModel(nn.Module):
 
         if with_grad:
             return compute_likelihood(
-                model=self, x=x, condition=condition, using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator
+                model=self,
+                x=x,
+                condition=condition,
+                using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator,
             )
         else:
             with torch.no_grad():
                 return compute_likelihood(
-                    model=self, x=x, condition=condition, using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator
+                    model=self,
+                    x=x,
+                    condition=condition,
+                    using_Hutchinson_trace_estimator=using_Hutchinson_trace_estimator,
                 )
 
     def sample_with_log_prob(

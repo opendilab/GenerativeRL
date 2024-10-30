@@ -22,7 +22,9 @@ from grl.generative_models.conditional_flow_model.independent_conditional_flow_m
     IndependentConditionalFlowModel,
 )
 from grl.generative_models.metric import compute_likelihood
-from grl.rl_modules.world_model.state_prior_dynamic_model import ActionConditionedWorldModel
+from grl.rl_modules.world_model.state_prior_dynamic_model import (
+    ActionConditionedWorldModel,
+)
 from grl.utils import set_seed
 from grl.utils.log import log
 
@@ -36,7 +38,7 @@ t_encoder = dict(
         scale=30.0,
     ),
 )
-data_num=1000000
+data_num = 1000000
 config = EasyDict(
     dict(
         device=device,
@@ -102,9 +104,7 @@ if __name__ == "__main__":
 
     def get_data(data_num):
         # get data
-        x_and_t = make_swiss_roll(
-            n_samples=data_num, noise=config.dataset.noise
-        )
+        x_and_t = make_swiss_roll(n_samples=data_num, noise=config.dataset.noise)
         t = x_and_t[1].astype(np.float32)
         t = (t - np.min(t)) / (np.max(t) - np.min(t))
         x = x_and_t[0].astype(np.float32)[:, [0, 2]]
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         x1 = x[1:]
         action = t[1:] - t[:-1]
         return x0, x1, action
-    
+
     x0, x1, action = get_data(config.dataset.data_num)
 
     #
@@ -166,7 +166,6 @@ if __name__ == "__main__":
         batch_size=config.parameter.batch_size,
         shuffle=True,
     )
-        
 
     def get_train_data(dataloader):
         while True:
@@ -211,15 +210,15 @@ if __name__ == "__main__":
 
         if not os.path.exists(video_save_path):
             os.makedirs(video_save_path)
-            
+
         T, B, _ = data.shape
-        
+
         fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
 
         # Set the axes limits
-        ax.set_xlim(np.min(data[:,:,0]), np.max(data[:,:,0]))
-        ax.set_ylim(np.min(data[:,:,1]), np.max(data[:,:,1]))
+        ax.set_xlim(np.min(data[:, :, 0]), np.max(data[:, :, 0]))
+        ax.set_ylim(np.min(data[:, :, 1]), np.max(data[:, :, 1]))
         ax.set_zlim(0, T)
 
         # Initialize a list of line objects for each point with alpha transparency
@@ -235,9 +234,9 @@ if __name__ == "__main__":
         # Animation function which updates each frame
         def update(frame):
             for i, line in enumerate(lines):
-                x_data = data[:frame+1, i, 0]
-                y_data = data[:frame+1, i, 1]
-                z_data = np.arange(frame+1)
+                x_data = data[: frame + 1, i, 0]
+                y_data = data[: frame + 1, i, 1]
+                z_data = np.arange(frame + 1)
                 line.set_data(x_data, y_data)
                 line.set_3d_properties(z_data)
             return lines
@@ -285,7 +284,7 @@ if __name__ == "__main__":
         if iteration <= last_iteration:
             continue
 
-        #if iteration > 0 and iteration % config.parameter.eval_freq == 0:
+        # if iteration > 0 and iteration % config.parameter.eval_freq == 0:
         if True:
             flow_model.eval()
             t_span = torch.linspace(0.0, 1.0, 1000)
@@ -293,22 +292,28 @@ if __name__ == "__main__":
             x0_eval = torch.tensor(x0_eval).to(config.device)
             x1_eval = torch.tensor(x1_eval).to(config.device)
             action_eval = torch.tensor(action_eval).to(config.device)
-            action_eval = -torch.ones_like(action_eval).to(config.device)*0.05
+            action_eval = -torch.ones_like(action_eval).to(config.device) * 0.05
             x_t = (
-                flow_model.sample_forward_process(t_span=t_span, x_0=x0_eval, condition=action_eval)
+                flow_model.sample_forward_process(
+                    t_span=t_span, x_0=x0_eval, condition=action_eval
+                )
                 .cpu()
                 .detach()
             )
             x_t = [
                 x.squeeze(0) for x in torch.split(x_t, split_size_or_sections=1, dim=0)
             ]
-            render_video(x_t, config.parameter.video_save_path, iteration, fps=100, dpi=100)
+            render_video(
+                x_t, config.parameter.video_save_path, iteration, fps=100, dpi=100
+            )
 
         batch_data = next(data_generator)
 
         flow_model.train()
         if config.parameter.training_loss_type == "flow_matching":
-            loss = flow_model.flow_matching_loss(x0=batch_data[0], x1=batch_data[1], condition=batch_data[2])
+            loss = flow_model.flow_matching_loss(
+                x0=batch_data[0], x1=batch_data[1], condition=batch_data[2]
+            )
         else:
             raise NotImplementedError("Unknown loss type")
         optimizer.zero_grad()

@@ -236,11 +236,15 @@ class GuidedDiffusionModel:
             if isinstance(condition, TensorDict):
                 repeated_condition = TensorDict(
                     {
-                        key: torch.repeat_interleave(value, torch.prod(extra_batch_size), dim=0)
+                        key: torch.repeat_interleave(
+                            value, torch.prod(extra_batch_size), dim=0
+                        )
                         for key, value in condition.items()
                     }
                 )
-                repeated_condition.batch_size = torch.Size([torch.prod(extra_batch_size).item()])
+                repeated_condition.batch_size = torch.Size(
+                    [torch.prod(extra_batch_size).item()]
+                )
                 repeated_condition.to(condition.device)
                 condition = repeated_condition
             else:

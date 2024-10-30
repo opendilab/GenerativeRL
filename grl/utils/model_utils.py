@@ -2,14 +2,14 @@ import os
 import torch
 from grl.utils.log import log
 
-def save_model(
-        path: str,
-        model: torch.nn.Module,
-        optimizer: torch.optim.Optimizer,
-        iteration: int,
-        prefix="checkpoint"
-    ):
 
+def save_model(
+    path: str,
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    iteration: int,
+    prefix="checkpoint",
+):
     """
     Overview:
         Save model state_dict, optimizer state_dict and training iteration to disk, name as 'prefix_iteration.pt'.
@@ -34,12 +34,11 @@ def save_model(
 
 
 def load_model(
-        path: str,
-        model: torch.nn.Module,
-        optimizer: torch.optim.Optimizer = None,
-        prefix="checkpoint"
-    ) -> int:
-
+    path: str,
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer = None,
+    prefix="checkpoint",
+) -> int:
     """
     Overview:
         Load model state_dict, optimizer state_dict and training iteration from disk, load the latest checkpoint file named as 'prefix_iteration.pt'.
@@ -56,13 +55,15 @@ def load_model(
     checkpoint_path = path
     if checkpoint_path is not None:
         if not os.path.exists(checkpoint_path) or not os.listdir(checkpoint_path):
-            log.warning(
-                f"Checkpoint path {checkpoint_path} does not exist or is empty"
-            )
+            log.warning(f"Checkpoint path {checkpoint_path} does not exist or is empty")
             return last_iteraion
 
         checkpoint_files = sorted(
-            [f for f in os.listdir(checkpoint_path) if f.endswith(".pt") and f.startswith(prefix)],
+            [
+                f
+                for f in os.listdir(checkpoint_path)
+                if f.endswith(".pt") and f.startswith(prefix)
+            ],
             key=lambda x: int(x.split("_")[-1].split(".")[0]),
         )
         if not checkpoint_files:
@@ -73,12 +74,15 @@ def load_model(
 
         checkpoint = torch.load(checkpoint_file, map_location="cpu")
         last_iteraion = checkpoint.get("iteration", -1)
-        ori_state_dict = {k.replace("module.", ""): v for k, v in checkpoint['model'].items()}
-        ori_state_dict = {k.replace("_orig_mod.", ""): v for k, v in ori_state_dict.items()}
+        ori_state_dict = {
+            k.replace("module.", ""): v for k, v in checkpoint["model"].items()
+        }
+        ori_state_dict = {
+            k.replace("_orig_mod.", ""): v for k, v in ori_state_dict.items()
+        }
         model.load_state_dict(ori_state_dict)
         if optimizer is not None:
             optimizer.load_state_dict(checkpoint["optimizer"])
         log.warning(f"{last_iteraion}_checkpoint files has been loaded")
         return last_iteraion
     return last_iteraion
-
