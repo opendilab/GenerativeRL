@@ -1,0 +1,780 @@
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>grl.rl_modules.simulators.gym_env_simulator &mdash; GenerativeRL v0.0.1 documentation</title>
+  
+
+  <link rel="shortcut icon" href="../../../../_static/images/favicon.ico" />
+  
+  
+
+  
+
+  
+  
+  
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!-- <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" /> -->
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/style.css" type="text/css" />
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/css/style.css" rel="stylesheet" type="text/css">
+
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+  <script>
+    MathJax = {
+        chtml: {
+            scale: 1,
+            minScale: 1,
+        },
+        svg: {
+            scale: 1,
+            minScale: 1,
+        }
+    }
+</script>
+
+  <!-- Preload the theme fonts -->
+
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-book.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/IBMPlexMono/IBMPlexMono-Medium.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/FreightSans/freight-sans-medium-italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="../../../../_static/fonts/IBMPlexMono/IBMPlexMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Preload the katex fonts -->
+
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Math-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Main-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size1-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size4-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size2-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Size3-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/fonts/KaTeX_Caligraphic-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+</head>
+
+<div class="container-fluid header-holder tutorials-header" id="header-holder">
+  <div class="container">
+    <div class="header-container">
+      <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/"
+        aria-label="OpenMMLab"></a>
+
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+          <li >
+            <div id="resourcesDropdownButton" data-toggle="resources-dropdown" class="resources-dropdown">
+              <a
+                class="resource-option with-down-arrow">
+                OpenDILab
+              </a>
+              <div class="resources-dropdown-menu">
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-engine" target="_blank">
+                  <span class="dropdown-title">DI-engine </span>
+                  <p>OpenDILab Decision AI Engine</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/LightZero" target="_blank">
+                  <span class="dropdown-title">LightZero </span>
+                  <p>OpenDILab Decision Monte Carlo Tree Search Framework</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GenerativeRL" target="_blank">
+                  <span class="dropdown-title">GenerativeRL </span>
+                  <p>OpenDILab Generative AI Framework</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-star" target="_blank">
+                  <span class="dropdown-title">DI-star </span>
+                  <p>OpenDILab Decision AI in StarCraftII</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-drive" target="_blank">
+                  <span class="dropdown-title">DI-drive </span>
+                  <p>OpenDILab Auto-driving platform</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/GoBigger" target="_blank">
+                  <span class="dropdown-title">GoBigger </span>
+                  <p>OpenDILab Multi-Agent Environment</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-smartcross" target="_blank">
+                  <span class="dropdown-title">DI-smartcross </span>
+                  <p>Decision Intelligence Platform for Traffic Crossing Signal Control</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-treetensor" target="_blank">
+                  <span class="dropdown-title">DI-treetensor </span>
+                  <p>Tree Nested PyTorch Tensor Lib</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/DI-sheep" target="_blank">
+                  <span class="dropdown-title">DI-sheep </span>
+                  <p>Deep Reinforcement Learning + 3 Tiles Game</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-model-based-RL" target="_blank">
+                  <span class="dropdown-title">awesome-model-based-RL </span>
+                  <p>A curated list of awesome model based RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-decision-transformer" target="_blank">
+                  <span class="dropdown-title">awesome-decision-transformer </span>
+                  <p>A curated list of Decision Transformer resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-exploration-rl" target="_blank">
+                  <span class="dropdown-title">awesome-exploration-rl </span>
+                  <p>A curated list of awesome exploration RL resources (continually updated)</p>
+                </a>
+                <a class="doc-dropdown-option nav-dropdown-item"
+                  href="https://github.com/opendilab/awesome-multi-modal-reinforcement-learning" target="_blank">
+                  <span class="dropdown-title">awesome-multi-modal-reinforcement-learning </span>
+                  <p>A curated list of Multi-Modal Reinforcement Learning resources (continually updated)</p>
+                </a>
+              </div>
+          </li>
+        </ul>
+      </div>
+
+      <a class="main-menu-open-button" href="#" data-behavior="open-mobile-menu"></a>
+    </div>
+  </div>
+</div>
+
+<body class="pytorch-body">
+
+   
+
+  
+
+  <div class="table-of-contents-link-wrapper">
+    <span>Table of Contents</span>
+    <a href="#" class="toggle-table-of-contents" data-behavior="toggle-table-of-contents"></a>
+  </div>
+
+  <nav data-toggle="wy-nav-shift" class="pytorch-left-menu" id="pytorch-left-menu">
+    <div class="pytorch-side-scroll">
+      <div class="pytorch-menu pytorch-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <div class="pytorch-left-menu-search">
+          
+
+          
+          
+          
+          <div class="version">
+            0.0.1
+          </div>
+          
+          
+
+          
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search Docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        
+        
+        
+        
+        
+        <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/quick_start/index.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../concepts/index.html">Concepts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide/index.html">User Guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/agents/index.html">grl.agents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/algorithms/index.html">grl.algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/datasets/index.html">grl.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/generative_models/index.html">grl.generative_models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/neural_network/index.html">grl.neural_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/numerical_methods/index.html">grl.numerical_methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/rl_modules/index.html">grl.rl_modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_doc/utils/index.html">grl.utils</a></li>
+</ul>
+
+        
+        
+      </div>
+    </div>
+  </nav>
+
+  <div class="pytorch-container">
+    <div class="pytorch-page-level-bar" id="pytorch-page-level-bar">
+      <div class="pytorch-breadcrumbs-wrapper">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="pytorch-breadcrumbs">
+    
+      <li>
+        <a href="../../../../index.html">
+            Docs
+        </a> &gt;
+      </li>
+
+        
+          <li><a href="../../../index.html">Module code</a> &gt;</li>
+        
+      <li>grl.rl_modules.simulators.gym_env_simulator</li>
+    
+    
+      <li class="pytorch-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+</div>
+      </div>
+
+      <div class="pytorch-shortcuts-wrapper" id="pytorch-shortcuts-wrapper">
+        Shortcuts
+      </div>
+    </div>
+
+    <section data-toggle="wy-nav-shift" id="pytorch-content-wrap" class="pytorch-content-wrap">
+      <div class="pytorch-content-left">
+        
+          <div class="rst-content">
+            
+            <div role="main" class="main-content" itemscope="itemscope" itemtype="http://schema.org/Article">
+              <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
+                
+  <h1>Source code for grl.rl_modules.simulators.gym_env_simulator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+
+<div class="viewcode-block" id="GymEnvSimulator"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.GymEnvSimulator">[docs]</a><span class="k">class</span> <span class="nc">GymEnvSimulator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Overview:</span>
+<span class="sd">        A simple gym environment simulator in GenerativeRL.</span>
+<span class="sd">        This simulator is used to collect episodes and steps using a given policy in a gym environment.</span>
+<span class="sd">        It runs in single process and is suitable for small-scale experiments.</span>
+<span class="sd">    Interfaces:</span>
+<span class="sd">        ``__init__``, ``collect_episodes``, ``collect_steps``, ``evaluate``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GymEnvSimulator.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.GymEnvSimulator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Initialize the GymEnvSimulator according to the given configuration.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            env_id (:obj:`str`): The id of the gym environment to simulate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env_id</span> <span class="o">=</span> <span class="n">env_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">gym</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.26.0&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_truncated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">observation_space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">action_space</span></div>
+
+<div class="viewcode-block" id="GymEnvSimulator.collect_episodes"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.GymEnvSimulator.collect_episodes">[docs]</a>    <span class="k">def</span> <span class="nf">collect_episodes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">policy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">],</span>
+        <span class="n">num_episodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Collect several episodes using the given policy. The environment will be reset at the beginning of each episode.</span>
+<span class="sd">            No history will be stored in this method. The collected information of steps will be returned as a list of dictionaries.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            policy (:obj:`Union[Callable, torch.nn.Module]`): The policy to collect episodes.</span>
+<span class="sd">            num_episodes (:obj:`int`): The number of episodes to collect.</span>
+<span class="sd">            num_steps (:obj:`int`): The number of steps to collect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">num_episodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">num_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">num_episodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">gym</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.26.0&quot;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_episodes</span><span class="p">):</span>
+                        <span class="n">obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">truncated</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">truncated</span><span class="p">:</span>
+                            <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_episodes</span><span class="p">):</span>
+                        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+                            <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+            <span class="k">return</span> <span class="n">data_list</span>
+        <span class="k">elif</span> <span class="n">num_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">gym</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.26.0&quot;</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_steps</span><span class="p">:</span>
+                        <span class="n">obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">truncated</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">truncated</span><span class="p">:</span>
+                            <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_steps</span><span class="p">:</span>
+                        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+                            <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+            <span class="k">return</span> <span class="n">data_list</span></div>
+
+<div class="viewcode-block" id="GymEnvSimulator.collect_steps"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.GymEnvSimulator.collect_steps">[docs]</a>    <span class="k">def</span> <span class="nf">collect_steps</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">policy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">],</span>
+        <span class="n">num_episodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">random_policy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Collect several steps using the given policy. The environment will not be reset until the end of the episode.</span>
+<span class="sd">            Last observation will be stored in this method. The collected information of steps will be returned as a list of dictionaries.</span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            policy (:obj:`Union[Callable, torch.nn.Module]`): The policy to collect steps.</span>
+<span class="sd">            num_episodes (:obj:`int`): The number of episodes to collect.</span>
+<span class="sd">            num_steps (:obj:`int`): The number of steps to collect.</span>
+<span class="sd">            random_policy (:obj:`bool`): Whether to use a random policy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">num_episodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">num_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">num_episodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">gym</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.26.0&quot;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_episodes</span><span class="p">):</span>
+                        <span class="n">obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">truncated</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">truncated</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">random_policy</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_state_truncated</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_episodes</span><span class="p">):</span>
+                        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">random_policy</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">data_list</span>
+        <span class="k">elif</span> <span class="n">num_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">gym</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.26.0&quot;</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_steps</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_state_truncated</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">random_policy</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="n">done</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_truncated</span> <span class="o">=</span> <span class="n">truncated</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_truncated</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num_steps</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">random_policy</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">)</span>
+                            <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                            <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="nb">dict</span><span class="p">(</span>
+                                    <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span><span class="p">,</span>
+                                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                    <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                    <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                    <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="n">done</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collect_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">last_state_done</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">data_list</span></div>
+
+<div class="viewcode-block" id="GymEnvSimulator.evaluate"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.GymEnvSimulator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">policy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">],</span>
+        <span class="n">num_episodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">render_args</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overview:</span>
+<span class="sd">            Evaluate the given policy using the environment. The environment will be reset at the beginning of each episode.</span>
+<span class="sd">            No history will be stored in this method. The evaluation resultswill be returned as a list of dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_episodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">num_episodes</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">render_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">render</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">render</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">def</span> <span class="nf">render_env</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">render_args</span><span class="p">):</span>
+            <span class="c1"># TODO: support different render modes</span>
+            <span class="n">render_output</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+                <span class="o">**</span><span class="n">render_args</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">render_output</span>
+
+        <span class="n">eval_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_episodes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+                <span class="n">render_output</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">gym</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.26.0&quot;</span><span class="p">:</span>
+                    <span class="n">obs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+                        <span class="n">render_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">render_env</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">render_args</span><span class="p">))</span>
+                    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">truncated</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">truncated</span><span class="p">:</span>
+                        <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                        <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="nb">dict</span><span class="p">(</span>
+                                <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                <span class="n">truncated</span><span class="o">=</span><span class="n">truncated</span><span class="p">,</span>
+                                <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                    <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+                        <span class="n">render_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">render_env</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">render_args</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+                        <span class="n">render_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">render_env</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">render_args</span><span class="p">))</span>
+                    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+                        <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+                        <span class="n">next_obs</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+                        <span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+                            <span class="n">render_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">render_env</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">render_args</span><span class="p">))</span>
+                        <span class="n">data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="nb">dict</span><span class="p">(</span>
+                                <span class="n">obs</span><span class="o">=</span><span class="n">obs</span><span class="p">,</span>
+                                <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                                <span class="n">reward</span><span class="o">=</span><span class="n">reward</span><span class="p">,</span>
+                                <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">,</span>
+                                <span class="n">next_obs</span><span class="o">=</span><span class="n">next_obs</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">obs</span> <span class="o">=</span> <span class="n">next_obs</span>
+                    <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+                        <span class="n">render_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">render_env</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">render_args</span><span class="p">))</span>
+
+            <span class="n">eval_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">total_return</span><span class="o">=</span><span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">]),</span>
+                    <span class="n">total_steps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data_list</span><span class="p">),</span>
+                    <span class="n">data_list</span><span class="o">=</span><span class="n">data_list</span><span class="p">,</span>
+                    <span class="n">render_output</span><span class="o">=</span><span class="n">render_output</span> <span class="k">if</span> <span class="n">render</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">eval_results</span></div></div>
+</pre></div>
+
+              </article>
+              
+            </div>
+            <footer>
+  
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>
+      &copy; Copyright 2024, OpenDILab Contributors.
+
+    </p>
+  </div>
+  
+  <div>
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+      href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the
+      Docs</a>.
+  </div>
+   
+
+</footer>
+          </div>
+        </div>
+
+        <div class="pytorch-content-right" id="pytorch-content-right">
+          <div class="pytorch-right-menu" id="pytorch-right-menu">
+            <div class="pytorch-side-scroll" id="pytorch-side-scroll-right">
+              
+            </div>
+          </div>
+        </div>
+    </section>
+  </div>
+
+  
+
+
+  
+
+  
+  <script type="text/javascript" id="documentation_options" data-url_root="../../../../"
+    src="../../../../_static/documentation_options.js"></script>
+  <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+  <script src="../../../../_static/doctools.js"></script>
+  <script src="../../../../_static/sphinx_highlight.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/vendor/popper.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/vendor/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+    jQuery(function () {
+      SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+  <!-- Begin Footer -->
+
+  <div class="container-fluid docs-tutorials-resources" id="docs-tutorials-resources">
+  </div>
+
+  <!-- End Footer -->
+
+  <!-- Begin Mobile Menu -->
+
+  <div class="mobile-main-menu">
+    <div class="container-fluid">
+      <div class="container">
+        <div class="mobile-main-menu-header-container">
+          <a class="header-logo" href="https://opendilab.github.io/GenerativeRL/" aria-label="OpenMMLab"></a>
+          <a class="main-menu-close-button" href="#" data-behavior="close-mobile-menu"></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-main-menu-links-container">
+      <div class="main-menu">
+        <ul>
+          <li>
+            <a href="https://github.com/opendilab/GenerativeRL" target="_blank">GitHub</a>
+          </li>
+      </div>
+    </div>
+  </div>
+
+  <!-- End Mobile Menu -->
+
+  <script type="text/javascript" src="../../../../_static/js/vendor/anchor.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      mobileMenu.bind();
+      mobileTOC.bind();
+      pytorchAnchors.bind();
+      sideMenus.bind();
+      scrollToAnchor.bind();
+      highlightNavigation.bind();
+      mainMenuDropdown.bind();
+      filterTags.bind();
+
+      // Add class to links that have code blocks, since we cannot create links in code blocks
+      $("article.pytorch-article a span.pre").each(function (e) {
+        $(this).closest("a").addClass("has-code");
+      });
+    })
+  </script>
+</body>
+
+</html>
