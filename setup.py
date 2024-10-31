@@ -1,10 +1,17 @@
 from setuptools import setup, find_packages
 
+with open('README.md', 'r', encoding="utf-8") as f:
+    readme = f.read()
+
 setup(
     name='GenerativeRL',
     version='0.0.1',
     description='PyTorch implementations of generative reinforcement learning algorithms',
+    long_description=readme,
+    long_description_content_type='text/markdown',
     author='OpenDILab',
+    author_email="zjowowen@gmail.com",
+    url="https://github.com/opendilab/GenerativeRL",
 
     packages=find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
@@ -47,5 +54,15 @@ setup(
             'black',
             'isort',
         ],
-    }
+    },
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+    ],
+    license="Apache-2.0",
 )

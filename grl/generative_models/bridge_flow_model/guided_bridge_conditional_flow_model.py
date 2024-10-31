@@ -218,10 +218,24 @@ class GuidedBridgeConditionalFlowModel:
             # x.shape = (B*N, D)
 
         if condition is not None:
-            condition = torch.repeat_interleave(
-                condition, torch.prod(extra_batch_size), dim=0
-            )
-            # condition.shape = (B*N, D)
+            if isinstance(condition, torch.Tensor):
+                condition = torch.repeat_interleave(
+                    condition, torch.prod(extra_batch_size), dim=0
+                )
+                # condition.shape = (B*N, D)
+            elif isinstance(condition, TensorDict):
+                condition = TensorDict(
+                    {
+                        key: torch.repeat_interleave(
+                            condition[key], torch.prod(extra_batch_size), dim=0
+                        )
+                        for key in condition.keys()
+                    },
+                    batch_size=torch.prod(extra_batch_size) * condition.shape,
+                    device=condition.device,
+                )
+            else:
+                raise NotImplementedError("Not implemented")
 
         if isinstance(solver, DPMSolver):
             raise NotImplementedError("Not implemented")

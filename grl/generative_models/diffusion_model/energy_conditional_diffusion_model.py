@@ -342,26 +342,31 @@ class EnergyConditionalDiffusionModel(nn.Module):
             # x.shape = (B*N, D)
 
         if condition is not None:
-            if isinstance(condition, TensorDict):
-                repeated_condition = TensorDict(
-                    {
-                        key: torch.repeat_interleave(
-                            value, torch.prod(extra_batch_size), dim=0
-                        )
-                        for key, value in condition.items()
-                    },
-                    batch_size=int(
-                        torch.prod(
-                            torch.tensor([*condition.batch_size, extra_batch_size])
-                        )
-                    ),
-                )
-                repeated_condition.to(condition.device)
-                condition = repeated_condition
-            else:
+            if isinstance(condition, torch.Tensor):
                 condition = torch.repeat_interleave(
                     condition, torch.prod(extra_batch_size), dim=0
                 )
+                # condition.shape = (B*N, D)
+            elif isinstance(condition, treetensor.torch.Tensor):
+                for key in condition.keys():
+                    condition[key] = torch.repeat_interleave(
+                        condition[key], torch.prod(extra_batch_size), dim=0
+                    )
+                # condition.shape = (B*N, D)
+            elif isinstance(condition, TensorDict):
+                condition = TensorDict(
+                    {
+                        key: torch.repeat_interleave(
+                            condition[key], torch.prod(extra_batch_size), dim=0
+                        )
+                        for key in condition.keys()
+                    },
+                    batch_size=torch.prod(extra_batch_size) * condition.shape,
+                    device=condition.device,
+                )
+            else:
+                raise NotImplementedError("Not implemented")
+
         if isinstance(solver, DPMSolver):
 
             def noise_function_with_energy_guidance(t, x, condition):

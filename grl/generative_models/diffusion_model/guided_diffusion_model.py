@@ -233,25 +233,30 @@ class GuidedDiffusionModel:
             # x.shape = (B*N, D)
 
         if condition is not None:
-            if isinstance(condition, TensorDict):
-                repeated_condition = TensorDict(
-                    {
-                        key: torch.repeat_interleave(
-                            value, torch.prod(extra_batch_size), dim=0
-                        )
-                        for key, value in condition.items()
-                    }
-                )
-                repeated_condition.batch_size = torch.Size(
-                    [torch.prod(extra_batch_size).item()]
-                )
-                repeated_condition.to(condition.device)
-                condition = repeated_condition
-            else:
+            if isinstance(condition, torch.Tensor):
                 condition = torch.repeat_interleave(
                     condition, torch.prod(extra_batch_size), dim=0
                 )
-            # condition.shape = (B*N, D)
+                # condition.shape = (B*N, D)
+            elif isinstance(condition, treetensor.torch.Tensor):
+                for key in condition.keys():
+                    condition[key] = torch.repeat_interleave(
+                        condition[key], torch.prod(extra_batch_size), dim=0
+                    )
+                # condition.shape = (B*N, D)
+            elif isinstance(condition, TensorDict):
+                condition = TensorDict(
+                    {
+                        key: torch.repeat_interleave(
+                            condition[key], torch.prod(extra_batch_size), dim=0
+                        )
+                        for key in condition.keys()
+                    },
+                    batch_size=torch.prod(extra_batch_size) * condition.shape,
+                    device=condition.device,
+                )
+            else:
+                raise NotImplementedError("Not implemented")
 
         if isinstance(solver, DPMSolver):
             # Note: DPMSolver does not support t_span argument assignment

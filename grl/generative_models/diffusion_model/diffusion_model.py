@@ -239,10 +239,16 @@ class DiffusionModel(nn.Module):
                     )
                 # condition.shape = (B*N, D)
             elif isinstance(condition, TensorDict):
-                for key in condition.keys():
-                    condition[key] = torch.repeat_interleave(
-                        condition[key], torch.prod(extra_batch_size), dim=0
-                    )
+                condition = TensorDict(
+                    {
+                        key: torch.repeat_interleave(
+                            condition[key], torch.prod(extra_batch_size), dim=0
+                        )
+                        for key in condition.keys()
+                    },
+                    batch_size=torch.prod(extra_batch_size) * condition.shape,
+                    device=condition.device,
+                )
             else:
                 raise NotImplementedError("Not implemented")
 
