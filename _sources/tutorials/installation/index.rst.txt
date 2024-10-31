@@ -5,7 +5,7 @@ GenerativeRL can be installed using pip:
 
 .. code-block:: console
 
-   $ pip install grl
+   $ pip install GenerativeRL
 
 You can also install the latest development version from GitHub:
 
