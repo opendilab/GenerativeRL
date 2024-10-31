@@ -1,0 +1,50 @@
+name: Publish to PyPI
+
+on:
+  # Trigger this workflow when a new tag is pushed
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    # Step 1: Check out the repository
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Python environment with matrix
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    # Step 3: Install build dependencies
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+
+    # Step 4: Build the package (wheel and source distribution)
+    - name: Build the package
+      run: |
+        python setup.py sdist bdist_wheel
+
+    # Step 5: Publish the package to PyPI (only run once for one version)
+    - name: Publish to PyPI
+      if: matrix.python-version == '3.9'  # Publish only once, on Python 3.9
+      env:
+        PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}  # Use the PyPI token stored in GitHub Secrets
+      run: |
+        python -m twine upload dist/*
+
+    # Step 6: Clean up the build artifacts
+    - name: Remove build artifacts
+      if: matrix.python-version == '3.9'  # Clean up once after publishing
+      run: rm -rf dist build *.egg-info
