@@ -1,4 +1,4 @@
-# Generative Reinforcement Learning (GRL)
+# Generative Reinforcement Learning
 
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fopendilab)](https://twitter.com/opendilab)    
 [![GitHub stars](https://img.shields.io/github/stars/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/stargazers)
@@ -57,6 +57,7 @@ English | [简体中文(Simplified Chinese)](https://github.com/opendilab/Genera
 
 | Algo./Models                                        | Diffusion Model                                                                                                                                             |  Flow Model            |
 |---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| [IDQL](https://arxiv.org/abs/2304.10573)            | ✔                                                                                                                                                           |  🚫                   |
 | [QGPO](https://arxiv.org/abs/2304.12824)            | ✔                                                                                                                                                           |  🚫                   |
 | [SRPO](https://arxiv.org/abs/2310.07297)            | ✔                                                                                                                                                           |  🚫                   |
 | GMPO                                                | ✔  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1A79ueOdLvTfrytjOPyfxb6zSKXi1aePv)  | ✔                     |
@@ -66,7 +67,7 @@ English | [简体中文(Simplified Chinese)](https://github.com/opendilab/Genera
 ## Installation
 
 ```bash
-pip install grl
+pip install GenerativeRL
 ```
 
 Or, if you want to install from source:
@@ -141,6 +142,18 @@ We offer some baseline experiments to evaluate the performance of generative rei
 ## Contributing
 
 We welcome contributions to GenerativeRL! If you are interested in contributing, please refer to the [Contributing Guide](CONTRIBUTING.md).
+
+## Citation
+
+```latex
+@misc{generative_rl,
+    title={GenerativeRL: A Python Library for Solving Reinforcement Learning Problems Using Generative Models},
+    author={Zhang, Jinouwen and Xue, Rongkun and Niu, Yazhe and Chen, Yun and Chen, Xinyan and Wang, Ruiheng and Liu, Yu},
+    publisher={GitHub},
+    howpublished={\url{https://github.com/opendilab/GenerativeRL}},
+    year={2024},
+}
+```
 
 ## License
 

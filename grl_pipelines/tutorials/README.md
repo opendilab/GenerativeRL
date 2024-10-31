@@ -2,22 +2,52 @@
 
 English | [简体中文(Simplified Chinese)](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/README.zh.md)
 
-## Train a Generative Model
+## Train a generative model
 
-### Diffusion Model
+### Diffusion model
 
-We provide a simple colab notebook to demonstrate how to build a diffusion model using the `grl` library. You can access the notebook [here](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk#scrollTo=aqtDAvG6cQ1V).
+We provide a simple colab notebook to demonstrate how to build a diffusion model using the `GenerativeRL` library. You can access the notebook [here](https://colab.research.google.com/drive/18yHUAmcMh_7xq2U6TBCtcLKX2y4YvNyk#scrollTo=aqtDAvG6cQ1V).
 
-### Flow Model
+### Flow model
 
-We provide a simple colab notebook to demonstrate how to build a flow model using the `grl` library. You can access the notebook [here](https://colab.research.google.com/drive/1vrxREVXKsSbnsv9G2CnKPVvrbFZleElI?usp=drive_link).
+We provide a simple colab notebook to demonstrate how to build a flow model using the `GenerativeRL` library. You can access the notebook [here](https://colab.research.google.com/drive/1vrxREVXKsSbnsv9G2CnKPVvrbFZleElI?usp=drive_link).
 
-## Evaluate a Generative Model
+## Evaluate a generative model
 
-### Sample Generation
+### Sample generation
 
-We provide a simple colab notebook to demonstrate how to generate samples from a trained generative model using the `grl` library. You can access the notebook [here](https://colab.research.google.com/drive/16jQhf1BDjtToxMZ4lDxB4IwGdRmr074j?usp=sharing).
+We provide a simple colab notebook to demonstrate how to generate samples from a trained generative model using the `GenerativeRL` library. You can access the notebook [here](https://colab.research.google.com/drive/16jQhf1BDjtToxMZ4lDxB4IwGdRmr074j?usp=sharing).
 
-### Density Estimation
+### Density estimation
 
-We provide a simple colab notebook to demonstrate how to estimate the density of samples using a trained generative model using the `grl` library. You can access the notebook [here](https://colab.research.google.com/drive/1zHsW13n338YqX87AIWG26KLC4uKQL1ZP?usp=sharing).
+We provide a simple colab notebook to demonstrate how to estimate the density of samples using a trained generative model using the `GenerativeRL` library. You can access the notebook [here](https://colab.research.google.com/drive/1zHsW13n338YqX87AIWG26KLC4uKQL1ZP?usp=sharing).
+
+## Tutorials via toy examples
+
+We provide several toy examples to demonstrate the features of the `GenerativeRL` library. You can access the examples [here](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/).
+
+### Diverse generative models
+
+- [Diffusion Model](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/generative_models/swiss_roll_diffusion.py)
+- [Energy condition Diffusion Model](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/generative_models/swiss_roll_energy_condition.py)
+- [Independent Conditional Flow Matching Model](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/generative_models/swiss_roll_icfm.py)
+- [Optimal Transport Conditional Flow Matching Model](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/generative_models/swiss_roll_otcfm.py)
+- [SF2M](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/generative_models/swiss_roll_otcfm.py)
+
+### Generative model applications
+
+- [World Model](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/applications/swiss_roll_world_model.py)
+
+### Generative model evaluation
+
+- [Likelihood Evaluation](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/metrics/swiss_roll_likelihood.py)
+
+### ODE/SDE solvers usages
+
+- [DPM Solver](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/solvers/swiss_roll_dpmsolver.py)
+- [SDE Solver](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/solvers/swiss_roll_sdesolver.py)
+
+### Special usages in GenerativeRL
+
+- [Customized Neural Network Modules](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/special_usages/customized_modules.py)
+- [Dict-like Structure Data Generation](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/special_usages/dict_tensor_ode.py)

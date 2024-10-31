@@ -55,6 +55,7 @@
 
 | 算法/模型                                           | 扩散模型                                                                                                                                                               | 流模型                  |
 |---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| [IDQL](https://arxiv.org/abs/2304.10573)            | ✔                                                                                                                                                                    |  🚫                   |
 | [QGPO](https://arxiv.org/abs/2304.12824)            | ✔                                                                                                                                                                    |  🚫                   |
 | [SRPO](https://arxiv.org/abs/2310.07297)            | ✔                                                                                                                                                                    |  🚫                   |
 | GMPO                                                | ✔  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1A79ueOdLvTfrytjOPyfxb6zSKXi1aePv)           | ✔                     |
@@ -63,7 +64,7 @@
 ## 安装
 
 ```bash
-pip install grl
+pip install GenerativeRL
 ```
 
 或者，如果你想从源码安装：
@@ -138,6 +139,18 @@ if __name__ == '__main__':
 ## 开源支持
 
 我们欢迎所有对 GenerativeRL 的贡献和支持！请参考 [开源贡献指南](CONTRIBUTING.md)。
+
+## 引用
+
+```latex
+@misc{generative_rl,
+    title={GenerativeRL: A Python Library for Solving Reinforcement Learning Problems Using Generative Models},
+    author={Zhang, Jinouwen and Xue, Rongkun and Niu, Yazhe and Chen, Yun and Chen, Xinyan and Wang, Ruiheng and Liu, Yu},
+    publisher={GitHub},
+    howpublished={\url{https://github.com/opendilab/GenerativeRL}},
+    year={2024},
+}
+```
 
 ## 开源协议
 
