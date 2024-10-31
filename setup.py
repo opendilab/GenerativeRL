@@ -10,7 +10,7 @@ setup(
     long_description=readme,
     long_description_content_type='text/markdown',
     author='OpenDILab',
-    author_email="zjowowen@gmail.com",
+    author_email="opendilab@pjlab.org.cn",
     url="https://github.com/opendilab/GenerativeRL",
 
     packages=find_packages(
