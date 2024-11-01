@@ -1,5 +1,5 @@
 ################################################################################################
-# This script demonstrates how to use customized neural network modules in GRL.
+# This script demonstrates how to use customized neural network modules in GenerativeRL.
 #
 # In this example, we define a customized neural network module named `MyModule`
 # and use it in the DiffusionModel. For convenience, we redefine `MyModule` by
