@@ -142,15 +142,24 @@ if __name__ == '__main__':
 
 ## 引用
 
+如果您在研究中使用了 GenerativeRL，请引用以下论文：
+
 ```latex
-@misc{generative_rl,
-    title={GenerativeRL: A Python Library for Solving Reinforcement Learning Problems Using Generative Models},
-    author={Zhang, Jinouwen and Xue, Rongkun and Niu, Yazhe and Chen, Yun and Chen, Xinyan and Wang, Ruiheng and Liu, Yu},
-    publisher={GitHub},
-    howpublished={\url{https://github.com/opendilab/GenerativeRL}},
-    year={2024},
+@misc{zhang2024generative_rl,
+      title={Revisiting Generative Policies: A Simpler Reinforcement Learning Algorithmic Perspective}, 
+      author={Jinouwen Zhang and Rongkun Xue and Yazhe Niu and Yun Chen and Jing Yang and Hongsheng Li and Yu Liu},
+      year={2024},
+      eprint={2412.01245},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2412.01245}, 
 }
 ```
+
+### 使用 GenerativeRL 的论文
+
+- [Data-driven Aerodynamic Shape Optimization and Multi-fidelity Design Exploration using Conditional Diffusion-based Geometry Sampling Method](https://www.icas.org/ICAS_ARCHIVE/ICAS2024/data/papers/ICAS2024_0431_paper.pdf) (Yang et al. 2024)
+- [Pretrained Reversible Generation as Unsupervised Visual Representation Learning](https://arxiv.org/abs/2412.01787) (Xue et al. 2024)
 
 ## 开源协议
 
