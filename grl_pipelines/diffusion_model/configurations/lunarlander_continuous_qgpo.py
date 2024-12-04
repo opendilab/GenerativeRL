@@ -28,144 +28,148 @@ t_encoder = dict(
     ),
 )
 
-config = EasyDict(
-    train=dict(
-        project=project_name,
-        device=device,
-        wandb=dict(project=f"IQL-{env_id}-{algorithm_type}-{generative_model_type}"),
-        simulator=dict(
-            type="GymEnvSimulator",
-            args=dict(
-                env_id=env_id,
+def make_config(device):
+
+    return EasyDict(
+        train=dict(
+            project=project_name,
+            device=device,
+            wandb=dict(project=f"IQL-{env_id}-{algorithm_type}-{generative_model_type}"),
+            simulator=dict(
+                type="GymEnvSimulator",
+                args=dict(
+                    env_id=env_id,
+                ),
             ),
-        ),
-        # dataset = dict(
-        #     type = "QGPOCustomizedTensorDictDataset",
-        #     args = dict(
-        #         env_id = env_id,
-        #         numpy_data_path = "./data.npz",
-        #         action_augment_num = action_augment_num,
-        #     ),
-        # ),
-        model=dict(
-            QGPOPolicy=dict(
-                device=device,
-                critic=dict(
+            # dataset = dict(
+            #     type = "QGPOCustomizedTensorDictDataset",
+            #     args = dict(
+            #         env_id = env_id,
+            #         numpy_data_path = "./data.npz",
+            #         action_augment_num = action_augment_num,
+            #     ),
+            # ),
+            model=dict(
+                QGPOPolicy=dict(
                     device=device,
-                    q_alpha=1.0,
-                    DoubleQNetwork=dict(
-                        backbone=dict(
-                            type="ConcatenateMLP",
-                            args=dict(
-                                hidden_sizes=[action_size + state_size, 256, 256],
-                                output_size=1,
-                                activation="relu",
+                    critic=dict(
+                        device=device,
+                        q_alpha=1.0,
+                        DoubleQNetwork=dict(
+                            backbone=dict(
+                                type="ConcatenateMLP",
+                                args=dict(
+                                    hidden_sizes=[action_size + state_size, 256, 256],
+                                    output_size=1,
+                                    activation="relu",
+                                ),
                             ),
                         ),
                     ),
-                ),
-                diffusion_model=dict(
-                    device=device,
-                    x_size=action_size,
-                    alpha=1.0,
-                    solver=(
-                        dict(
-                            type="DPMSolver",
-                            args=dict(
-                                order=2,
-                                device=device,
-                                steps=17,
-                            ),
-                        )
-                        if solver_type == "DPMSolver"
-                        else (
+                    diffusion_model=dict(
+                        device=device,
+                        x_size=action_size,
+                        alpha=1.0,
+                        solver=(
                             dict(
-                                type="ODESolver",
+                                type="DPMSolver",
                                 args=dict(
-                                    library="torchdyn",
+                                    order=2,
+                                    device=device,
+                                    steps=17,
                                 ),
                             )
-                            if solver_type == "ODESolver"
-                            else dict(
-                                type="SDESolver",
-                                args=dict(
-                                    library="torchsde",
-                                ),
+                            if solver_type == "DPMSolver"
+                            else (
+                                dict(
+                                    type="ODESolver",
+                                    args=dict(
+                                        library="torchdyn",
+                                    ),
+                                )
+                                if solver_type == "ODESolver"
+                                else dict(
+                                    type="SDESolver",
+                                    args=dict(
+                                        library="torchsde",
+                                    ),
+                                )
                             )
-                        )
-                    ),
-                    path=path,
-                    reverse_path=path,
-                    model=dict(
-                        type="noise_function",
-                        args=dict(
+                        ),
+                        path=path,
+                        reverse_path=path,
+                        model=dict(
+                            type="noise_function",
+                            args=dict(
+                                t_encoder=t_encoder,
+                                backbone=dict(
+                                    type="TemporalSpatialResidualNet",
+                                    args=dict(
+                                        hidden_sizes=[512, 256, 128],
+                                        output_dim=action_size,
+                                        t_dim=t_embedding_dim,
+                                        condition_dim=state_size,
+                                        condition_hidden_dim=32,
+                                        t_condition_hidden_dim=128,
+                                    ),
+                                ),
+                            ),
+                        ),
+                        energy_guidance=dict(
                             t_encoder=t_encoder,
                             backbone=dict(
-                                type="TemporalSpatialResidualNet",
+                                type="ConcatenateMLP",
                                 args=dict(
-                                    hidden_sizes=[512, 256, 128],
-                                    output_dim=action_size,
-                                    t_dim=t_embedding_dim,
-                                    condition_dim=state_size,
-                                    condition_hidden_dim=32,
-                                    t_condition_hidden_dim=128,
+                                    hidden_sizes=[
+                                        action_size + state_size + t_embedding_dim,
+                                        256,
+                                        256,
+                                    ],
+                                    output_size=1,
+                                    activation="silu",
                                 ),
                             ),
                         ),
                     ),
-                    energy_guidance=dict(
-                        t_encoder=t_encoder,
-                        backbone=dict(
-                            type="ConcatenateMLP",
-                            args=dict(
-                                hidden_sizes=[
-                                    action_size + state_size + t_embedding_dim,
-                                    256,
-                                    256,
-                                ],
-                                output_size=1,
-                                activation="silu",
-                            ),
-                        ),
-                    ),
+                )
+            ),
+            parameter=dict(
+                behaviour_policy=dict(
+                    batch_size=1024,
+                    learning_rate=1e-4,
+                    epochs=500,
                 ),
-            )
+                action_augment_num=action_augment_num,
+                fake_data_t_span=None if solver_type == "DPMSolver" else 32,
+                energy_guided_policy=dict(
+                    batch_size=256,
+                ),
+                critic=dict(
+                    stop_training_epochs=500,
+                    learning_rate=1e-4,
+                    discount_factor=0.99,
+                    update_momentum=0.005,
+                ),
+                energy_guidance=dict(
+                    epochs=1000,
+                    learning_rate=1e-4,
+                ),
+                evaluation=dict(
+                    evaluation_interval=50,
+                    guidance_scale=[0.0, 1.0, 2.0],
+                ),
+                checkpoint_path=f"./{env_id}-{algorithm_type}",
+            ),
         ),
-        parameter=dict(
-            behaviour_policy=dict(
-                batch_size=1024,
-                learning_rate=1e-4,
-                epochs=500,
+        deploy=dict(
+            device=device,
+            env=dict(
+                env_id=env_id,
+                seed=0,
             ),
-            action_augment_num=action_augment_num,
-            fake_data_t_span=None if solver_type == "DPMSolver" else 32,
-            energy_guided_policy=dict(
-                batch_size=256,
-            ),
-            critic=dict(
-                stop_training_epochs=500,
-                learning_rate=1e-4,
-                discount_factor=0.99,
-                update_momentum=0.005,
-            ),
-            energy_guidance=dict(
-                epochs=1000,
-                learning_rate=1e-4,
-            ),
-            evaluation=dict(
-                evaluation_interval=50,
-                guidance_scale=[0.0, 1.0, 2.0],
-            ),
-            checkpoint_path=f"./{env_id}-{algorithm_type}",
+            num_deploy_steps=1000,
+            t_span=None if solver_type == "DPMSolver" else 32,
         ),
-    ),
-    deploy=dict(
-        device=device,
-        env=dict(
-            env_id=env_id,
-            seed=0,
-        ),
-        num_deploy_steps=1000,
-        t_span=None if solver_type == "DPMSolver" else 32,
-    ),
-)
+    )
+
+config = make_config(device)

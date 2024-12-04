@@ -50,6 +50,10 @@ setup(
         'DI-engine': [
             'DI-engine',
         ],
+        'HuggingFace': [
+            'safetensors',
+            'huggingface_hub',
+        ],
         'formatter': [
             'black',
             'isort',
