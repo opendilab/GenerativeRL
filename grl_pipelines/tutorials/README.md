@@ -51,3 +51,15 @@ We provide several toy examples to demonstrate the features of the `GenerativeRL
 
 - [Customized Neural Network Modules](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/special_usages/customized_modules.py)
 - [Dict-like Structure Data Generation](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/special_usages/dict_tensor_ode.py)
+
+## Use Hugging Face website to push and pull models
+
+### Push a model
+
+We provide an [example](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/huggingface/lunarlander_continuous_qgpo_huggingface_push.py) to push a trained model to the Hugging Face website.
+
+In this example, we push a trained LunarLanderContinuous model to the Hugging Face website, and automatically generate a model card using the [template](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/huggingface/modelcard_template.md) to showcase the model's [detailed information](https://huggingface.co/OpenDILabCommunity/LunarLanderContinuous-v2-QGPO).
+
+### Pull a model
+
+We provide an [example](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/huggingface/lunarlander_continuous_qgpo_huggingface_pull.py) to pull a model from the Hugging Face website, and test the model's performance in the environment.

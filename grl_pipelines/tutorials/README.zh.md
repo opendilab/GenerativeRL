@@ -51,3 +51,14 @@
 
 - [自定义神经网络模块](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/special_usages/customized_modules.py)
 - [类似字典结构的数据生成](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/special_usages/dict_tensor_ode.py)
+
+## 使用 Hugging Face 网站上传和下载模型
+
+### 上传模型
+我们提供了将训练好的模型上传到 Hugging Face 网站的[示例](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/huggingface/lunarlander_continuous_qgpo_huggingface_push.py)。
+
+在这个示例中，我们将训练好的 LunarLanderContinuous 模型上传到 Hugging Face 网站，并通过[模板](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/huggingface/modelcard_template.md)自动生成模型卡片，展示模型的[详细信息](https://huggingface.co/OpenDILabCommunity/LunarLanderContinuous-v2-QGPO)。
+
+### 下载模型
+我们提供了从 Hugging Face 网站下载模型的[示例](https://github.com/opendilab/GenerativeRL/tree/main/grl_pipelines/tutorials/huggingface/lunarlander_continuous_qgpo_huggingface_pull.py)。
+在这个示例中，我们下载了 Hugging Face 网站上的 LunarLanderContinuous 模型，并测试模型在该环境中的性能。
