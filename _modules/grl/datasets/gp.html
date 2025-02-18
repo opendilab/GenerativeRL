@@ -306,20 +306,20 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.datasets.gp</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">gym</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gym</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
 
-<span class="kn">from</span> <span class="nn">torchrl.data</span> <span class="kn">import</span> <span class="n">LazyTensorStorage</span><span class="p">,</span> <span class="n">LazyMemmapStorage</span>
-<span class="kn">from</span> <span class="nn">grl.utils.log</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchrl.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyTensorStorage</span><span class="p">,</span> <span class="n">LazyMemmapStorage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.utils.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
 
 
-<div class="viewcode-block" id="GPDataset"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPDataset">[docs]</a><span class="k">class</span> <span class="nc">GPDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="GPDataset"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPDataset">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">GPDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Dataset for Generative Policy algorithm.</span>
@@ -330,14 +330,14 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GPDataset.__init__"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GPDataset.__init__"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPDataset.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialization method of GPD4RLDataset class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Get data by index</span>
@@ -379,19 +379,19 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
 
-    <span class="k">def</span> <span class="nf">load_fake_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fake_actions</span><span class="p">,</span> <span class="n">fake_next_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_fake_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fake_actions</span><span class="p">,</span> <span class="n">fake_next_actions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fake_actions</span> <span class="o">=</span> <span class="n">fake_actions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fake_next_actions</span> <span class="o">=</span> <span class="n">fake_next_actions</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">return_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<span class="k">class</span> <span class="nc">GPTensorDictDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPTensorDictDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Dataset for Generative Policy algorithm.</span>
@@ -402,14 +402,14 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialization method of GPD4RLDataset class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Get data by index</span>
@@ -435,10 +435,10 @@
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
 
-    <span class="k">def</span> <span class="nf">load_fake_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fake_actions</span><span class="p">,</span> <span class="n">fake_next_actions</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_fake_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fake_actions</span><span class="p">,</span> <span class="n">fake_next_actions</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fake_actions</span> <span class="o">=</span> <span class="n">fake_actions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fake_next_actions</span> <span class="o">=</span> <span class="n">fake_next_actions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_augment_num</span><span class="p">:</span>
@@ -473,11 +473,11 @@
             <span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">return_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
-<div class="viewcode-block" id="GPD4RLDataset"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPD4RLDataset">[docs]</a><span class="k">class</span> <span class="nc">GPD4RLDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
+<div class="viewcode-block" id="GPD4RLDataset"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPD4RLDataset">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">GPD4RLDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        D4RL Dataset for Generative Policy algorithm.</span>
@@ -485,7 +485,7 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GPD4RLDataset.__init__"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPD4RLDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="GPD4RLDataset.__init__"><a class="viewcode-back" href="../../../api_doc/datasets/index.html#grl.datasets.GPD4RLDataset.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
@@ -497,7 +497,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="kn">import</span> <span class="nn">d4rl</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">d4rl</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">d4rl</span><span class="o">.</span><span class="n">qlearning_dataset</span><span class="p">(</span><span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_id</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;observations&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
@@ -523,7 +523,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="si">}</span><span class="s2"> data loaded in GPD4RLDataset&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
         <span class="n">returns</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="n">ep_ret</span><span class="p">,</span> <span class="n">ep_len</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;rewards&quot;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;terminals&quot;</span><span class="p">]):</span>
@@ -539,7 +539,7 @@
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">returns</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">GPOnlineDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPOnlineDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Dataset for Generative Policy algorithm for online data collection.</span>
@@ -547,7 +547,7 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fake_action_shape</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -582,7 +582,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="si">}</span><span class="s2"> data loaded in GPOnlineDataset&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">drop_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">random</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">drop_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">random</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="c1"># drop the data from the dataset</span>
         <span class="n">drop_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">*</span> <span class="n">drop_ratio</span><span class="p">)</span>
         <span class="c1"># randomly drop the data if random is True</span>
@@ -602,7 +602,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">drop_num</span><span class="si">}</span><span class="s2"> data dropped in GPOnlineDataset&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
         <span class="c1"># concatenate the data into the dataset</span>
 
         <span class="c1"># collate the data by sorting the keys</span>
@@ -629,7 +629,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="si">}</span><span class="s2"> data loaded in GPOnlineDataset&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
         <span class="n">returns</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="n">ep_ret</span><span class="p">,</span> <span class="n">ep_len</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;rewards&quot;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;terminals&quot;</span><span class="p">]):</span>
@@ -645,7 +645,7 @@
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">returns</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GPD4RLOnlineDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPD4RLOnlineDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        D4RL Dataset for GP algorithm for online data collection.</span>
@@ -653,7 +653,7 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">fake_action_shape</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -667,7 +667,7 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fake_action_shape</span> <span class="o">=</span> <span class="n">fake_action_shape</span>
-        <span class="kn">import</span> <span class="nn">d4rl</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">d4rl</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">d4rl</span><span class="o">.</span><span class="n">qlearning_dataset</span><span class="p">(</span><span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_id</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;observations&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
@@ -694,7 +694,7 @@
 
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="si">}</span><span class="s2"> data loaded in GPD4RLOnlineDataset&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">drop_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">random</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">drop_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">random</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="c1"># drop the data from the dataset</span>
         <span class="n">drop_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">*</span> <span class="n">drop_ratio</span><span class="p">)</span>
         <span class="c1"># randomly drop the data if random is True</span>
@@ -714,7 +714,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">drop_num</span><span class="si">}</span><span class="s2"> data dropped in GPOnlineDataset&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
         <span class="c1"># concatenate the data into the dataset</span>
 
         <span class="c1"># collate the data by sorting the keys</span>
@@ -741,7 +741,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="si">}</span><span class="s2"> data loaded in GPOnlineDataset&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
         <span class="n">returns</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="n">ep_ret</span><span class="p">,</span> <span class="n">ep_len</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;rewards&quot;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;terminals&quot;</span><span class="p">]):</span>
@@ -757,7 +757,7 @@
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">returns</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GPCustomizedDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPCustomizedDataset</span><span class="p">(</span><span class="n">GPDataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Dataset for Generative Policy algorithm for customized data.</span>
@@ -765,7 +765,7 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">numpy_data_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -793,7 +793,7 @@
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">len</span><span class="si">}</span><span class="s2"> data loaded in GPCustomizedDataset&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GPD4RLTensorDictDataset</span><span class="p">(</span><span class="n">GPTensorDictDataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPD4RLTensorDictDataset</span><span class="p">(</span><span class="n">GPTensorDictDataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        D4RL Dataset for Generative Policy algorithm.</span>
@@ -801,7 +801,7 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">action_augment_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -814,7 +814,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="kn">import</span> <span class="nn">d4rl</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">d4rl</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">d4rl</span><span class="o">.</span><span class="n">qlearning_dataset</span><span class="p">(</span><span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">env_id</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;observations&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
@@ -876,7 +876,7 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_range</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">max_episode_steps</span><span class="p">):</span>
         <span class="n">returns</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="n">ep_ret</span><span class="p">,</span> <span class="n">ep_len</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;rewards&quot;</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;terminals&quot;</span><span class="p">]):</span>
@@ -891,7 +891,7 @@
         <span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;rewards&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">returns</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Get data by index</span>
@@ -917,11 +917,11 @@
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
 
 
-<span class="k">class</span> <span class="nc">GPCustomizedTensorDictDataset</span><span class="p">(</span><span class="n">GPTensorDictDataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPCustomizedTensorDictDataset</span><span class="p">(</span><span class="n">GPTensorDictDataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Dataset for Generative Policy algorithm for customized data.</span>
@@ -929,7 +929,7 @@
 <span class="sd">        ``__init__``, ``__getitem__``, ``__len__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">action_augment_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
@@ -979,8 +979,8 @@
         <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GPDeepMindControlTensorDictDataset</span><span class="p">(</span><span class="n">GPTensorDictDataset</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPDeepMindControlTensorDictDataset</span><span class="p">(</span><span class="n">GPTensorDictDataset</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">action_augment_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
@@ -1047,8 +1047,8 @@
         <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GPDeepMindControlVisualTensorDictDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GPDeepMindControlVisualTensorDictDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">env_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">policy_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1153,7 +1153,7 @@
             <span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Get data by index</span>
@@ -1176,7 +1176,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
 </pre></div>
 
@@ -1190,7 +1190,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

@@ -306,18 +306,18 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.rl_modules.value_network.q_network</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydict</span><span class="w"> </span><span class="kn">import</span> <span class="n">EasyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
 
-<span class="kn">from</span> <span class="nn">grl.neural_network</span> <span class="kn">import</span> <span class="n">get_module</span>
-<span class="kn">from</span> <span class="nn">grl.neural_network.encoders</span> <span class="kn">import</span> <span class="n">get_encoder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.neural_network.encoders</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_encoder</span>
 
 
-<div class="viewcode-block" id="QNetwork"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork">[docs]</a><span class="k">class</span> <span class="nc">QNetwork</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="QNetwork"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">QNetwork</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Q network, which is used to approximate the Q value.</span>
@@ -325,7 +325,7 @@
 <span class="sd">        ``__init__``, ``forward``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="QNetwork.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
+<div class="viewcode-block" id="QNetwork.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialization of Q network.</span>
@@ -353,7 +353,7 @@
             <span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">args</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="QNetwork.forward"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="QNetwork.forward"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.QNetwork.forward">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
@@ -372,7 +372,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;backbone&quot;</span><span class="p">](</span><span class="n">action_embedding</span><span class="p">,</span> <span class="n">state_embedding</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="DoubleQNetwork"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork">[docs]</a><span class="k">class</span> <span class="nc">DoubleQNetwork</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="DoubleQNetwork"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DoubleQNetwork</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Double Q network, which has two Q networks.</span>
@@ -380,14 +380,14 @@
 <span class="sd">        ``__init__``, ``forward``, ``compute_double_q``, ``compute_mininum_q``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DoubleQNetwork.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
+<div class="viewcode-block" id="DoubleQNetwork.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;q1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">QNetwork</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">QNetwork</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DoubleQNetwork.compute_double_q"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.compute_double_q">[docs]</a>    <span class="k">def</span> <span class="nf">compute_double_q</span><span class="p">(</span>
+<div class="viewcode-block" id="DoubleQNetwork.compute_double_q"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.compute_double_q">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">compute_double_q</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
@@ -405,7 +405,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;q1&quot;</span><span class="p">](</span><span class="n">action</span><span class="p">,</span> <span class="n">state</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">](</span><span class="n">action</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DoubleQNetwork.compute_mininum_q"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.compute_mininum_q">[docs]</a>    <span class="k">def</span> <span class="nf">compute_mininum_q</span><span class="p">(</span>
+<div class="viewcode-block" id="DoubleQNetwork.compute_mininum_q"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.compute_mininum_q">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">compute_mininum_q</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
@@ -422,7 +422,7 @@
 
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_double_q</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="DoubleQNetwork.forward"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="DoubleQNetwork.forward"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.DoubleQNetwork.forward">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
@@ -450,7 +450,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

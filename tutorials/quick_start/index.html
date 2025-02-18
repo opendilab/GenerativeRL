@@ -321,12 +321,12 @@ We provide a simple example of how to train a diffusion model on the swiss roll 
 <section id="reinforcement-learning">
 <h2>Reinforcement Learning<a class="headerlink" href="#reinforcement-learning" title="Permalink to this heading">¶</a></h2>
 <p>GenerativeRL provides a simple and flexible interface for training and deploying reinforcement learning agents powered by generative models. Here’s an example of how to use the library to train a Q-guided policy optimization (QGPO) agent on the HalfCheetah environment and deploy it for evaluation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl_pipelines.diffusion_model.configurations.d4rl_halfcheetah_qgpo</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">grl.algorithms</span> <span class="kn">import</span> <span class="n">QGPOAlgorithm</span>
-<span class="kn">from</span> <span class="nn">grl.utils.log</span> <span class="kn">import</span> <span class="n">log</span>
-<span class="kn">import</span> <span class="nn">gym</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grl_pipelines.diffusion_model.configurations.d4rl_halfcheetah_qgpo</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">QGPOAlgorithm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.utils.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gym</span>
 
-<span class="k">def</span> <span class="nf">qgpo_pipeline</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">qgpo_pipeline</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
     <span class="n">qgpo</span> <span class="o">=</span> <span class="n">QGPOAlgorithm</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="n">qgpo</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 
@@ -387,7 +387,7 @@ We provide a simple example of how to train a diffusion model on the swiss roll 
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

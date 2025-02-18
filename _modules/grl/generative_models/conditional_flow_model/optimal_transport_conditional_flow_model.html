@@ -306,35 +306,35 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.generative_models.conditional_flow_model.optimal_transport_conditional_flow_model</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">ot</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">treetensor</span>
-<span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">treetensor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydict</span><span class="w"> </span><span class="kn">import</span> <span class="n">EasyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
 
-<span class="kn">from</span> <span class="nn">grl.generative_models.intrinsic_model</span> <span class="kn">import</span> <span class="n">IntrinsicModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.intrinsic_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntrinsicModel</span>
 
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.velocity_function</span> <span class="kn">import</span> <span class="n">VelocityFunction</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.random_generator</span> <span class="kn">import</span> <span class="n">gaussian_random_variable</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.stochastic_process</span> <span class="kn">import</span> <span class="n">StochasticProcess</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers</span> <span class="kn">import</span> <span class="n">get_solver</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.dpm_solver</span> <span class="kn">import</span> <span class="n">DPMSolver</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.ode_solver</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.model_functions.velocity_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">VelocityFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.random_generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_random_variable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.stochastic_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">StochasticProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_solver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers.dpm_solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPMSolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers.ode_solver</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DictTensorODESolver</span><span class="p">,</span>
     <span class="n">ODESolver</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.sde_solver</span> <span class="kn">import</span> <span class="n">SDESolver</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.probability_path</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers.sde_solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">SDESolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.probability_path</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ConditionalProbabilityPath</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">grl.utils</span> <span class="kn">import</span> <span class="n">find_parameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_parameters</span>
 
 
-<div class="viewcode-block" id="OptimalTransportConditionalFlowModel"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel">[docs]</a><span class="k">class</span> <span class="nc">OptimalTransportConditionalFlowModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">OptimalTransportConditionalFlowModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        The optimal transport conditional flow model, which is based on an optimal transport plan between two distributions.</span>
@@ -342,7 +342,7 @@
 <span class="sd">        ``__init__``, ``get_type``, ``sample``, ``sample_forward_process``, ``flow_matching_loss``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.__init__"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.__init__"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">,</span>
     <span class="p">):</span>
@@ -382,10 +382,10 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;solver&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">type</span><span class="p">)(</span><span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">args</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;OptimalTransportConditionalFlowModel&quot;</span>
 
-<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.sample"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.sample"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.sample">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -426,7 +426,7 @@
             <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
         <span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.sample_forward_process"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process">[docs]</a>    <span class="k">def</span> <span class="nf">sample_forward_process</span><span class="p">(</span>
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.sample_forward_process"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.sample_forward_process">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample_forward_process</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -543,7 +543,7 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Not implemented&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">ODESolver</span><span class="p">):</span>
             <span class="c1"># TODO: make it compatible with TensorDict</span>
-            <span class="k">def</span> <span class="nf">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;torchdiffeq_adjoint&quot;</span><span class="p">:</span>
@@ -578,7 +578,7 @@
                         <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DictTensorODESolver</span><span class="p">):</span>
             <span class="c1"># TODO: make it compatible with TensorDict</span>
-            <span class="k">def</span> <span class="nf">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">with_grad</span><span class="p">:</span>
@@ -708,7 +708,7 @@
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan">[docs]</a>    <span class="k">def</span> <span class="nf">flow_matching_loss_small_batch_OT_plan</span><span class="p">(</span>
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss_small_batch_OT_plan">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">flow_matching_loss_small_batch_OT_plan</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -834,7 +834,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">x0_ot</span><span class="p">,</span> <span class="n">x1_ot</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">average</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.flow_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss">[docs]</a>    <span class="k">def</span> <span class="nf">flow_matching_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="OptimalTransportConditionalFlowModel.flow_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.OptimalTransportConditionalFlowModel.flow_matching_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">flow_matching_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -896,7 +896,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

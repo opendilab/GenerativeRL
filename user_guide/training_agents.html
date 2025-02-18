@@ -321,13 +321,13 @@ Every algorithm class also has a <code class="docutils literal notranslate"><spa
 <ol class="arabic simple">
 <li><p>Create an instance of the RL algorithm class.</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl.algorithms.qgpo</span> <span class="kn">import</span> <span class="n">QGPOAlgorithm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grl.algorithms.qgpo</span><span class="w"> </span><span class="kn">import</span> <span class="n">QGPOAlgorithm</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Define the hyperparameters for the algorithm in a configurations dictionary. You can use the default configurations provided under the <code class="docutils literal notranslate"><span class="pre">grl_pipelines</span></code> module.</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl_pipelines.diffusion_model.configurations.d4rl_halfcheetah_qgpo</span> <span class="kn">import</span> <span class="n">config</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grl_pipelines.diffusion_model.configurations.d4rl_halfcheetah_qgpo</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
@@ -351,7 +351,7 @@ Every algorithm class also has a <code class="docutils literal notranslate"><spa
 <ol class="arabic simple" start="6">
 <li><p>Use the trained agent to interact with the environment and evaluate its performance.</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gym</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gym</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">deploy</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">env_id</span><span class="p">)</span>
 <span class="n">observation</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">deploy</span><span class="o">.</span><span class="n">num_deploy_steps</span><span class="p">):</span>
@@ -385,7 +385,7 @@ Every algorithm class also has a <code class="docutils literal notranslate"><spa
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

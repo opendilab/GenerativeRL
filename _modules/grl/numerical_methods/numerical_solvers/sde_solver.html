@@ -306,14 +306,14 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.numerical_methods.numerical_solvers.sde_solver</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torchsde</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchsde</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
 
 
-<span class="k">class</span> <span class="nc">TorchSDE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TorchSDE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        The SDE class for torchsde library, wich is an object with methods `f` and `g` representing the drift and diffusion.</span>
@@ -321,7 +321,7 @@
 <span class="sd">        where d is the dimensionality of state and m is the dimensionality of Brownian motion.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">drift</span><span class="p">,</span>
         <span class="n">diffusion</span><span class="p">,</span>
@@ -344,14 +344,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">noise_type</span> <span class="o">=</span> <span class="n">noise_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sde_type</span> <span class="o">=</span> <span class="n">sde_type</span>
 
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            The drift function of the SDE.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            The diffusion function of the SDE.</span>
@@ -359,9 +359,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SDESolver"><a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.SDESolver">[docs]</a><span class="k">class</span> <span class="nc">SDESolver</span><span class="p">:</span>
+<div class="viewcode-block" id="SDESolver"><a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.SDESolver">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">SDESolver</span><span class="p">:</span>
 
-<div class="viewcode-block" id="SDESolver.__init__"><a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.SDESolver.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="SDESolver.__init__"><a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.SDESolver.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">sde_solver</span><span class="o">=</span><span class="s2">&quot;euler&quot;</span><span class="p">,</span>
         <span class="n">sde_noise_type</span><span class="o">=</span><span class="s2">&quot;diagonal&quot;</span><span class="p">,</span>
@@ -397,7 +397,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">library</span></div>
 
-<div class="viewcode-block" id="SDESolver.integrate"><a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.SDESolver.integrate">[docs]</a>    <span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drift</span><span class="p">,</span> <span class="n">diffusion</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">logqp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">adaptive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SDESolver.integrate"><a class="viewcode-back" href="../../../../api_doc/numerical_methods/index.html#grl.numerical_methods.SDESolver.integrate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drift</span><span class="p">,</span> <span class="n">diffusion</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">logqp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">adaptive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Integrate the SDE.</span>
@@ -413,13 +413,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nfe_drift</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nfe_diffusion</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">def</span> <span class="nf">forward_drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward_drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nfe_drift</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">data_size</span><span class="p">)</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">forward_diffusion</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward_diffusion</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nfe_diffusion</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">data_size</span><span class="p">)</span>
             <span class="n">g</span> <span class="o">=</span> <span class="n">diffusion</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
@@ -462,7 +462,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

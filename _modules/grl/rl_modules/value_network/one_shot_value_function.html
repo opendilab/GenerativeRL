@@ -306,18 +306,18 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.rl_modules.value_network.one_shot_value_function</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydict</span><span class="w"> </span><span class="kn">import</span> <span class="n">EasyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
 
-<span class="kn">from</span> <span class="nn">grl.rl_modules.value_network.value_network</span> <span class="kn">import</span> <span class="n">DoubleVNetwork</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.rl_modules.value_network.value_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">DoubleVNetwork</span>
 
 
-<div class="viewcode-block" id="OneShotValueFunction"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction">[docs]</a><span class="k">class</span> <span class="nc">OneShotValueFunction</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="OneShotValueFunction"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">OneShotValueFunction</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Value network for one-shot cases, which means that no Bellman backup is needed for training.</span>
@@ -325,7 +325,7 @@
 <span class="sd">        ``__init__``, ``forward``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="OneShotValueFunction.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
+<div class="viewcode-block" id="OneShotValueFunction.__init__"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialization of one-shot value network.</span>
@@ -339,7 +339,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">DoubleVNetwork</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">DoubleVNetwork</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v_target</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OneShotValueFunction.forward"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+<div class="viewcode-block" id="OneShotValueFunction.forward"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.forward">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -354,7 +354,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OneShotValueFunction.compute_double_v"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.compute_double_v">[docs]</a>    <span class="k">def</span> <span class="nf">compute_double_v</span><span class="p">(</span>
+<div class="viewcode-block" id="OneShotValueFunction.compute_double_v"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.compute_double_v">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">compute_double_v</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -371,7 +371,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">compute_double_v</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">condition</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OneShotValueFunction.v_loss"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.v_loss">[docs]</a>    <span class="k">def</span> <span class="nf">v_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="OneShotValueFunction.v_loss"><a class="viewcode-back" href="../../../../api_doc/rl_modules/index.html#grl.rl_modules.OneShotValueFunction.v_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">v_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">],</span>
@@ -408,7 +408,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

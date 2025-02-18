@@ -306,14 +306,14 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.numerical_methods.probability_path</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydict</span><span class="w"> </span><span class="kn">import</span> <span class="n">EasyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
 
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath">[docs]</a><span class="k">class</span> <span class="nc">GaussianConditionalProbabilityPath</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">GaussianConditionalProbabilityPath</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Gaussian conditional probability path.</span>
@@ -374,7 +374,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.__init__"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.__init__"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialize the Gaussian conditional probability path.</span>
@@ -395,7 +395,7 @@
             <span class="s2">&quot;gvp&quot;</span><span class="p">,</span>
         <span class="p">],</span> <span class="s2">&quot;Unknown type of Gaussian conditional probability path </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.drift_coefficient"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.drift_coefficient">[docs]</a>    <span class="k">def</span> <span class="nf">drift_coefficient</span><span class="p">(</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.drift_coefficient"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.drift_coefficient">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">drift_coefficient</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
@@ -434,7 +434,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.drift"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.drift">[docs]</a>    <span class="k">def</span> <span class="nf">drift</span><span class="p">(</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.drift"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.drift">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">drift</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -466,7 +466,7 @@
                 <span class="s2">&quot;Drift term for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.diffusion"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion">[docs]</a>    <span class="k">def</span> <span class="nf">diffusion</span><span class="p">(</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.diffusion"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diffusion</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
@@ -504,7 +504,7 @@
                 <span class="s2">&quot;Diffusion term for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.diffusion_squared"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion_squared">[docs]</a>    <span class="k">def</span> <span class="nf">diffusion_squared</span><span class="p">(</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.diffusion_squared"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.diffusion_squared">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diffusion_squared</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
@@ -540,7 +540,7 @@
                 <span class="s2">&quot;Diffusion term for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.scale"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.scale"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.scale">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the scale factor of the Gaussian conditional probability path, which is</span>
@@ -570,7 +570,7 @@
                 <span class="s2">&quot;Scale factor for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.log_scale"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.log_scale">[docs]</a>    <span class="k">def</span> <span class="nf">log_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.log_scale"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.log_scale">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">log_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the log scale factor of the Gaussian conditional probability path, which is</span>
@@ -600,7 +600,7 @@
                 <span class="s2">&quot;Log scale factor for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_log_scale_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_log_scale_dt">[docs]</a>    <span class="k">def</span> <span class="nf">d_log_scale_dt</span><span class="p">(</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_log_scale_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_log_scale_dt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">d_log_scale_dt</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
@@ -630,7 +630,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_scale_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_scale_dt">[docs]</a>    <span class="k">def</span> <span class="nf">d_scale_dt</span><span class="p">(</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_scale_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_scale_dt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">d_scale_dt</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">]:</span>
@@ -660,7 +660,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.std"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.std"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.std">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the standard deviation of the Gaussian conditional probability path, which is</span>
@@ -695,7 +695,7 @@
                 <span class="s2">&quot;Standard deviation for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_std_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_std_dt">[docs]</a>    <span class="k">def</span> <span class="nf">d_std_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_std_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_std_dt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">d_std_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the time derivative of the standard deviation of the Gaussian conditional probability path, which is</span>
@@ -720,7 +720,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.covariance"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.covariance">[docs]</a>    <span class="k">def</span> <span class="nf">covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.covariance"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.covariance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the covariance matrix of the Gaussian conditional probability path, which is</span>
@@ -755,7 +755,7 @@
                 <span class="s2">&quot;Covariance for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_covariance_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_covariance_dt">[docs]</a>    <span class="k">def</span> <span class="nf">d_covariance_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.d_covariance_dt"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.d_covariance_dt">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">d_covariance_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the time derivative of the covariance matrix of the Gaussian conditional probability path, which is</span>
@@ -784,7 +784,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.HalfLogSNR"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.HalfLogSNR">[docs]</a>    <span class="k">def</span> <span class="nf">HalfLogSNR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.HalfLogSNR"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.HalfLogSNR">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">HalfLogSNR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the half-logSNR of the Gaussian conditional probability path, which is</span>
@@ -805,7 +805,7 @@
                 <span class="s2">&quot;Half-logSNR for type </span><span class="si">{}</span><span class="s2"> is not implemented&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GaussianConditionalProbabilityPath.InverseHalfLogSNR"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.InverseHalfLogSNR">[docs]</a>    <span class="k">def</span> <span class="nf">InverseHalfLogSNR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HalfLogSNR</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<div class="viewcode-block" id="GaussianConditionalProbabilityPath.InverseHalfLogSNR"><a class="viewcode-back" href="../../../api_doc/numerical_methods/index.html#grl.numerical_methods.GaussianConditionalProbabilityPath.InverseHalfLogSNR">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">InverseHalfLogSNR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HalfLogSNR</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Compute the inverse function of the half-logSNR of the Gaussian conditional probability path.</span>
@@ -846,32 +846,32 @@
             <span class="p">)</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">ConditionalProbabilityPath</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConditionalProbabilityPath</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Conditional probability path for general continuous-time normalizing flow.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
 
-    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sigma</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SchrodingerBridgePath</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SchrodingerBridgePath</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
 
-    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sigma</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">lambd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lambd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">std_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std_prime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span>
 </pre></div>
 
@@ -885,7 +885,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

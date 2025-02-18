@@ -306,35 +306,35 @@
               <article itemprop="articleBody" id="pytorch-article" class="pytorch-article">
                 
   <h1>Source code for grl.generative_models.diffusion_model.energy_conditional_diffusion_model</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">treetensor</span>
-<span class="kn">from</span> <span class="nn">easydict</span> <span class="kn">import</span> <span class="n">EasyDict</span>
-<span class="kn">from</span> <span class="nn">tensordict</span> <span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">treetensor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">easydict</span><span class="w"> </span><span class="kn">import</span> <span class="n">EasyDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
 
-<span class="kn">from</span> <span class="nn">grl.generative_models.diffusion_process</span> <span class="kn">import</span> <span class="n">DiffusionProcess</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.intrinsic_model</span> <span class="kn">import</span> <span class="n">IntrinsicModel</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.data_prediction_function</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.diffusion_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionProcess</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.intrinsic_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntrinsicModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.model_functions.data_prediction_function</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DataPredictionFunction</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.noise_function</span> <span class="kn">import</span> <span class="n">NoiseFunction</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.score_function</span> <span class="kn">import</span> <span class="n">ScoreFunction</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.model_functions.velocity_function</span> <span class="kn">import</span> <span class="n">VelocityFunction</span>
-<span class="kn">from</span> <span class="nn">grl.generative_models.random_generator</span> <span class="kn">import</span> <span class="n">gaussian_random_variable</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers</span> <span class="kn">import</span> <span class="n">get_solver</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.dpm_solver</span> <span class="kn">import</span> <span class="n">DPMSolver</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.ode_solver</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.model_functions.noise_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoiseFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.model_functions.score_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScoreFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.model_functions.velocity_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">VelocityFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models.random_generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaussian_random_variable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_solver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers.dpm_solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPMSolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers.ode_solver</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DictTensorODESolver</span><span class="p">,</span>
     <span class="n">ODESolver</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.numerical_solvers.sde_solver</span> <span class="kn">import</span> <span class="n">SDESolver</span>
-<span class="kn">from</span> <span class="nn">grl.numerical_methods.probability_path</span> <span class="kn">import</span> <span class="n">GaussianConditionalProbabilityPath</span>
-<span class="kn">from</span> <span class="nn">grl.utils</span> <span class="kn">import</span> <span class="n">find_parameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.numerical_solvers.sde_solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">SDESolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.numerical_methods.probability_path</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianConditionalProbabilityPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_parameters</span>
 
 
-<span class="k">class</span> <span class="nc">EnergyGuidance</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EnergyGuidance</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Energy Guidance for Energy Conditional Diffusion Model.</span>
@@ -342,7 +342,7 @@
 <span class="sd">        ``__init__``, ``forward``, ``calculate_energy_guidance``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overview:</span>
 <span class="sd">            Initialization of Energy Guidance.</span>
@@ -354,7 +354,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">IntrinsicModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -372,7 +372,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">calculate_energy_guidance</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_energy_guidance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -400,7 +400,7 @@
         <span class="k">return</span> <span class="n">guidance</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel">[docs]</a><span class="k">class</span> <span class="nc">EnergyConditionalDiffusionModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">EnergyConditionalDiffusionModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overview:</span>
 <span class="sd">        Energy Conditional Diffusion Model, which is a diffusion model conditioned on energy.</span>
@@ -414,7 +414,7 @@
 <span class="sd">        ``energy_guidance_loss``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.__init__"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.__init__"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">EasyDict</span><span class="p">,</span>
         <span class="n">energy_model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span>
@@ -470,10 +470,10 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;solver&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">type</span><span class="p">)(</span><span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">args</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;EnergyConditionalDiffusionModel&quot;</span>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -520,7 +520,7 @@
             <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
         <span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_without_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance">[docs]</a>    <span class="k">def</span> <span class="nf">sample_without_energy_guidance</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_without_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_without_energy_guidance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample_without_energy_guidance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -562,7 +562,7 @@
             <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_forward_process"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process">[docs]</a>    <span class="k">def</span> <span class="nf">sample_forward_process</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_forward_process"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample_forward_process</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t_span</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -677,12 +677,12 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DPMSolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
                 <span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">data_prediction_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">data_prediction_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prediction_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
                 <span class="p">)</span>
@@ -713,7 +713,7 @@
                     <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">ODESolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="c1"># for SDE solver, the shape of t is (,) while for ODE solver, the shape of t is (B*N,)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
@@ -744,7 +744,7 @@
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DictTensorODESolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="c1"># for SDE solver, the shape of t is (,) while for ODE solver, the shape of t is (B*N,)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
@@ -779,7 +779,7 @@
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">SDESolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="c1"># for SDE solver, the shape of t is (,) while for ODE solver, the shape of t is (B*N,)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -922,7 +922,7 @@
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_with_fixed_x"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x">[docs]</a>    <span class="k">def</span> <span class="nf">sample_with_fixed_x</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_with_fixed_x"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample_with_fixed_x</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fixed_x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">fixed_mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -974,7 +974,7 @@
             <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
         <span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x">[docs]</a>    <span class="k">def</span> <span class="nf">sample_forward_process_with_fixed_x</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_forward_process_with_fixed_x">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample_forward_process_with_fixed_x</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fixed_x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">fixed_mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1098,12 +1098,12 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DPMSolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
                 <span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">data_prediction_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">data_prediction_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prediction_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
                 <span class="p">)</span>
@@ -1112,7 +1112,7 @@
             <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Not implemented&quot;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">ODESolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="c1"># for SDE solver, the shape of t is (,) while for ODE solver, the shape of t is (B*N,)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
@@ -1121,7 +1121,7 @@
             <span class="c1"># TODO: make it compatible with TensorDict</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">fixed_x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fixed_mask</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">fixed_mask</span>
 
-            <span class="k">def</span> <span class="nf">drift_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">drift_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
                 <span class="n">xt_partially_fixed</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">direct_sample</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">t_max</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">fixed_x</span>
@@ -1150,7 +1150,7 @@
                     <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">DictTensorODESolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="c1"># for SDE solver, the shape of t is (,) while for ODE solver, the shape of t is (B*N,)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_function_with_energy_guidance</span><span class="p">(</span>
                     <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
@@ -1159,7 +1159,7 @@
             <span class="c1"># TODO: make it compatible with TensorDict</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">fixed_x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fixed_mask</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">fixed_mask</span>
 
-            <span class="k">def</span> <span class="nf">drift_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">drift_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
                 <span class="n">xt_partially_fixed</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">direct_sample</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">t_max</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">fixed_x</span>
@@ -1193,7 +1193,7 @@
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">SDESolver</span><span class="p">):</span>
 
-            <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
                 <span class="c1"># for SDE solver, the shape of t is (,) while for ODE solver, the shape of t is (B*N,)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -1216,7 +1216,7 @@
                 <span class="n">reverse_diffusion_squared_function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_diffusion_process</span><span class="o">.</span><span class="n">diffusion_squared</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">drift_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">drift_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
                 <span class="n">xt_partially_fixed</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">direct_sample</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">t_max</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">fixed_x</span>
@@ -1226,7 +1226,7 @@
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">fixed_mask</span> <span class="o">*</span> <span class="n">sde</span><span class="o">.</span><span class="n">drift</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">xt_partially_fixed</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">diffusion_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">diffusion_fixed_x</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
                 <span class="n">xt_partially_fixed</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">direct_sample</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">t_max</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">fixed_x</span>
@@ -1343,7 +1343,7 @@
 
         <span class="k">return</span> <span class="n">data</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance">[docs]</a>    <span class="k">def</span> <span class="nf">sample_with_fixed_x_without_energy_guidance</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.sample_with_fixed_x_without_energy_guidance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sample_with_fixed_x_without_energy_guidance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fixed_x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">fixed_mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1393,7 +1393,7 @@
             <span class="n">solver_config</span><span class="o">=</span><span class="n">solver_config</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.score_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.score_function">[docs]</a>    <span class="k">def</span> <span class="nf">score_function</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.score_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.score_function">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">score_function</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1414,7 +1414,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_function_</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.score_function_with_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance">[docs]</a>    <span class="k">def</span> <span class="nf">score_function_with_energy_guidance</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.score_function_with_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.score_function_with_energy_guidance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">score_function_with_energy_guidance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1440,7 +1440,7 @@
             <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.score_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss">[docs]</a>    <span class="k">def</span> <span class="nf">score_matching_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.score_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.score_matching_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">score_matching_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1478,7 +1478,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_generator</span><span class="p">,</span> <span class="n">weighting_scheme</span><span class="p">,</span> <span class="n">average</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.velocity_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.velocity_function">[docs]</a>    <span class="k">def</span> <span class="nf">velocity_function</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.velocity_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.velocity_function">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">velocity_function</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1499,7 +1499,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_function_</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.flow_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss">[docs]</a>    <span class="k">def</span> <span class="nf">flow_matching_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.flow_matching_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.flow_matching_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">flow_matching_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1519,7 +1519,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_generator</span><span class="p">,</span> <span class="n">average</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.noise_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.noise_function">[docs]</a>    <span class="k">def</span> <span class="nf">noise_function</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.noise_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.noise_function">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">noise_function</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1540,7 +1540,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_function_</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.noise_function_with_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance">[docs]</a>    <span class="k">def</span> <span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.noise_function_with_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.noise_function_with_energy_guidance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">noise_function_with_energy_guidance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1565,7 +1565,7 @@
             <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span>
         <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.data_prediction_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function">[docs]</a>    <span class="k">def</span> <span class="nf">data_prediction_function</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.data_prediction_function"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">data_prediction_function</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1586,7 +1586,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prediction_function_</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance">[docs]</a>    <span class="k">def</span> <span class="nf">data_prediction_function_with_energy_guidance</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.data_prediction_function_with_energy_guidance">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">data_prediction_function_with_energy_guidance</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
@@ -1613,7 +1613,7 @@
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_function_with_energy_guidance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">guidance_scale</span><span class="p">)</span>
         <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion_process</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnergyConditionalDiffusionModel.energy_guidance_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss">[docs]</a>    <span class="k">def</span> <span class="nf">energy_guidance_loss</span><span class="p">(</span>
+<div class="viewcode-block" id="EnergyConditionalDiffusionModel.energy_guidance_loss"><a class="viewcode-back" href="../../../../api_doc/generative_models/index.html#grl.generative_models.EnergyConditionalDiffusionModel.energy_guidance_loss">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">energy_guidance_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
         <span class="n">condition</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">treetensor</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1712,7 +1712,7 @@
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>

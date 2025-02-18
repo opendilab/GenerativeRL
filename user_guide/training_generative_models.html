@@ -386,7 +386,7 @@ GenerativeRL provides a set of neural network architectures in the <code class="
     <span class="p">),</span>
 <span class="p">))</span>
 
-<span class="kn">from</span> <span class="nn">grl.generative_models</span> <span class="kn">import</span> <span class="n">DiffusionModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionModel</span>
 <span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="n">diffusion_model</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -396,10 +396,10 @@ GenerativeRL provides a set of neural network architectures in the <code class="
 <h2>Customized neural network<a class="headerlink" href="#customized-neural-network" title="Permalink to this heading">¶</a></h2>
 <p>For customized neural network architectures, GenerativeRL provide API <code class="docutils literal notranslate"><span class="pre">grl.neural_network.register_module</span></code> for registering new neural network classes.
 User can define their own neural network class and register it in the <code class="docutils literal notranslate"><span class="pre">grl.neural_network</span></code> module, so that it can be called from the configurations, for example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl.neural_network</span> <span class="kn">import</span> <span class="n">register_module</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grl.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_module</span>
 
-<span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_sizes</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_sizes</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MyModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
@@ -407,7 +407,7 @@ User can define their own neural network class and register it in the <code clas
             <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_dim</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
@@ -444,7 +444,7 @@ User can define their own neural network class and register it in the <code clas
     <span class="p">),</span>
 <span class="p">))</span>
 
-<span class="kn">from</span> <span class="nn">grl.generative_models</span> <span class="kn">import</span> <span class="n">DiffusionModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionModel</span>
 <span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="n">diffusion_model</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -461,7 +461,7 @@ User can define their own neural network class and register it in the <code clas
 \[\mathcal{L}_{\text{CFM}} = \frac{1}{2}\int_{0}^{1} \mathbb{E}_{p(x_t, x_0, x_1)}\left[\|v_{\theta}(x_t) - v(x_t|x_0, x_1)\|^2\right] \mathrm{d}t\]</div>
 <p>GenerativeRL provides a unified API for training with score matching loss and flow matching loss, simply calling the <code class="docutils literal notranslate"><span class="pre">score_matching_loss</span></code> or <code class="docutils literal notranslate"><span class="pre">flow_matching_loss</span></code> method in the generative model class.
 Here is the example code for training a diffusion model with score matching loss:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grl.generative_models</span> <span class="kn">import</span> <span class="n">DiffusionModel</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grl.generative_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionModel</span>
 
 <span class="c1"># Create a diffusion model</span>
 <span class="n">diffusion_model</span> <span class="o">=</span> <span class="n">DiffusionModel</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -498,7 +498,7 @@ Here is the example code for training a diffusion model with score matching loss
 
   <div role="contentinfo">
     <p>
-      &copy; Copyright 2024, OpenDILab Contributors.
+      &copy; Copyright 2025, OpenDILab Contributors.
 
     </p>
   </div>
