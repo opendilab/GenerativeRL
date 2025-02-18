@@ -8,6 +8,7 @@
 [![GitHub pulls](https://img.shields.io/github/issues-pr/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/pulls)
 [![Contributors](https://img.shields.io/github/contributors/opendilab/GenerativeRL)](https://github.com/opendilab/GenerativeRL/graphs/contributors)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GenerativeRL Preprint](http://img.shields.io/badge/paper-arxiv.2412.01245-B31B1B.svg)](https://arxiv.org/abs/2412.01245)
 
 [英语 (English)](https://github.com/opendilab/GenerativeRL/blob/main/README.md) | 简体中文
 
